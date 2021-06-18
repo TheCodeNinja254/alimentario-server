@@ -1,0 +1,14 @@
+{
+  "session": {
+    "keys": ["secret key"],
+    "options": {
+      "key": "drift",
+      "maxAge": 7776000000,
+      "overwrite": true,
+      "httpOnly": true,
+      "signed": true,
+      "rolling": false,
+      "renew": false
+    }
+  }
+}
