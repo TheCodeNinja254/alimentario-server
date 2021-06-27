@@ -20,6 +20,7 @@ const configurations =
     : require("../configs/development.json");
 
 const CountriesAPI = require("./datasources/Countries");
+const NameAPI = require("./datasources/Name");
 
 const server = new ApolloServer({
   typeDefs,
@@ -35,6 +36,7 @@ const server = new ApolloServer({
   },
   dataSources: () => ({
     country: new CountriesAPI(),
+    name: new NameAPI(),
   }),
   formatError: (err) => {
     err.extensions.exception = "";

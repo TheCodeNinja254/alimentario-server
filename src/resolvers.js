@@ -24,5 +24,9 @@ module.exports = {
   Query: {
     getCountries: (_, args, { dataSources }) =>
       dataSources.country.getCountries(args),
+    getName: (_, __, { dataSources }) => dataSources.name.getName(),
+  },
+  Mutation: {
+    writeName: (_, args, { dataSources }) => dataSources.name.writeName(args),
   },
 };
