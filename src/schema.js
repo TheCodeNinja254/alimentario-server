@@ -9,11 +9,20 @@ const typeDefs = gql`
 
   type Query {
     getCountries(param: String): [Countries]
+    getName: Name
+  }
+
+  type Mutation {
+    writeName(name: String!): Boolean!
   }
 
   type Countries {
     country: String
     region: String
+  }
+
+  type Name {
+    name: String!
   }
 `;
 
