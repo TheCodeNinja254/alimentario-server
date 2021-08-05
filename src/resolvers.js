@@ -18,15 +18,15 @@ module.exports = {
       throw new Error("Please pass a date");
     },
   }),
-  Region: {
-    africa: "africa",
-  },
   Query: {
-    getCountries: (_, args, { dataSources }) =>
-      dataSources.country.getCountries(args),
-    getName: (_, __, { dataSources }) => dataSources.name.getName(),
+    getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),
+    getEstates: (_, args, { dataSources }) =>
+      dataSources.location.getEstates(args),
+    getZones: (_, args, { dataSources }) => dataSources.location.getZones(args),
   },
   Mutation: {
-    writeName: (_, args, { dataSources }) => dataSources.name.writeName(args),
+    createLead: (_, args, { dataSources }) => dataSources.lead.createLead(args),
+    checkLeadDetails: (_, args, { dataSources }) =>
+      dataSources.lead.checkLeadDetails(args),
   },
 };

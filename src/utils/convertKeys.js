@@ -1,7 +1,15 @@
-const isPlainObject = require("lodash/isPlainObject");
-const camelCase = require("lodash/camelCase");
-const keys = require("lodash/keys");
-const isEmpty = require("lodash/isEmpty");
+/*
+ * Copyright (c) 2020.
+ * Safaricom PLC
+ * Systems, URLs, Databases and content in this document maybe proprietary to Safaricom PLC. Use or reproduction may require written permission from Safaricom PLC
+ *
+ * @Author: Fredrick Mbugua/FMMBUGUA
+ */
+
+const isPlainObject = require('lodash/isPlainObject');
+const camelCase = require('lodash/camelCase');
+const keys = require('lodash/keys');
+const isEmpty = require('lodash/isEmpty');
 
 const convertKeys = (data) => {
   // handle simple types
@@ -12,12 +20,10 @@ const convertKeys = (data) => {
   if (isPlainObject(data) && !isEmpty(data)) {
     const keysToConvert = keys(data);
     keysToConvert.forEach((key) => {
-      // eslint-disable-next-line no-param-reassign
       data[camelCase(key)] = convertKeys(data[key]);
 
       // remove snake_case key
       if (camelCase(key) !== key) {
-        // eslint-disable-next-line no-param-reassign
         delete data[key];
       }
     });
@@ -25,7 +31,6 @@ const convertKeys = (data) => {
 
   if (Array.isArray(data)) {
     data.forEach((item, index) => {
-      // eslint-disable-next-line no-param-reassign
       data[index] = convertKeys(item);
     });
   }
