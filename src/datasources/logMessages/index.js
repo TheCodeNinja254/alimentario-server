@@ -1,15 +1,6 @@
-/*
- * Copyright (c) 2020.
- * Safaricom PLC
- * Systems, URLs, Databases and content in this document maybe proprietary to Safaricom PLC. Use or reproduction may require written permission from Safaricom PLC
- *
- * @Author: Fredrick Mbugua/FMMBUGUA
- */
-
 const convertKeys = require('../../utils/convertKeys');
 const Logger = require('../../utils/logging');
 const ErrorHandler = require('../../utils/errorHandler');
-
 
 const LogMessages = (response, callback, apiUrl, addedDetails = {}) => {
   const { header: { responseCode, responseMessage, customerMessage } } = convertKeys(response);
@@ -21,7 +12,7 @@ const LogMessages = (response, callback, apiUrl, addedDetails = {}) => {
         message: "Request Successful",
         addedDetails,
         callback,
-        response, // for debugging only
+        response, // Todo for debugging only
         url: apiUrl,
       },
     );

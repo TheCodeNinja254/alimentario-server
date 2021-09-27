@@ -41,11 +41,9 @@ class HeadersConfig {
     const headers = {
       Authorization: `Bearer ${request.accessToken}`,
       "X-Correlation-ConversationID": uuid(),
-      "X-Identity": request.username,
-      "X-Source-System": "home-web-portal",
-      "X-App": "home-web-portal",
+      "X-Source-System": "discovery-portal",
+      "x-app": "web-portal",
       "Accept-Encoding": "application/json",
-      "X-Source-Operator": "Safaricom",
     };
 
     // Add common headers

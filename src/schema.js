@@ -5,10 +5,8 @@ const typeDefs = gql`
 
   type Query {
     getRegions: RegionsData
-    getZones(regionId: String!, retrieveBy: String!): ZonesData
     getEstates(
-      zoneId: Int!
-      retrieveByZone: String
+      regionId: Int!
       pageSize: Int
       pageNo: Int
     ): EstatesData
@@ -132,10 +130,11 @@ const typeDefs = gql`
     doctypeId: String
     documentNumber: String
     productType: String
+    addOns: String
   }
 
   input LeadCheckData {
-    crqNumber: String!
+    uniqueIdentity: String!
   }
 `;
 

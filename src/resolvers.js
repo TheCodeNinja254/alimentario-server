@@ -22,7 +22,6 @@ module.exports = {
     getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),
     getEstates: (_, args, { dataSources }) =>
       dataSources.location.getEstates(args),
-    getZones: (_, args, { dataSources }) => dataSources.location.getZones(args),
   },
   Mutation: {
     createLead: (_, args, { dataSources }) => dataSources.lead.createLead(args),

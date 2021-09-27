@@ -1,16 +1,7 @@
-/*
- * Copyright (c) 2020.
- * Safaricom PLC
- * Systems, URLs, Databases and content in this document maybe proprietary to Safaricom PLC. Use or reproduction may require written permission from Safaricom PLC
- *
- */
-
 const { RESTDataSource } = require("apollo-datasource-rest");
 const https = require("https");
 const config = require("dotenv").config();
-const FormatPhoneNumber = require("../../utils/formatPhoneNumber");
 const logMessages = require("../logMessages/index");
-const { decrypt } = require("../../utils/encryptDecrypt");
 const headersConfig = require("../../utils/headersConfig");
 const Logger = require("../../utils/logging");
 const GetOAuthToken = require("../Authentication");
@@ -56,6 +47,7 @@ class CustomersAPI extends RESTDataSource {
         doctypeId,
         documentNumber,
         productType,
+        addOns,
       },
     } = args;
 
@@ -67,16 +59,15 @@ class CustomersAPI extends RESTDataSource {
     }
 
     try {
-      const apiUrl = `${this.baseURL}/v1/ftth-leads/leadRegistration`;
+      const apiUrl = `${this.baseURL}/v1/xprome/leadRegistration`;
       const response = await this.post(
         apiUrl,
         {
           firstName,
           middleName,
           lastName,
-          sponsorMsisdn: decrypt(FormatPhoneNumber(sponsorMsisdn)),
-          sponsorAlternativeMsisdn:
-            FormatPhoneNumber(sponsorAlternativeMsisdn) || "",
+          sponsorMsisdn: sponsorMsisdn,
+          sponsorAlternativeMsisdn: sponsorAlternativeMsisdn || "",
           emailAddress: emailAddress,
           productId,
           preferredDate,
@@ -88,6 +79,7 @@ class CustomersAPI extends RESTDataSource {
           doctypeId: doctypeId || 1,
           documentNumber: documentNumber || "233232110",
           productType,
+          addOns,
         },
         {
           agent: new https.Agent({
@@ -105,8 +97,6 @@ class CustomersAPI extends RESTDataSource {
           body: { streetName, crqNumber },
         } = response;
 
-        const message =
-          "Details submitted for registration. You will receive an SMS once line registration is complete";
         status = true;
         Logger.log("info", "Success: ", {
           message: "Lead Registration Successful",
@@ -116,7 +106,7 @@ class CustomersAPI extends RESTDataSource {
         });
         return {
           status,
-          message,
+          message: customerMessage,
           estateName: streetName,
           preferredDate,
           preferredTimePeriod,
@@ -156,7 +146,7 @@ class CustomersAPI extends RESTDataSource {
   async checkLeadDetails(args) {
     // initialize variables
     const {
-      input: { crqNumber },
+      input: { uniqueIdentity },
     } = args;
 
     // First we ensure the OAuth2 Token is set
@@ -167,11 +157,11 @@ class CustomersAPI extends RESTDataSource {
     }
 
     try {
-      const apiUrl = `${this.baseURL}/v1/ftth-leads/leads`;
+      const apiUrl = `${this.baseURL}/v1/xprome/getLead`;
       // Now we can get list of estates
       const response = await this.get(
         apiUrl,
-        { crqNumber },
+        { id: uniqueIdentity },
         {
           agent: new https.Agent({
             rejectUnauthorized: false,
@@ -185,7 +175,13 @@ class CustomersAPI extends RESTDataSource {
       let getLeadStatus = false;
       if (responseCode === 200) {
         const {
-          body: { streetName, preferredDate, preferredTimePeriod, firstName, lastName },
+          body: {
+            streetName,
+            preferredDate,
+            preferredTimePeriod,
+            firstName,
+            lastName,
+          },
         } = response;
 
         Logger.log("info", "Success: ", {
@@ -220,7 +216,6 @@ class CustomersAPI extends RESTDataSource {
         };
       }
     } catch (e) {
-      // console.log(e); // For Debugging
       const customerMessage = `Sorry, we are unable to show your request status, Kindly try again or reach us on Twitter @Safaricom_Care`;
       Logger.log("error", "Error: ", {
         fullError: e,

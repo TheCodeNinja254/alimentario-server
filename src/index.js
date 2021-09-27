@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2020.
- * Safaricom PLC
- * Systems, URLs, Databases and content in this document maybe proprietary to Safaricom PLC. Use or reproduction may require written permission from Safaricom PLC
- * Ok- Server - xprome
- * @Author: Fredrick Mbugua/FMMBUGUA
- */
-
 const Koa = require('koa');
 const crypto = require('crypto');
 const https = require('https');
