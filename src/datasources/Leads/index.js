@@ -14,7 +14,7 @@ class CustomersAPI extends RESTDataSource {
     super();
     this.baseURL = configValues.HOME_APIGEE_ENDPOINT;
     this.noTokenError =
-      "Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke";
+      "Sorry, we are unable to show your request status. Kindly try again or reach us via an email to: Fibersalesgroup@safaricom.co.ke";
   }
 
   willSendRequest(request) {
@@ -67,31 +67,15 @@ class CustomersAPI extends RESTDataSource {
       sponsorOtherMsisdn: sponsorAlternativeMsisdn || "",
       emailAddress: emailAddress,
       productId,
+      regionId: 1,
+      productName: "",
       preferredDate: moment(preferredDate).format("YYYY-MM-DD"),
       preferredTimePeriod,
       estateId: passedEstateId,
       // areaName: areaName || "",
       streetName: streetName || "",
-      // houseNumber: houseNumber || "",
-      // doctypeId: doctypeId || 1,
-      // documentNumber: documentNumber || "233232110",
       productType,
       addOns
-
-      // "firstName": "Millicent",
-      // "middleName": "",
-      // "lastName": "",
-      // "sponsorMsisdn": "0715109743",
-      // "sponsorOtherMsisdn": "",
-      // "emailAddress": "millyquien@gmail.com",
-      // "productId": 1,
-      // "preferredDate": "2021-07-29",
-      // "preferredTimePeriod": "8-10 am",
-      // "estateId": 1,
-      // "regionId": 1,
-      // "streetName": "Kitisuru road",
-      // "productType": "Business",
-      // "productName": ""
     };
 
     console.log(body);
@@ -148,12 +132,12 @@ class CustomersAPI extends RESTDataSource {
         fullError: e,
         technicalMessage: e,
         customerMessage:
-          "Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke",
+          "Sorry, we are unable to show your request status. Kindly try again or reach us via an email to: Fibersalesgroup@safaricom.co.ke",
       });
 
       throw new Error(
         // customerMessage,
-        "Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke"
+        "Sorry, we are unable to show your request status. Kindly try again or reach us via an email to: Fibersalesgroup@safaricom.co.ke"
       );
     }
   }
@@ -227,7 +211,7 @@ class CustomersAPI extends RESTDataSource {
           message: customerMessage,
         };
       }else {
-        const customerMessage = `Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke`;
+        const customerMessage = `Sorry, we are unable to show your request status. Kindly try again or reach us via an email to: Fibersalesgroup@safaricom.co.ke`;
         Logger.log("error", "Error: ", {
           fullError: responseMessage,
           request: "checkLeadDetails",
@@ -240,7 +224,7 @@ class CustomersAPI extends RESTDataSource {
         };
       }
     } catch (e) {
-      const customerMessage = `Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke`;
+      const customerMessage = `Sorry, we are unable to show your request status. Kindly try again or reach us via an email to: Fibersalesgroup@safaricom.co.ke`;
       Logger.log("error", "Error: ", {
         fullError: e,
         request: "checkLeadDetails",
