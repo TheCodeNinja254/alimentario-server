@@ -5,6 +5,7 @@ const logMessages = require("../logMessages/index");
 const headersConfig = require("../../utils/headersConfig");
 const Logger = require("../../utils/logging");
 const GetOAuthToken = require("../Authentication");
+const moment = require("moment");
 
 const configValues = config.parsed;
 
@@ -13,7 +14,7 @@ class CustomersAPI extends RESTDataSource {
     super();
     this.baseURL = configValues.HOME_APIGEE_ENDPOINT;
     this.noTokenError =
-      "Sorry, we are experiencing a system issue, kindly try again later or reach us on Twitter @Safaricom_Care";
+      "Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke";
   }
 
   willSendRequest(request) {
@@ -58,35 +59,50 @@ class CustomersAPI extends RESTDataSource {
       throw new this.noTokenError();
     }
 
+    const body = {
+      firstName,
+      middleName: middleName || "",
+      lastName,
+      sponsorMsisdn,
+      sponsorOtherMsisdn: sponsorAlternativeMsisdn || "",
+      emailAddress: emailAddress,
+      productId,
+      preferredDate: moment(preferredDate).format("YYYY-MM-DD"),
+      preferredTimePeriod,
+      estateId: passedEstateId,
+      // areaName: areaName || "",
+      streetName: streetName || "",
+      // houseNumber: houseNumber || "",
+      // doctypeId: doctypeId || 1,
+      // documentNumber: documentNumber || "233232110",
+      productType,
+      addOns
+
+      // "firstName": "Millicent",
+      // "middleName": "",
+      // "lastName": "",
+      // "sponsorMsisdn": "0715109743",
+      // "sponsorOtherMsisdn": "",
+      // "emailAddress": "millyquien@gmail.com",
+      // "productId": 1,
+      // "preferredDate": "2021-07-29",
+      // "preferredTimePeriod": "8-10 am",
+      // "estateId": 1,
+      // "regionId": 1,
+      // "streetName": "Kitisuru road",
+      // "productType": "Business",
+      // "productName": ""
+    };
+
+    console.log(body);
+
     try {
       const apiUrl = `${this.baseURL}/v1/xprome/leadRegistration`;
-      const response = await this.post(
-        apiUrl,
-        {
-          firstName,
-          middleName,
-          lastName,
-          sponsorMsisdn: sponsorMsisdn,
-          sponsorAlternativeMsisdn: sponsorAlternativeMsisdn || "",
-          emailAddress: emailAddress,
-          productId,
-          preferredDate,
-          preferredTimePeriod,
-          estateId: passedEstateId,
-          areaName: areaName || "",
-          streetName: streetName || "",
-          houseNumber: houseNumber || "",
-          doctypeId: doctypeId || 1,
-          documentNumber: documentNumber || "233232110",
-          productType,
-          addOns,
-        },
-        {
-          agent: new https.Agent({
-            rejectUnauthorized: false,
-          }),
-        }
-      );
+      const response = await this.post(apiUrl, body, {
+        agent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
+      });
       const {
         header: { responseCode, customerMessage, responseMessage },
       } = response;
@@ -94,7 +110,7 @@ class CustomersAPI extends RESTDataSource {
       let status = false;
       if (responseCode === 200) {
         const {
-          body: { streetName, crqNumber },
+          body: { streetName },
         } = response;
 
         status = true;
@@ -110,7 +126,6 @@ class CustomersAPI extends RESTDataSource {
           estateName: streetName,
           preferredDate,
           preferredTimePeriod,
-          crqNumber,
         };
       } else {
         Logger.log("error", "Error: ", {
@@ -133,12 +148,12 @@ class CustomersAPI extends RESTDataSource {
         fullError: e,
         technicalMessage: e,
         customerMessage:
-          "Sorry, we are unable to register your request at the moment, Kindly try again or reach us on Twitter @Safaricom_Care",
+          "Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke",
       });
 
       throw new Error(
         // customerMessage,
-        "Sorry, we are unable to register your request at the moment, Kindly try again or reach us on Twitter @Safaricom_Care"
+        "Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke"
       );
     }
   }
@@ -161,7 +176,7 @@ class CustomersAPI extends RESTDataSource {
       // Now we can get list of estates
       const response = await this.get(
         apiUrl,
-        { id: uniqueIdentity },
+        { msisdn: uniqueIdentity },
         {
           agent: new https.Agent({
             rejectUnauthorized: false,
@@ -175,14 +190,12 @@ class CustomersAPI extends RESTDataSource {
       let getLeadStatus = false;
       if (responseCode === 200) {
         const {
-          body: {
             streetName,
             preferredDate,
             preferredTimePeriod,
             firstName,
             lastName,
-          },
-        } = response;
+        } = response.body[0];
 
         Logger.log("info", "Success: ", {
           fullError: responseMessage,
@@ -200,10 +213,21 @@ class CustomersAPI extends RESTDataSource {
           estateName: streetName,
           preferredDate,
           preferredTimePeriod,
-          crqNumber,
         };
-      } else {
-        const customerMessage = `Sorry, we are unable to show your request status, Kindly try again or reach us on Twitter @Safaricom_Care`;
+      } else if (responseCode === 404){
+        const customerMessage = `Sorry, seems like yo have not made a request before. Use the form below to submit a request. `;
+        Logger.log("error", "Error: ", {
+          fullError: responseMessage,
+          request: "checkLeadDetails",
+          technicalMessage: response,
+          customerMessage,
+        });
+        return {
+          getLeadStatus,
+          message: customerMessage,
+        };
+      }else {
+        const customerMessage = `Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke`;
         Logger.log("error", "Error: ", {
           fullError: responseMessage,
           request: "checkLeadDetails",
@@ -216,7 +240,7 @@ class CustomersAPI extends RESTDataSource {
         };
       }
     } catch (e) {
-      const customerMessage = `Sorry, we are unable to show your request status, Kindly try again or reach us on Twitter @Safaricom_Care`;
+      const customerMessage = `Sorry, we are unable to show your request status,.Kindly try again or reach us via an email to: Fibresalesgroup@safaricom.co.ke`;
       Logger.log("error", "Error: ", {
         fullError: e,
         request: "checkLeadDetails",

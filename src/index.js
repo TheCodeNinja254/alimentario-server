@@ -1,7 +1,5 @@
 const Koa = require('koa');
 const crypto = require('crypto');
-const https = require('https');
-const fs = require('fs');
 const serve = require('koa-static');
 const { ApolloServer } = require('apollo-server-koa');
 const session = require('koa-encrypted-session');
@@ -288,34 +286,21 @@ app.use(serve('./uploads'));
 app.use((ctx, next) => {
   // copy session to native Node's req object because GraphQL execution context doesn't have access to Koa's
   // context, see https://github.com/apollographql/apollo-server/issues/1551
-  // ctx.set('Access-Control-Allow-Origin', 'http://localhost:4000');
-  ctx.set('Access-Control-Allow-Origin', 'http://172.29.227.243:5000/');
+  ctx.set('Access-Control-Allow-Origin', 'http://172.29.227.243:5090/');
   ctx.cookie = ctx.cookies;
   ctx.cookie = ctx.cookies;
   ctx.req.session = ctx.session;
   return next();
 });
 
-server.applyMiddleware({ app, path: '/discorvery' });
+server.applyMiddleware({ app, path: '/discovery' });
 
-
-// Prod Version
-
-// const options = {
-//   key: fs.readFileSync(`${process.env.SERVER_SSL_KEY_PATH}`),
-//   cert: fs.readFileSync(`${process.env.SERVER_SSL_CERT_PATH}`),
-//   passphrase: `${process.env.SERVER_SSL_PASSPHRASE}`, // For Prod
-// };
-//
-// const httpsServer = https.createServer(options, app.callback()).listen(configValues.SERVER_PORT || 5000);
-//
-// server.installSubscriptionHandlers(httpsServer);
 
 
 // Localhost Version
-const http = app.listen({ port: configValues.SERVER_PORT || 4000 }, () => {
+const http = app.listen({ port: configValues.SERVER_PORT || 5052 }, () => {
   // eslint-disable-next-line no-console
-  console.log(`🚀 Server ready at http://localhost:${configValues.SERVER_PORT || 4000}${server.graphqlPath}`);
+  console.log(`🚀 Server ready at http://localhost:${configValues.SERVER_PORT || 5052}${server.graphqlPath}`);
 });
 
 module.exports = http;

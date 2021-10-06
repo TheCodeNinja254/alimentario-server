@@ -59,7 +59,7 @@ class HeadersConfig {
 
   leadHeaders(request) {
     const headers = {
-      Authorization: `Bearer ${request.accessToken}`,
+      "Authorization": `Bearer ${request.accessToken}`,
       "X-Correlation-ConversationID": uuid(),
       "X-Source-System": "web-portal",
       "X-App": "web-portal",

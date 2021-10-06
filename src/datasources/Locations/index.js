@@ -35,9 +35,6 @@ class LocationsAPI extends RESTDataSource {
       throw new Error("No token found");
     }
 
-    // try {
-      // Now we can get list of regions
-      //   const apiUrl = `${this.baseURL}/v1/4ghome/region-list`;
       const apiUrl = `${this.baseURL}/v1/xprome/get-lead-regions/all`;
       const response = await this.get(
         apiUrl,
@@ -164,7 +161,7 @@ class LocationsAPI extends RESTDataSource {
   static estatesReducer(estate) {
     return {
       estateId: estate.estateId,
-      estateName: `${estate.estateId} - ${estate.estateName}`,
+      estateName: estate.estateName,
       regionId: estate.regionId,
     };
   }

@@ -28,7 +28,6 @@ const typeDefs = gql`
     estateName: String
     preferredDate: Date
     preferredTimePeriod: String
-    crqNumber: String
   }
 
   type ZonesData {
@@ -87,7 +86,6 @@ const typeDefs = gql`
     estateName: String,
     preferredDate: Date
     preferredTimePeriod: String
-    crqNumber: String
   }
 
   type Lead {
@@ -108,7 +106,6 @@ const typeDefs = gql`
     doctypeId: Int
     documentNumber: Int
     productType: String
-    crqNumber: String
     crqStatus: String
   }
 
@@ -122,7 +119,7 @@ const typeDefs = gql`
     productId: Int!
     preferredDate: String
     preferredTimePeriod: String
-    passedEstateId: String
+    passedEstateId: Int
     areaName: String
     nonCoveredEstateName: String
     streetName: String
