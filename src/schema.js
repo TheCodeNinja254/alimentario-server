@@ -81,11 +81,7 @@ const typeDefs = gql`
   type SingleLeadData {
     getLeadStatus: Boolean!
     message: String
-    firstName: String
-    lastName: String
-    estateName: String,
-    preferredDate: Date
-    preferredTimePeriod: String
+    leads: [Lead]
   }
 
   type Lead {
@@ -100,13 +96,13 @@ const typeDefs = gql`
     preferredDate: String
     preferredTimePeriod: String
     estateId: String
+    estateName: String
     areaName: String
     streetName: String
     houseNumber: String
     doctypeId: Int
     documentNumber: Int
     productType: String
-    crqStatus: String
   }
 
   input LeadDetails {

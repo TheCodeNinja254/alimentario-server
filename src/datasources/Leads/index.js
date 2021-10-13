@@ -168,13 +168,15 @@ class CustomersAPI extends RESTDataSource {
       logMessages(response, "checkLeadDetails", apiUrl);
       let getLeadStatus = false;
       if (responseCode === 200) {
-        const {
-            streetName,
-            preferredDate,
-            preferredTimePeriod,
-            firstName,
-            lastName,
-        } = response.body[0];
+        getLeadStatus = true;
+        const leads =
+            response.body &&
+            Array.isArray(response.body) &&
+            response.body.length > 0
+                ? response.body.map((lead) =>
+                    CustomersAPI.leadReducer(lead)
+                )
+                : [];
 
         Logger.log("info", "Success: ", {
           fullError: responseMessage,
@@ -183,16 +185,12 @@ class CustomersAPI extends RESTDataSource {
           customerMessage,
         });
 
-        getLeadStatus = true;
         return {
           getLeadStatus,
           message: "Lead retrieved successfully",
-          firstName,
-          lastName,
-          estateName: streetName,
-          preferredDate,
-          preferredTimePeriod,
+          leads,
         };
+
       } else if (responseCode === 404){
         const customerMessage = `Sorry, it seems like you have not made a request before. Use the form below to submit a request. `;
         Logger.log("error", "Error: ", {
@@ -241,7 +239,7 @@ class CustomersAPI extends RESTDataSource {
       emailAddress: lead.emailAddress,
       productId: lead.productId,
       preferredDate: lead.preferredDate,
-      preferredTimePeriod: lead.preferredDate,
+      preferredTimePeriod: lead.preferredTimePeriod,
       estateId: lead.estateId,
       streetName: lead.streetName,
       houseNumber: lead.houseNumber,
