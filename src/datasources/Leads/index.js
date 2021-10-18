@@ -6,6 +6,7 @@ const headersConfig = require("../../utils/headersConfig");
 const Logger = require("../../utils/logging");
 const GetOAuthToken = require("../Authentication");
 const moment = require("moment");
+const { decrypt } = require("../../utils/encryptDecrypt");
 
 const configValues = config.parsed;
 
@@ -39,6 +40,7 @@ class CustomersAPI extends RESTDataSource {
         sponsorAlternativeMsisdn,
         emailAddress,
         productId,
+        newEstateName,
         preferredDate,
         preferredTimePeriod,
         passedEstateId,
@@ -56,14 +58,15 @@ class CustomersAPI extends RESTDataSource {
     }
 
     const body = {
-      firstName,
+      firstName: decrypt(firstName),
       middleName: middleName || "",
       lastName,
-      sponsorMsisdn,
+      sponsorMsisdn: decrypt(sponsorMsisdn),
       sponsorOtherMsisdn: sponsorAlternativeMsisdn || "",
-      emailAddress: emailAddress,
+      emailAddress: decrypt(emailAddress),
       productId,
       regionId: 1,
+      newEstateName,
       productName: "",
       preferredDate: moment(preferredDate).format("YYYY-MM-DD"),
       preferredTimePeriod,
@@ -73,7 +76,7 @@ class CustomersAPI extends RESTDataSource {
       addOns
     };
 
-    console.log(body);
+    // console.log(body);
 
     try {
       const apiUrl = `${this.baseURL}/v1/xprome/leadRegistration`;
@@ -232,6 +235,7 @@ class CustomersAPI extends RESTDataSource {
     return {
       tId: lead.tId,
       firstName: lead.firstName,
+      estateName: lead.estateName,
       middleName: lead.middleName,
       lastName: lead.lastName,
       sponsorMsisdn: lead.sponsorMsisdn,
