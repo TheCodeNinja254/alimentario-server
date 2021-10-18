@@ -6,7 +6,7 @@ const headersConfig = require("../../utils/headersConfig");
 const Logger = require("../../utils/logging");
 const GetOAuthToken = require("../Authentication");
 const moment = require("moment");
-const { decrypt } = require("../../utils/encryptDecrypt");
+const { decrypt, encrypt} = require("../../utils/encryptDecrypt");
 
 const configValues = config.parsed;
 
@@ -158,7 +158,7 @@ class CustomersAPI extends RESTDataSource {
       // Now we can get list of estates
       const response = await this.get(
         apiUrl,
-        { msisdn: uniqueIdentity },
+        { msisdn: decrypt(uniqueIdentity) },
         {
           agent: new https.Agent({
             rejectUnauthorized: false,
@@ -234,24 +234,13 @@ class CustomersAPI extends RESTDataSource {
   static leadReducer(lead) {
     return {
       tId: lead.tId,
-      firstName: lead.firstName,
+      firstName: lead.firstName !== "" ? encrypt(lead.firstName): "",
       estateName: lead.estateName,
-      middleName: lead.middleName,
-      lastName: lead.lastName,
-      sponsorMsisdn: lead.sponsorMsisdn,
-      sponsorAlternativeMsisdn: lead.sponsorMsisdn,
-      emailAddress: lead.emailAddress,
-      productId: lead.productId,
       preferredDate: lead.preferredDate,
       preferredTimePeriod: lead.preferredTimePeriod,
       estateId: lead.estateId,
       streetName: lead.streetName,
       houseNumber: lead.houseNumber,
-      doctypeId: lead.doctypeId,
-      documentNumber: lead.documentNumber,
-      productType: lead.productType,
-      crqNumber: lead.crqNumber,
-      crqStatus: lead.crqStatus,
       areaName: lead.areaNAme,
     };
   }

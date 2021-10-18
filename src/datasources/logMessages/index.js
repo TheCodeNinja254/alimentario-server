@@ -12,7 +12,7 @@ const LogMessages = (response, callback, apiUrl, addedDetails = {}) => {
         message: "Request Successful",
         addedDetails,
         callback,
-        response, // Todo for debugging only
+        // response, // Todo for debugging only
         url: apiUrl,
       },
     );
