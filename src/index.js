@@ -80,7 +80,7 @@ const server = new ApolloServer({
     let ActualError = "";
     let CustomerMessage = "";
     FullError = err;
-    const excludedPaths = ['validateOTP'];
+    const excludedPaths = ['getRegions'];
     const { path, extensions: { response, exception } } = err;
     const ExtensionsStackTrace = exception;
     if (response) {

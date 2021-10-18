@@ -48,6 +48,18 @@
     "customerMessage": "Sorry we are experiencing a technical problem. Please try again later"
   },
   {
+    "technicalError": "401",
+    "customerMessage": "Sorry we are experiencing a technical problem. Please try again later"
+  },
+  {
+    "technicalError": "403",
+    "customerMessage": "Sorry we are experiencing a technical problem. Please try again later"
+  },
+  {
+    "technicalError": "429",
+    "customerMessage": "Sorry we are experiencing a technical problem. Please try again later"
+  },
+  {
     "technicalError": "502",
     "customerMessage": "Sorry we are experiencing a technical problem. Please try again later"
   },
@@ -73,7 +85,7 @@
   },
   {
     "technicalError": "No token found",
-    "customerMessage": "Sorry, we are experiencing a system issue, kindly try again later or reach us on Twitter @Safaricom_Care"
+    "customerMessage": "Sorry, we are experiencing a system issue, kindly try again later or write to us via FiberSalesGroup@Safaricom.co.ke"
   },  {
   "technicalError": "Details Mismatch",
   "customerMessage": "Sorry! Looks like we encountered an error validating your credentials. Please refresh this page."
