@@ -286,8 +286,10 @@ app.use(serve('./uploads'));
 app.use((ctx, next) => {
   // copy session to native Node's req object because GraphQL execution context doesn't have access to Koa's
   // context, see https://github.com/apollographql/apollo-server/issues/1551
-  ctx.set('Access-Control-Allow-Origin', 'http://172.29.227.243:5090/');
-  ctx.cookie = ctx.cookies;
+  ctx.set('Access-Control-Allow-Origin', 'http://172.29.227.243:5052/');
+  ctx.set('Access-Control-Allow-Methods', 'GET, PUT, POST');
+  ctx.set('X-XSS-Protection', '1; mode=block');
+  ctx.set('Content-Security-Policy', 'default-src');
   ctx.cookie = ctx.cookies;
   ctx.req.session = ctx.session;
   return next();

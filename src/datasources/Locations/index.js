@@ -28,54 +28,51 @@ class LocationsAPI extends RESTDataSource {
 
   // eslint-disable-next-line consistent-return
   async getRegions() {
-    // First we ensure the OAuth2 Token is set
     await this.getHomeToken();
     const { homeToken } = this.context.session;
     if (!homeToken) {
       throw new Error("No token found");
     }
 
-      const apiUrl = `${this.baseURL}/v1/xprome/get-lead-regions/all`;
-      const response = await this.get(
-        apiUrl,
-        {},
-        {
-          agent: new https.Agent({
-            rejectUnauthorized: false,
-          }),
-        }
-      );
-      const {
-        header: { responseCode, customerMessage },
-      } = response;
-      logMessages(response, "getRegions", apiUrl);
-      let getRegionsStatus = false;
-      if (responseCode === 200) {
-        getRegionsStatus = true;
-        const regions =
-          response.body &&
-          Array.isArray(response.body) &&
-          response.body.length > 0
-            ? response.body.map((region) =>
-                LocationsAPI.regionsReducer(region)
-              )
-            : [];
-        return {
-          getRegionsStatus,
-          regions,
-        };
-      } else {
-        Logger.log("error", "Error: ", {
-          fullError: response,
-          request: "getRegions",
-          technicalMessage: `Unable to get regions`,
-          customerMessage,
-        });
-        return {
-          getRegionsStatus,
-          customerMessage,
-        };
+    const apiUrl = `${this.baseURL}/v1/xprome/get-lead-regions/all`;
+    const response = await this.get(
+      apiUrl,
+      {},
+      {
+        agent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
       }
+    );
+    const {
+      header: { responseCode, customerMessage },
+    } = response;
+    logMessages(response, "getRegions", apiUrl);
+    let getRegionsStatus = false;
+    if (responseCode === 200) {
+      getRegionsStatus = true;
+      const regions =
+        response.body &&
+        Array.isArray(response.body) &&
+        response.body.length > 0
+          ? response.body.map((region) => LocationsAPI.regionsReducer(region))
+          : [];
+      return {
+        getRegionsStatus,
+        regions,
+      };
+    } else {
+      Logger.log("error", "Error: ", {
+        fullError: response,
+        request: "getRegions",
+        technicalMessage: `Unable to get regions`,
+        customerMessage,
+      });
+      return {
+        getRegionsStatus,
+        customerMessage,
+      };
+    }
   }
 
   // eslint-disable-next-line consistent-return
@@ -92,11 +89,16 @@ class LocationsAPI extends RESTDataSource {
     }
 
     try {
-      const apiUrl = `${this.baseURL}/v1/xprome/estates/${regionId}?pageSize=${pageSize}&pageNo=${pageNo}`;
+      const apiUrl = `${this.baseURL}/v1/xprome/estates`;
       // Now we can get list of estates
-      const response = await this.get(
+      const response = await this.post(
         apiUrl,
-        {},
+        // { pageNumber: pageNo, pageSize,  regionId },
+        {
+          pageNumber: 0,
+          pageSize,
+          regionId,
+        },
         {
           agent: new https.Agent({
             rejectUnauthorized: false,

@@ -40,6 +40,7 @@ class CustomersAPI extends RESTDataSource {
         sponsorAlternativeMsisdn,
         emailAddress,
         productId,
+        regionId,
         newEstateName,
         preferredDate,
         preferredTimePeriod,
@@ -65,7 +66,7 @@ class CustomersAPI extends RESTDataSource {
       sponsorOtherMsisdn: sponsorAlternativeMsisdn || "",
       emailAddress: decrypt(emailAddress),
       productId,
-      regionId: 1,
+      regionId,
       newEstateName,
       productName: "",
       preferredDate: moment(preferredDate).format("YYYY-MM-DD"),
@@ -76,7 +77,7 @@ class CustomersAPI extends RESTDataSource {
       addOns
     };
 
-    // console.log(body);
+    console.log(body);
 
     try {
       const apiUrl = `${this.baseURL}/v1/xprome/leadRegistration`;
@@ -156,7 +157,7 @@ class CustomersAPI extends RESTDataSource {
     try {
       const apiUrl = `${this.baseURL}/v1/xprome/getLead`;
       // Now we can get list of estates
-      const response = await this.get(
+      const response = await this.post(
         apiUrl,
         { msisdn: decrypt(uniqueIdentity) },
         {

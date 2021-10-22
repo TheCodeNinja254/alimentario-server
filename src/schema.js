@@ -117,6 +117,7 @@ const typeDefs = gql`
     preferredTimePeriod: String
     passedEstateId: Int
     areaName: String
+    regionId: Int
     newEstateName: String
     streetName: String
     houseNumber: String
