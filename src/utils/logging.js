@@ -54,7 +54,7 @@ const timezoned = () => new Date().toLocaleString('en-US', {
 });
 
 const logFormat = printf(({ level, message, ...meta }) => (`${logStringBuilder(meta, message, level)}`));
-const logFilePath = '/opt/discorvery/server/logs/FTTX-discorvery-portal-%DATE%.log';
+const logFilePath = '/opt/discovery/server/logs/FTTX-discorvery-portal-%DATE%.log';
 
 const logger = createLogger({
   transports: [

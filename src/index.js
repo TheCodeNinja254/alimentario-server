@@ -302,7 +302,7 @@ server.applyMiddleware({ app, path: '/discovery' });
 // Localhost Version
 const http = app.listen({ port: configValues.SERVER_PORT || 5052 }, () => {
   // eslint-disable-next-line no-console
-  console.log(`🚀 Server ready at http://localhost:${configValues.SERVER_PORT || 5052}${server.graphqlPath}`);
+  console.log(`🚀 Server ready at https://internet.safaricom.co.ke:${configValues.SERVER_PORT || 5052}${server.graphqlPath}`);
 });
 
 module.exports = http;
