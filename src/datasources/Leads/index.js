@@ -20,6 +20,7 @@ class CustomersAPI extends RESTDataSource {
 
   willSendRequest(request) {
     request.accessToken = this.context.session.homeToken.accessToken;
+    request.msisdn = this.msisdn;
     headersConfig.prototype.leadHeaders(request);
   }
 
@@ -77,7 +78,7 @@ class CustomersAPI extends RESTDataSource {
       addOns
     };
 
-    console.log(body);
+    this.msisdn = decrypt(sponsorMsisdn)
 
     try {
       const apiUrl = `${this.baseURL}/v1/xprome/leadRegistration`;
@@ -153,6 +154,8 @@ class CustomersAPI extends RESTDataSource {
     if (!homeToken) {
       throw new Error(this.noTokenError);
     }
+
+    this.msisdn = decrypt(uniqueIdentity);
 
     try {
       const apiUrl = `${this.baseURL}/v1/xprome/getLead`;

@@ -56,7 +56,7 @@ class HeadersConfig {
       "X-Source-System": "web-portal",
       "X-App": "web-portal",
       "X-MessageID": "v7I5m/coazTYvz7gzXt1Hg|eKJEoNjhNNlurtAFScipaw|4EzkycIrr5VezD6x3Eyess",
-      "X-Msisdn": "0110100606",
+      "X-Msisdn": request.msisdn,
     };
 
     // Add common headers
