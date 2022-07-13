@@ -1,4 +1,4 @@
-CREATE TABLE tbl_users
+CREATE TABLE IF NOT EXISTS tbl_users
 (
 	user_id INT AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE tbl_users
     UNIQUE(username)
 );
 
-CREATE  TABLE tbl_customers (
+CREATE TABLE IF NOT EXISTS tbl_customers (
     customer_id INT AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     first_name VARCHAR(30) NULL,
@@ -40,7 +40,7 @@ CREATE  TABLE tbl_customers (
 );
 
 
-CREATE  TABLE tbl_wholesale_businesses (
+CREATE TABLE IF NOT EXISTS tbl_wholesale_businesses (
     business_id INT AUTO_INCREMENT,
     business_name VARCHAR(255) NOT NULL,
     business_location VARCHAR(30) NULL,
@@ -57,7 +57,7 @@ CREATE  TABLE tbl_wholesale_businesses (
     UNIQUE(business_name)
 );
 
-CREATE TABLE tbl_products
+CREATE TABLE IF NOT EXISTS tbl_products
 (
 	product_id INT AUTO_INCREMENT,
     product_name VARCHAR(255) NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE tbl_products
     FOREIGN KEY(product_storage_facility_id) REFERENCES tbl_storage_facilities(facility_id)
 );
 
-CREATE TABLE tbl_storage_facilities
+CREATE TABLE IF NOT EXISTS tbl_storage_facilities
 (
 	facility_id INT AUTO_INCREMENT,
     facility_name VARCHAR(255) NOT NULL,
