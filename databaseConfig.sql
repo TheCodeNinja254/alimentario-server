@@ -102,3 +102,22 @@ CREATE TABLE IF NOT EXISTS tbl_storage_facilities
     PRIMARY KEY(facility_id),
     UNIQUE(facility_name)
 );
+
+CREATE TABLE IF NOT EXISTS tbl_gallery_photos
+(
+	photo_id INT AUTO_INCREMENT,
+    photo_uri VARCHAR(255) NOT NULL,
+    photo_description VARCHAR(255) NULL,
+    photo_name VARCHAR(255) NULL,
+    photo_preferred_location VARCHAR(50) NULL,
+    photo_tag VARCHAR(50) NULL,
+    photo_by VARCHAR(50) NULL,
+    added_by VARCHAR(50) NOT NULL,
+    updated_by VARCHAR(50) NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(photo_id),
+    UNIQUE(photo_uri)
+);
+
+
