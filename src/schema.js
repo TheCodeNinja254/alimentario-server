@@ -5,21 +5,19 @@ const typeDefs = gql`
 
   type Query {
     getRegions: RegionsData
-    getEstates(
-      regionId: Int!
-      pageSize: Int
-      pageNo: Int
-    ): EstatesData
+    getEstates(regionId: Int!, pageSize: Int, pageNo: Int): EstatesData
   }
 
   type Mutation {
     createLead(input: LeadDetails!): createLeadResult!
+    userAuthentication(email: String!, password: String!): Result!
     checkLeadDetails(input: LeadCheckData!): SingleLeadData
   }
 
   type Result {
     status: Boolean!
     message: String!
+    role: String
   }
 
   type createLeadResult {

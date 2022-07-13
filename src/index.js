@@ -21,7 +21,7 @@ const configurations = configValues.NODE_ENV === 'production'
     : require('../configs/development');
 
 const LocationsAPI = require("./datasources/Locations");
-const CustomersAPI = require("./datasources/Leads");
+const CustomerAuthentication = require("./datasources/Authentication/Login");
 
 const server = new ApolloServer({
   typeDefs,
@@ -71,7 +71,7 @@ const server = new ApolloServer({
   },
   dataSources: () => ({
     location: new LocationsAPI(),
-    lead: new CustomersAPI(),
+    customerAuthentication: new CustomerAuthentication(),
   }),
   formatError: (err) => {
     // error variables override and redefine them everytime errors fallback here

@@ -24,7 +24,7 @@ module.exports = {
       dataSources.location.getEstates(args),
   },
   Mutation: {
-    createLead: (_, args, { dataSources }) => dataSources.lead.createLead(args),
+    userAuthentication: (_, args, { dataSources }) => dataSources.customerAuthentication.userAuthentication(args),
     checkLeadDetails: (_, args, { dataSources }) =>
       dataSources.lead.checkLeadDetails(args),
   },
