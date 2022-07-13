@@ -1,19 +1,11 @@
 [
   {
     "technicalError": "Full rental entrusted payment is configured for the subscriber.",
-    "customerMessage": "Sorry. We couldn't complete this transaction. Please contact @Safaricom_Care on Twitter."
+    "customerMessage": "Sorry. We couldn't complete this transaction. Please contact @Desafio_Alimentario_Care on Twitter."
   },
   {
     "technicalError": "Invalid request, missing fields",
     "customerMessage": "Please enter a valid amount"
-  },
-  {
-    "technicalError": "Credit Limit quota is not enough.",
-    "customerMessage": "Operation not successful due to insufficient credit limit. Please top up or select an amount within the credit limit."
-  },
-  {
-    "technicalError": "The account balance is insufficient.",
-    "customerMessage": "Operation not successful due to insufficient airtime limit. Please top up or select an amount within the airtime limit."
   },
   {
     "technicalError": "ECONNREFUSED",
@@ -25,7 +17,7 @@
   },
   {
     "technicalError": "ETIMEDOUT",
-    "customerMessage": "The operation has timed out. Please try again or contact @Safaricom_Care on Twitter."
+    "customerMessage": "The operation has timed out. Please try again or contact @Desafio_Alimentario_Care on Twitter."
   },
   {
     "technicalError": "ENOTFOUND",
@@ -80,20 +72,9 @@
     "customerMessage": "Sorry! Looks like we encountered a technical error retrieving your number. Please refresh this page."
   },
   {
-    "technicalError": "This phone number is not registered in any of Safaricom's Application",
-    "customerMessage": "Your phone number is not registered in any of Safaricom's Applications"
-  },
-  {
-    "technicalError": "No token found",
-    "customerMessage": "Sorry, we are experiencing a system issue, kindly try again later or write to us via FiberSalesGroup@Safaricom.co.ke"
-  },  {
   "technicalError": "Details Mismatch",
   "customerMessage": "Sorry! Looks like we encountered an error validating your credentials. Please refresh this page."
 },
-  {
-    "technicalError": "Customer does not have any any home product",
-    "customerMessage": "Hmm! Seems you do not have any home product."
-  },
   {
     "technicalError": "Context creation failed: Oops! You are not authorised to access this server",
     "customerMessage": "Sorry, you are not allowed to access this page"

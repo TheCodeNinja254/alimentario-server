@@ -286,7 +286,6 @@ app.use(serve('./uploads'));
 app.use((ctx, next) => {
   // copy session to native Node's req object because GraphQL execution context doesn't have access to Koa's
   // context, see https://github.com/apollographql/apollo-server/issues/1551
-  ctx.set('Access-Control-Allow-Origin', 'http://172.29.227.243:5052/');
   ctx.set('Access-Control-Allow-Methods', 'GET, PUT, POST');
   ctx.set('X-XSS-Protection', '1; mode=block');
   ctx.set('Content-Security-Policy', 'default-src');
@@ -302,7 +301,7 @@ server.applyMiddleware({ app, path: '/discovery' });
 // Localhost Version
 const http = app.listen({ port: configValues.SERVER_PORT || 5052 }, () => {
   // eslint-disable-next-line no-console
-  console.log(`🚀 Server ready at https://internet.safaricom.co.ke:${configValues.SERVER_PORT || 5052}${server.graphqlPath}`);
+  console.log(`🚀 Server ready at http://desafio.co.ke:${configValues.SERVER_PORT || 5052}${server.graphqlPath}`);
 });
 
 module.exports = http;
