@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS tbl_products
     product_pic_2 VARCHAR(50) NULL,
     product_pic_3 VARCHAR(50) NULL,
     product_pic_4 VARCHAR(50) NULL,
+    product_unit_of_measure VARCHAR(50) NOT NULL,
     product_instructions_link VARCHAR(255) NULL,
     product_video_link VARCHAR(255) NULL,
     stock_status INT NOT NULL,
@@ -118,6 +119,75 @@ CREATE TABLE IF NOT EXISTS tbl_gallery_photos
   	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(photo_id),
     UNIQUE(photo_uri)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_orders
+(
+	order_id INT AUTO_INCREMENT,
+    payment_method VARCHAR(255) NULL,
+    payment_id VARCHAR(255) NULL,
+    amount_due INT NOT NULL,
+    delivery_preference VARCHAR(50) NULL,
+    delivery_location VARCHAR(50) NULL,
+    delivery_precise_location VARCHAR(50) NULL,
+    additional_delivery_notes VARCHAR(255) NULL,
+    alternative_msisdn VARCHAR(50) NULL,
+    order_status VARCHAR(50) DEFAULT "NEW",
+    order_type VARCHAR(50) DEFAULT "Retail"
+    added_by VARCHAR(50) NOT NULL,
+    updated_by VARCHAR(50) NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(order_id)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_payments
+(
+	payment_id INT AUTO_INCREMENT,
+    payment_method VARCHAR(255) NULL,
+    amount_paid INT NOT NULL,
+    order_id INT NOT NULL,
+    transaction_id INT NOT NULL,
+    order_type VARCHAR(50) NOT NULL,
+    added_by VARCHAR(50) NOT NULL,
+    updated_by VARCHAR(50) NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(payment_id)
+    CONSTRAINT fk_transaction_id
+    FOREIGN KEY(transaction_id) REFERENCES tbl_transactions(transaction_id)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_transactions
+(
+	transaction_id INT AUTO_INCREMENT,
+	transaction_originator_id VARCHAR(100) NOT NULL,
+    transaction_type VARCHAR(255) NULL,
+    amount_paid INT NOT NULL,
+    added_by VARCHAR(50) NOT NULL,
+    updated_by VARCHAR(50) NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(transaction_id),
+    UNIQUE(transaction_originator_id)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_order_specification
+(
+	order_specification_id INT AUTO_INCREMENT,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    product_qty INT NULL,
+    order_specification INT NULL,
+    added_by VARCHAR(50) NOT NULL,
+    updated_by VARCHAR(50) NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(order_specification_id),
+    CONSTRAINT fk_tbl_order_id
+    FOREIGN KEY(order_id) REFERENCES tbl_retail_orders(order_id),
+    CONSTRAINT fk_product_id
+    FOREIGN KEY(product_id) REFERENCES tbl_products(product_id)
 );
 
 
