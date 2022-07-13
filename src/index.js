@@ -294,7 +294,7 @@ app.use((ctx, next) => {
   return next();
 });
 
-server.applyMiddleware({ app, path: '/discovery' });
+server.applyMiddleware({ app, path: '/desafio-api' });
 
 
 
