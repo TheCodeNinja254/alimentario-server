@@ -43,18 +43,48 @@ CREATE TABLE IF NOT EXISTS tbl_customers (
 CREATE TABLE IF NOT EXISTS tbl_wholesale_businesses (
     business_id INT AUTO_INCREMENT,
     business_name VARCHAR(255) NOT NULL,
-    business_location VARCHAR(30) NULL,
+    registered_address VARCHAR(255) NULL,
     business_location_lat VARCHAR(30) NULL,
     business_location_long VARCHAR(30) NULL,
     business_type VARCHAR(30) NULL,
-    status INT DEFAULT 1,
+    registration_number VARCHAR(255) NOT NULL,
+    registration_certificate_uri VARCHAR(255) NULL,
+    cr12_upload_uri VARCHAR(255) NULL,
+    business_status INT DEFAULT 1,
     primary_email_address VARCHAR(100) NULL,
+    primary_contact VARCHAR(255) NOT NULL,
+    business_website VARCHAR(255) NULL,
+    kra_pin VARCHAR(30) NULL,
+    kra_pin_upload_uri VARCHAR(255) NULL,
+    current_business_permit_uri VARCHAR(255) NULL,
+    preferred_credit_period VARCHAR(30) NULL,
     added_by VARCHAR(30) NOT NULL,
     updated_at VARCHAR(30) NOT NULL,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(business_id),
     UNIQUE(business_name)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_bs_shareholders_directors (
+    id INT AUTO_INCREMENT,
+    business_id INT NOT NULL,
+    member_name VARCHAR(255) NOT NULL,
+    member_type VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_business_id
+    FOREIGN KEY(business_id) REFERENCES tbl_wholesale_businesses(business_id)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_business_contact_persons (
+    id INT AUTO_INCREMENT,
+    business_id INT NOT NULL,
+    member_name VARCHAR(255) NOT NULL,
+    msisdn VARCHAR(30) NULL,
+    email_address VARCHAR(255) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_business_id_for_contacts
+    FOREIGN KEY(business_id) REFERENCES tbl_wholesale_businesses(business_id)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_products
@@ -131,8 +161,8 @@ CREATE TABLE IF NOT EXISTS tbl_orders
     delivery_precise_location VARCHAR(50) NULL,
     additional_delivery_notes VARCHAR(255) NULL,
     alternative_msisdn VARCHAR(50) NULL,
-    order_status VARCHAR(50) DEFAULT "NEW",
-    order_type VARCHAR(50) DEFAULT "Retail"
+    order_status VARCHAR(50) DEFAULT 'NEW',
+    order_type VARCHAR(50) DEFAULT 'Retail',
     added_by VARCHAR(50) NOT NULL,
     updated_by VARCHAR(50) NULL,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -152,8 +182,8 @@ CREATE TABLE IF NOT EXISTS tbl_standing_orders
     alternative_msisdn VARCHAR(50) NULL,
     order_commencement_date VARCHAR(50) NOT NULL,
     order_cycle VARCHAR(255) NOT NULL,
-    order_status VARCHAR(50) DEFAULT "NEW",
-    order_type VARCHAR(50) DEFAULT "Wholesale"
+    order_status VARCHAR(50) DEFAULT 'NEW',
+    order_type VARCHAR(50) DEFAULT 'Wholesale',
     added_by VARCHAR(50) NOT NULL,
     updated_by VARCHAR(50) NULL,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -173,7 +203,7 @@ CREATE TABLE IF NOT EXISTS tbl_payments
     updated_by VARCHAR(50) NULL,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY(payment_id)
+    PRIMARY KEY(payment_id),
     CONSTRAINT fk_transaction_id
     FOREIGN KEY(transaction_id) REFERENCES tbl_transactions(transaction_id)
 );
@@ -205,9 +235,7 @@ CREATE TABLE IF NOT EXISTS tbl_order_specification
   	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(order_specification_id),
     CONSTRAINT fk_tbl_order_id
-    FOREIGN KEY(order_id) REFERENCES tbl_retail_orders(order_id),
+    FOREIGN KEY(order_id) REFERENCES tbl_orders(order_id),
     CONSTRAINT fk_product_id
     FOREIGN KEY(product_id) REFERENCES tbl_products(product_id)
 );
-
-
