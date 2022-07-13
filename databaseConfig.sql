@@ -124,7 +124,6 @@ CREATE TABLE IF NOT EXISTS tbl_gallery_photos
 CREATE TABLE IF NOT EXISTS tbl_orders
 (
 	order_id INT AUTO_INCREMENT,
-    payment_method VARCHAR(255) NULL,
     payment_id VARCHAR(255) NULL,
     amount_due INT NOT NULL,
     delivery_preference VARCHAR(50) NULL,
@@ -139,6 +138,27 @@ CREATE TABLE IF NOT EXISTS tbl_orders
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(order_id)
+);
+
+CREATE TABLE IF NOT EXISTS tbl_standing_orders
+(
+	standing_order_id INT AUTO_INCREMENT,
+    payment_id VARCHAR(255) NULL,
+    amount_due INT NOT NULL,
+    delivery_preference VARCHAR(50) NULL,
+    delivery_location VARCHAR(50) NULL,
+    delivery_precise_location VARCHAR(50) NULL,
+    additional_delivery_notes VARCHAR(255) NULL,
+    alternative_msisdn VARCHAR(50) NULL,
+    order_commencement_date VARCHAR(50) NOT NULL,
+    order_cycle VARCHAR(255) NOT NULL,
+    order_status VARCHAR(50) DEFAULT "NEW",
+    order_type VARCHAR(50) DEFAULT "Wholesale"
+    added_by VARCHAR(50) NOT NULL,
+    updated_by VARCHAR(50) NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(standing_order_id)
 );
 
 CREATE TABLE IF NOT EXISTS tbl_payments
