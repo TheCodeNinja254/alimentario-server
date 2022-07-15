@@ -25,6 +25,8 @@ module.exports = sequelize.define("BusinessContactPerson", {
     updatedBy: Sequelize.STRING(30),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE,
+}, {
+    tableName: 'business_contact_persons'
 });
 
 // sequelize migration:create --name create_business_contact_persons_table

@@ -47,6 +47,8 @@ module.exports = sequelize.define("Customer", {
     updatedBy: Sequelize.STRING(30),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE,
+}, {
+    tableName: 'customers'
 });
 
 // sequelize migration:create --name create_customers_table

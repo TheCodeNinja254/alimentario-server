@@ -31,6 +31,8 @@ module.exports = sequelize.define("GalleryPhoto", {
   updatedBy: Sequelize.STRING(30),
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
+}, {
+  tableName: 'gallery_photos'
 });
 
 // sequelize migration:create --name create_gallery_photos_table
