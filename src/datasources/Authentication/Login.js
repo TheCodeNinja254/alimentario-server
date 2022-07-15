@@ -1,7 +1,6 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
 const User = require("../../models/User");
-const Product = require("../../models/Product");
 
 class UserAuthentication extends RESTDataSource {
   constructor() {
@@ -16,21 +15,35 @@ class UserAuthentication extends RESTDataSource {
   //   return homeToken.expirationTime > Date.now();
   // }
 
-  async userAuthentication(args) {
+  async customerAuthentication(args) {
     // const { username, password } = args;
     const username = "m.mwangi.fredrick";
     const password = "trial";
 
-    await connection.connect();
     try {
-// add
-      const user = await User.create({
-        username: "fredrick"
-      })
+      const customer = await User.findOne({
+        where: {
+          username,
+          password,
+        },
+      });
 
-      // join || union
-      User.findAll({where: {username: "fredrick"}, include: [{model: Product, as: "Products" }]})
+      console.log(customer);
 
+      if (!customer) {
+        return {
+          status: false,
+          message:
+            "Invalid credentials. Please provide valid credentials to continue.",
+          role: "",
+        };
+      }
+
+      return {
+        status: true,
+        message: customer.firstName,
+        role: "",
+      };
     } catch (e) {
       Logger.log("error", "Error: ", {
         fullError: e,

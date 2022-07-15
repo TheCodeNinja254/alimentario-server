@@ -1,9 +1,10 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../Database/connection");
 
-/*
+/**
  * The model upon migrations will create the plural of the User definition
  * i.e User will be users.
+ *
  * */
 
 module.exports = sequelize.define(
