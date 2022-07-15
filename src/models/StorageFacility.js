@@ -3,13 +3,13 @@ const sequelize = require("../Database/connection");
 
 module.exports = sequelize.define("StorageFacility", {
   id: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true,
   },
   facilityName: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
     allowNull: false,
     unique: true,
   },
@@ -35,10 +35,10 @@ module.exports = sequelize.define("StorageFacility", {
     type: Sequelize.DATE,
   },
   facilityCapacity: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
   },
   facilityCurrentStatus: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
   },
   addedBy: {
     type: Sequelize.STRING(30),

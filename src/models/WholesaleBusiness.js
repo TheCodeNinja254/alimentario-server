@@ -3,7 +3,7 @@ const sequelize = require("../Database/connection");
 
 module.exports = sequelize.define("WholesaleBusiness", {
     id: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
@@ -37,7 +37,7 @@ module.exports = sequelize.define("WholesaleBusiness", {
         type: Sequelize.STRING(255),
     },
     businessStatus: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
     },
     primaryEmailAddress: {
         type: Sequelize.STRING(100),

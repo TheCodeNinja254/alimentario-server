@@ -3,13 +3,13 @@ const sequelize = require("../Database/connection");
 
 module.exports = sequelize.define("BusinessContactPerson", {
     id: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
     businessId: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         allowNull: false,
     },
     memberName: {

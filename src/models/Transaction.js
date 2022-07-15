@@ -1,30 +1,27 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../Database/connection");
 
-module.exports = sequelize.define("Payment", {
+module.exports = sequelize.define("Transaction", {
     id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
-    paymentMethod: {
+    transactionOriginatorId: { // card payment id, mpesa payment id, cash generated id
         type: Sequelize.STRING(50),
+        allowNull: false,
+    },
+    transactionType: { // cash, card, credit, M-PESA, other
+        type: Sequelize.STRING(30),
         allowNull: false,
     },
     amountPaid: {
         type: Sequelize.INTEGER,
-        allowNull: false,
     },
-    orderId: {
-        type: Sequelize.INTEGER,
-    },
-    transactionId: {
-        type: Sequelize.INTEGER,
-    },
-    orderType: {
-        type: Sequelize.STRING(30),
-        defaultValue: "Single", // enum: Single || Standing Order
+    currency: {
+        type: Sequelize.STRING(11),
+        defaultValue: "Ksh",
     },
     addedBy: {
         type: Sequelize.STRING(30),
@@ -34,4 +31,4 @@ module.exports = sequelize.define("Payment", {
     updatedAt: Sequelize.DATE,
 });
 
-// sequelize migration:create --name create_payments_table
+// sequelize migration:create --name create_transactions_table

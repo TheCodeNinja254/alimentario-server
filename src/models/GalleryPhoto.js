@@ -3,13 +3,13 @@ const sequelize = require("../Database/connection");
 
 module.exports = sequelize.define("GalleryPhoto", {
   id: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true,
   },
   photoUri: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
     allowNull: false,
     unique: true,
   },

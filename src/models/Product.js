@@ -3,7 +3,7 @@ const sequelize = require("../Database/connection");
 
 module.exports = sequelize.define("Product", {
   id: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true,
@@ -43,13 +43,13 @@ module.exports = sequelize.define("Product", {
     type: Sequelize.STRING(255),
   },
   productStatus: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
   },
   expiryDate: {
     type: Sequelize.DATE,
   },
   productStorageFacility: {
-    type: Sequelize.INTEGER(11),
+    type: Sequelize.INTEGER,
   },
   addedBy: Sequelize.STRING(30),
   updatedBy: Sequelize.STRING(30),

@@ -3,17 +3,17 @@ const sequelize = require("../Database/connection");
 
 module.exports = sequelize.define("StandingOrder", {
     id: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
     paymentId: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         allowNull: false,
     },
     amountDue: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         allowNull: false,
     },
     deliveryPreference: {
