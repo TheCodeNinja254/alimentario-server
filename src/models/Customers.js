@@ -1,12 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../Database/connection");
 
-/*
-* The model upon migrations will create the plural of the User definition
-* i.e User will be users.
-* */
-
-module.exports = sequelize.define("User", {
+module.exports = sequelize.define("Customer", {
     id: {
         type: Sequelize.INTEGER(11),
         allowNull: false,
@@ -31,10 +26,10 @@ module.exports = sequelize.define("User", {
     msisdn: {
         type: Sequelize.STRING(30),
     },
-    userRole: {
-        type: Sequelize.STRING(30),
-    },
     status: {
+        type: Sequelize.INTEGER(11),
+    },
+    businessId: {
         type: Sequelize.INTEGER(11),
     },
     emailAddress: {
@@ -49,11 +44,10 @@ module.exports = sequelize.define("User", {
     verificationTime: {
         type: Sequelize.DATE,
     },
-    addedBy: Sequelize.STRING(30),
     updatedBy: Sequelize.STRING(30),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE,
 });
 
-// sequelize migration:create --name create_users_table
+// sequelize migration:create --name create_customers_table
 
