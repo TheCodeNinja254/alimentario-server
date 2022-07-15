@@ -1,7 +1,10 @@
 const { createLogger, format } = require("winston");
 const DailyLog = require("winston-daily-rotate-file");
+const config = require("dotenv").config();
 const _ = require("lodash");
 const getTimeStamp = require("./getTimestamp");
+
+const configValues = config.parsed;
 
 const { combine, timestamp, label, printf } = format;
 
@@ -54,7 +57,7 @@ const logStringBuilder = (meta, message, level) => {
 
 const timezoned = () =>
   new Date().toLocaleString("en-US", {
-    timeZone: "Africa/Nairobi",
+    timeZone: configValues.TIME_ZONE,
   });
 
 const logFormat = printf(
