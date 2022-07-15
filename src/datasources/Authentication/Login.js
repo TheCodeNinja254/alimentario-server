@@ -17,15 +17,24 @@ class UserAuthentication extends RESTDataSource {
   // }
 
   async customerAuthentication(args) {
-    // const { username, password } = args;
-    const username = "m.mwangi.fredrick";
-    const password = "trial";
+    const { email, password } = args;
 
     try {
       const customer = await Customer.findOne({
+        attributes: [
+          `id`,
+          `firstName`,
+          `lastName`,
+          `msisdn`,
+          `status`,
+          `businessId`,
+          `emailAddress`,
+          `verificationStatus`,
+        ],
         where: {
-          username,
+          username: email,
           password,
+          status: 1,
         },
       });
 
@@ -34,14 +43,29 @@ class UserAuthentication extends RESTDataSource {
           status: false,
           message:
             "Invalid credentials. Please provide valid credentials to continue.",
-          role: "",
         };
       }
+
+      const {
+        firstName,
+        lastName,
+        msisdn,
+        businessId,
+        emailAddress,
+        verificationStatus,
+      } = customer;
 
       return {
         status: true,
         message: customer.firstName,
-        role: "",
+        username: email,
+        firstName,
+        lastName,
+        msisdn,
+        customerStatus: customer.status,
+        businessId,
+        emailAddress,
+        verificationStatus,
       };
     } catch (e) {
       Logger.log("error", "Error: ", {
@@ -49,7 +73,8 @@ class UserAuthentication extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. " +
+          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

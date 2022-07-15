@@ -10,7 +10,10 @@ const typeDefs = gql`
 
   type Mutation {
     createLead(input: LeadDetails!): createLeadResult!
-    customerAuthentication(email: String!, password: String!): Result!
+    customerAuthentication(
+      email: String!
+      password: String!
+    ): CustomerLoginResponse!
     checkLeadDetails(input: LeadCheckData!): SingleLeadData
   }
 
@@ -18,6 +21,19 @@ const typeDefs = gql`
     status: Boolean!
     message: String!
     role: String
+  }
+
+  type CustomerLoginResponse {
+    status: Boolean!
+    message: String!
+    username: String
+    firstName: String
+    lastName: String
+    msisdn: String
+    customerStatus: String
+    businessId: String
+    emailAddress: String
+    verificationStatus: String
   }
 
   type createLeadResult {
