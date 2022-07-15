@@ -3,6 +3,7 @@ const Logger = require("../../utils/logging");
 const Customer = require("../../models/Customer");
 
 class UserAuthentication extends RESTDataSource {
+  // eslint-disable-next-line no-useless-constructor
   constructor() {
     super();
   }
@@ -27,8 +28,6 @@ class UserAuthentication extends RESTDataSource {
           password,
         },
       });
-
-      console.log(customer);
 
       if (!customer) {
         return {

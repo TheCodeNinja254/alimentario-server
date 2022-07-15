@@ -1,8 +1,7 @@
-"use strict";
-
 const Sequelize = require("sequelize");
+
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     /**
      * Add altering commands here.
      *
@@ -66,7 +65,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     /**
      * Add reverting commands here.
      *
