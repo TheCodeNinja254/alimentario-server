@@ -63,8 +63,7 @@ const timezoned = () =>
 const logFormat = printf(
   ({ level, message, ...meta }) => `${logStringBuilder(meta, message, level)}`
 );
-const logFilePath =
-  "/opt/alimentario/server/logs/Server-DesafioA-portal-%DATE%.log";
+const logFilePath = `${configValues.LOG_DIRECTORY}/server-portal-logs-%DATE%.log`;
 
 const logger = createLogger({
   transports: [
@@ -74,7 +73,7 @@ const logger = createLogger({
     }),
   ],
   format: combine(
-    label({ label: "Desafio Alimentario App" }),
+    label({ label: configValues.LOG_LABEL }),
     timestamp({
       format: timezoned,
     }),
