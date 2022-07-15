@@ -27,5 +27,5 @@ module.exports = sequelize.define("BusinessContactPerson", {
     updatedAt: Sequelize.DATE,
 });
 
-// sequelize migration:create --name create_shareholders_directors_table
+// sequelize migration:create --name create_business_contact_persons_table
 
