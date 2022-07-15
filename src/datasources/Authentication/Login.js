@@ -1,7 +1,7 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
-const User = require("../../models/Users");
-const Product = require("../../models/Products");
+const User = require("../../models/User");
+const Product = require("../../models/Product");
 
 class UserAuthentication extends RESTDataSource {
   constructor() {
