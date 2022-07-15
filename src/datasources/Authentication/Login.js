@@ -39,6 +39,13 @@ class UserAuthentication extends RESTDataSource {
       });
 
       if (!customer) {
+        Logger.log("error", "Error: ", {
+          fullError: "Login failed",
+          customError: "Login failed",
+          actualError: "Login failed, invalid credentials",
+          customerMessage:
+            "Invalid credentials. Please provide valid credentials to continue.",
+        });
         return {
           status: false,
           message:
