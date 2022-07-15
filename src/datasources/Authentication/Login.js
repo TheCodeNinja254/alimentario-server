@@ -1,6 +1,6 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
-const User = require("../../models/User");
+const Customer = require("../../models/Customer");
 
 class UserAuthentication extends RESTDataSource {
   constructor() {
@@ -21,7 +21,7 @@ class UserAuthentication extends RESTDataSource {
     const password = "trial";
 
     try {
-      const customer = await User.findOne({
+      const customer = await Customer.findOne({
         where: {
           username,
           password,
