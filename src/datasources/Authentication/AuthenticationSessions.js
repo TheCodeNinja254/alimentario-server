@@ -35,13 +35,17 @@ class AuthenticationSessions extends RESTDataSource {
     const {
       customerDetails: { username },
     } = this.context?.session;
+
     try {
       const { customerDetails } = this.context?.session;
+      const { associatedBusiness } = this.context?.session?.customerDetails;
 
       return {
         status: true,
         customer:
           AuthenticationSessions.customerSessionReducer(customerDetails),
+        business:
+          AuthenticationSessions.associatedBusinessReducer(associatedBusiness),
       };
     } catch (e) {
       /*
@@ -123,6 +127,19 @@ class AuthenticationSessions extends RESTDataSource {
 
       return sessionData;
     }
+  }
+
+  static associatedBusinessReducer(wholesaleBusiness) {
+    return {
+      businessName: wholesaleBusiness.businessName,
+      registeredAddress: wholesaleBusiness.registeredAddress,
+      businessLocationLatitude: wholesaleBusiness.businessLocationLatitude,
+      businessLocationLongitude: wholesaleBusiness.businessLocationLongitude,
+      businessType: wholesaleBusiness.businessType,
+      primaryEmailAddress: wholesaleBusiness.primaryEmailAddress,
+      primaryContact: wholesaleBusiness.primaryContact,
+      preferredCreditPeriod: wholesaleBusiness.preferredCreditPeriod,
+    };
   }
 
   static customerSessionReducer(customerDetails) {

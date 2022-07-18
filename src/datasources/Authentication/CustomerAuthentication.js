@@ -38,7 +38,10 @@ class CustomerAuthentication extends RESTDataSource {
         },
         include: {
           model: WholesaleBusiness,
-          required: true,
+          required: false,
+          where: {
+            businessStatus: 1,
+          },
         },
       });
 
@@ -71,6 +74,17 @@ class CustomerAuthentication extends RESTDataSource {
         verificationStatus,
       } = customer;
 
+      const {
+        businessName,
+        registeredAddress,
+        businessLocationLatitude,
+        businessLocationLongitude,
+        businessType,
+        primaryEmailAddress,
+        primaryContact,
+        preferredCreditPeriod,
+      } = customer.WholesaleBusiness;
+
       /*
        * Create a @bearerToken for the loggedIn user.
        * This will be stored in the InMemmory cache, Redis. The token is to be invalidated upon logout.
@@ -97,6 +111,16 @@ class CustomerAuthentication extends RESTDataSource {
         emailAddress,
         verificationStatus,
         bearerToken,
+        associatedBusiness: {
+          businessName,
+          registeredAddress,
+          businessLocationLatitude,
+          businessLocationLongitude,
+          businessType,
+          primaryEmailAddress,
+          primaryContact,
+          preferredCreditPeriod,
+        },
       };
 
       /*
@@ -107,12 +131,22 @@ class CustomerAuthentication extends RESTDataSource {
         message: customer.firstName,
         username: email,
         firstName,
-        lastName: customer.WholesaleBusiness.businessName,
+        lastName,
         msisdn,
         customerStatus: customer.status,
         businessId,
         emailAddress,
         verificationStatus,
+        associatedBusiness: {
+          businessName,
+          registeredAddress,
+          businessLocationLatitude,
+          businessLocationLongitude,
+          businessType,
+          primaryEmailAddress,
+          primaryContact,
+          preferredCreditPeriod,
+        },
       };
     } catch (e) {
       /*

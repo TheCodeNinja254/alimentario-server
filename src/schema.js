@@ -28,6 +28,7 @@ const typeDefs = gql`
   type SignedInCustomerResponse {
     status: Boolean!
     customer: SignedInCustomerData
+    business: AssociatedCustomerBusinessData
   }
 
   type SignedInCustomerData {
@@ -40,6 +41,17 @@ const typeDefs = gql`
     emailAddress: String
     verificationStatus: Int
     bearerToken: String
+  }
+
+  type AssociatedCustomerBusinessData {
+    businessName: String
+    registeredAddress: String
+    businessLocationLatitude: String
+    businessLocationLongitude: String
+    businessType: String
+    primaryEmailAddress: String
+    primaryContact: String
+    preferredCreditPeriod: String
   }
 
   type SignedInUserResponse {
