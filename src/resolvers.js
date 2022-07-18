@@ -21,6 +21,8 @@ module.exports = {
   Query: {
     getSignedInCustomer: (_, __, { dataSources }) =>
       dataSources.authenticationSessions.getSignedInCustomer(),
+    getDisplayProducts: (_, __, { dataSources }) =>
+      dataSources.products.getDisplayProducts(),
     getSignedInUser: (_, __, { dataSources }) =>
       dataSources.authenticationSessions.getSignedInUser(),
     getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),

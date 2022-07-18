@@ -25,6 +25,7 @@ const LocationsAPI = require("./datasources/Locations");
 const CustomerAuthentication = require("./datasources/Authentication/CustomerAuthentication");
 const AuthenticationSessions = require("./datasources/Authentication/AuthenticationSessions");
 const SystemUserAuthentication = require("./datasources/Authentication/SystemUserAuthentication");
+const ProductsAPI = require("./datasources/Products/Products");
 
 const server = new ApolloServer({
   typeDefs,
@@ -75,6 +76,7 @@ const server = new ApolloServer({
     customerAuthentication: new CustomerAuthentication(),
     authenticationSessions: new AuthenticationSessions(),
     systemUserAuthentication: new SystemUserAuthentication(),
+    products: new ProductsAPI(),
   }),
   formatError: (err) => {
     // error variables override and redefine them everytime errors fallback here

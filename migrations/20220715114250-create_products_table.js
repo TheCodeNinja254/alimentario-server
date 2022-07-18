@@ -52,6 +52,9 @@ module.exports = {
       productStatus: {
         type: Sequelize.INTEGER,
       },
+      productPrice: {
+        type: Sequelize.INTEGER,
+      },
       expiryDate: {
         type: Sequelize.DATE,
       },
