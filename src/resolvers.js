@@ -19,12 +19,15 @@ module.exports = {
     },
   }),
   Query: {
+    getSignedInCustomer: (_, __, { dataSources }) =>
+      dataSources.authenticationSessions.getSignedInCustomer(),
     getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),
     getEstates: (_, args, { dataSources }) =>
       dataSources.location.getEstates(args),
   },
   Mutation: {
-    customerAuthentication: (_, args, { dataSources }) => dataSources.customerAuthentication.customerAuthentication(args),
+    customerAuthentication: (_, args, { dataSources }) =>
+      dataSources.customerAuthentication.customerAuthentication(args),
     checkLeadDetails: (_, args, { dataSources }) =>
       dataSources.lead.checkLeadDetails(args),
   },

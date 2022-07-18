@@ -63,15 +63,14 @@ class GetOAuthTokenAPI extends RESTDataSource {
           expirationTime: tokenExpirationTime.getTime(),
         };
         return true;
-      } else {
-        Logger.log("error", "Error: ", {
-          fullError: ErrorHandler("No token found"),
-          customError: ErrorHandler("No token found"),
-          actualError: ErrorHandler("No token found"),
-          customerMessage: ErrorHandler("No token found"),
-        });
-        throw new Error(ErrorHandler("No token found"));
       }
+      Logger.log("error", "Error: ", {
+        fullError: ErrorHandler("No token found"),
+        customError: ErrorHandler("No token found"),
+        actualError: ErrorHandler("No token found"),
+        customerMessage: ErrorHandler("No token found"),
+      });
+      throw new Error(ErrorHandler("No token found"));
     }
     return true;
   }

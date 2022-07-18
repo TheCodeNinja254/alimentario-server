@@ -1,8 +1,10 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
+const uuid = require("uuid/v4");
+const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
 const Customer = require("../../models/Customer");
 
-class UserAuthentication extends RESTDataSource {
+class CustomerAuthentication extends RESTDataSource {
   // eslint-disable-next-line no-useless-constructor
   constructor() {
     super();
@@ -20,6 +22,9 @@ class UserAuthentication extends RESTDataSource {
     const { email, password } = args;
 
     try {
+      /*
+       * Get customer from the database
+       * */
       const customer = await Customer.findOne({
         attributes: [
           `id`,
@@ -38,6 +43,9 @@ class UserAuthentication extends RESTDataSource {
         },
       });
 
+      /*
+       * In the event we go nothing from the database
+       * */
       if (!customer) {
         Logger.log("error", "Error: ", {
           fullError: "Login failed",
@@ -62,6 +70,37 @@ class UserAuthentication extends RESTDataSource {
         verificationStatus,
       } = customer;
 
+      /*
+       * Create a @bearerToken for the loggedIn user.
+       * This will be stored in the inMemmory cache, Redis. The token is to be invalidated upon logout.
+       * */
+      const bearerToken = uuid();
+
+      /*
+       * Create session on Redis
+       * This will allow for complete validation & invalidation upon logout
+       * */
+      await redis.set(bearerToken, Number(1));
+
+      /*
+       * Create session cookie
+       * */
+
+      this.context.session.customerDetails = {
+        username: email,
+        customerStatus: customer.status,
+        firstName,
+        lastName,
+        msisdn,
+        businessId,
+        emailAddress,
+        verificationStatus,
+        bearerToken,
+      };
+
+      /*
+       * Return the Schema object
+       * */
       return {
         status: true,
         message: customer.firstName,
@@ -75,6 +114,9 @@ class UserAuthentication extends RESTDataSource {
         verificationStatus,
       };
     } catch (e) {
+      /*
+       * Create a log instance with the error
+       * */
       Logger.log("error", "Error: ", {
         fullError: e,
         customError: e,
@@ -93,4 +135,4 @@ class UserAuthentication extends RESTDataSource {
   }
 }
 
-module.exports = UserAuthentication;
+module.exports = CustomerAuthentication;
