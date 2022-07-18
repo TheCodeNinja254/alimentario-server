@@ -1,8 +1,8 @@
 {
   "session": {
-    "keys": ["secret key"],
+    "keys": ["desafio"],
     "options": {
-      "key": "drift",
+      "key": "desafio",
       "maxAge": 7776000000,
       "sameSite": true,
       "overwrite": true,

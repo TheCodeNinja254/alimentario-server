@@ -86,7 +86,7 @@ class SystemUserAuthentication extends RESTDataSource {
 
       this.context.session.userDetails = {
         username: email,
-        customerStatus: user.status,
+        userStatus: user.status,
         firstName,
         lastName,
         msisdn,
@@ -106,7 +106,7 @@ class SystemUserAuthentication extends RESTDataSource {
         firstName,
         lastName,
         msisdn,
-        customerStatus: user.status,
+        userStatus: user.status,
         userRole,
         emailAddress,
         verificationStatus,

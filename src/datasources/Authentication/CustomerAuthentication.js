@@ -5,8 +5,16 @@ const Logger = require("../../utils/logging");
 const Customer = require("../../models/Customer");
 
 class CustomerAuthentication extends RESTDataSource {
+  constructor() {
+    super();
+    this.info = "";
+  }
+
+  // eslint-disable-next-line no-unused-vars
   async customerAuthentication(args) {
-    const { email, password } = args;
+    // const { email, password } = args;
+    const email = "m.mwangi.fredrick";
+    const password = "trial";
 
     try {
       /*
@@ -59,7 +67,7 @@ class CustomerAuthentication extends RESTDataSource {
 
       /*
        * Create a @bearerToken for the loggedIn user.
-       * This will be stored in the inMemmory cache, Redis. The token is to be invalidated upon logout.
+       * This will be stored in the InMemmory cache, Redis. The token is to be invalidated upon logout.
        * */
       const bearerToken = uuid();
 

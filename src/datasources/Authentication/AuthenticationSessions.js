@@ -4,13 +4,22 @@ const Logger = require("../../utils/logging");
 
 class AuthenticationSessions extends RESTDataSource {
   async getSignedInCustomer() {
-    if (!this.context.session.customerDetails.username) {
+    /*
+     *
+     * Default session data
+     * */
+    const sessionData = {
+      status: false,
+      user: {},
+    };
+
+    if (!this.context?.session?.customerDetails?.username) {
       // its easier for the client to check this
       // in other cases, would have thrown an Authentication error
-      return null;
+      return sessionData;
     }
 
-    const { bearerToken } = this.context.session.customerDetails;
+    const { bearerToken } = this.context?.session?.customerDetails;
 
     /*
      *
@@ -20,56 +29,70 @@ class AuthenticationSessions extends RESTDataSource {
      * */
     const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
     if (Number(signInStatus) === 0) {
-      return null;
+      return sessionData;
     }
 
     const {
       customerDetails: { username },
-    } = this.context.session;
+    } = this.context?.session;
     try {
-      const { customerDetails } = this.context.session;
+      const { customerDetails } = this.context?.session;
 
       return {
-        user: AuthenticationSessions.customerSessionReducer(customerDetails),
+        status: true,
+        customer:
+          AuthenticationSessions.customerSessionReducer(customerDetails),
       };
     } catch (e) {
       /*
        * Message to customer
        * */
-      const customerMessage = "Sorry, we were unable to get your details";
+      const customerMessage = "Sorry, we were unable to get details";
 
       /*
        * Create a log instance
        * */
       Logger.log("error", "Error: ", {
         fullError: e,
-        request: "getSignedInUser",
-        technicalMessage: `Unable to get details for user id (${username})`,
+        request: "getSignedInCustomer",
+        technicalMessage: `Unable to get details for user id: (${username})`,
         customerMessage,
       });
 
-      throw new Error(customerMessage);
+      return sessionData;
     }
   }
 
   async getSignedInUser() {
+    /*
+     *
+     * Default session data
+     * */
+    const sessionData = {
+      status: false,
+      user: {},
+    };
+
     if (!this.context.session.userDetails.username) {
       // its easier for the client to check this
       // in other cases, would have thrown an Authentication error
-      return null;
+      return sessionData;
     }
 
     const { bearerToken } = this.context.session.userDetails;
 
-    /*
+    /**
      *
      * Check for login status from the Redis InMemory database
-     * Should @return === 1 for valid records fetch,
-     * Should @return === 0 for no records matching the session
+     * Should
+     * @return === 1 || 0
+     * for valid records fetch,
+     * Should
+     * for no records matching the session
      * */
     const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
     if (Number(signInStatus) === 0) {
-      return null;
+      return sessionData;
     }
 
     const {
@@ -79,13 +102,14 @@ class AuthenticationSessions extends RESTDataSource {
       const { userDetails } = this.context.session;
 
       return {
+        status: true,
         user: AuthenticationSessions.userSessionReducer(userDetails),
       };
     } catch (e) {
       /*
        * Message to customer
        * */
-      const customerMessage = "Sorry, we were unable to get your details";
+      const customerMessage = "Sorry, we were unable to get details";
 
       /*
        * Create a log instance
@@ -93,11 +117,11 @@ class AuthenticationSessions extends RESTDataSource {
       Logger.log("error", "Error: ", {
         fullError: e,
         request: "getSignedInUser",
-        technicalMessage: `Unable to get details for user id (${username})`,
+        technicalMessage: `Unable to get details for user:  (${username})`,
         customerMessage,
       });
 
-      throw new Error(customerMessage);
+      return sessionData;
     }
   }
 
@@ -118,7 +142,7 @@ class AuthenticationSessions extends RESTDataSource {
   static userSessionReducer(userDetails) {
     return {
       username: userDetails.username,
-      customerStatus: userDetails.customerStatus,
+      userStatus: userDetails.userStatus,
       firstName: userDetails.firstName,
       lastName: userDetails.lastName,
       msisdn: userDetails.msisdn,

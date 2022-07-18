@@ -26,6 +26,11 @@ const typeDefs = gql`
   }
 
   type SignedInCustomerResponse {
+    status: Boolean!
+    customer: SignedInCustomerData
+  }
+
+  type SignedInCustomerData {
     username: String
     customerStatus: String
     firstName: String
@@ -38,8 +43,12 @@ const typeDefs = gql`
   }
 
   type SignedInUserResponse {
+    status: Boolean!
+    user: SignedInUserData
+  }
+  type SignedInUserData {
     username: String
-    customerStatus: String
+    userStatus: String
     firstName: String
     lastName: String
     msisdn: String

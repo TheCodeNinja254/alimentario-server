@@ -1,55 +1,56 @@
-const Sequelize = require("sequelize");
-const sequelize = require("../Database/connection");
-
-module.exports = sequelize.define("Customer", {
-    id: {
+module.exports = (sequelize, Sequelize) =>
+  sequelize.define(
+    "Customer",
+    {
+      id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-    },
-    username: {
+      },
+      username: {
         type: Sequelize.STRING(255),
         allowNull: false,
         unique: true,
-    },
-    firstName: {
+      },
+      firstName: {
         type: Sequelize.STRING(30),
         allowNull: false,
-    },
-    lastName: {
+      },
+      lastName: {
         type: Sequelize.STRING(30),
-    },
-    password: {
+      },
+      password: {
         type: Sequelize.STRING(255),
-    },
-    msisdn: {
+      },
+      msisdn: {
         type: Sequelize.STRING(30),
-    },
-    status: {
+      },
+      status: {
         type: Sequelize.INTEGER,
-    },
-    businessId: {
+      },
+      businessId: {
         type: Sequelize.INTEGER,
-    },
-    emailAddress: {
+      },
+      emailAddress: {
         type: Sequelize.STRING(100),
-    },
-    verificationToken: {
+      },
+      verificationToken: {
         type: Sequelize.STRING(255),
-    },
-    verificationStatus: {
+      },
+      verificationStatus: {
         type: Sequelize.INTEGER,
-    },
-    verificationTime: {
+      },
+      verificationTime: {
         type: Sequelize.DATE,
+      },
+      updatedBy: Sequelize.STRING(30),
+      createdAt: Sequelize.DATE,
+      updatedAt: Sequelize.DATE,
     },
-    updatedBy: Sequelize.STRING(30),
-    createdAt: Sequelize.DATE,
-    updatedAt: Sequelize.DATE,
-}, {
-    tableName: 'customers'
-});
+    {
+      tableName: "customers",
+    }
+  );
 
 // sequelize migration:create --name create_customers_table
-
