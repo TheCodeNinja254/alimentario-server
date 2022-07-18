@@ -1,12 +1,15 @@
 const Sequelize = require("sequelize");
+const config = require("dotenv").config();
+
+const configValues = config.parsed;
 
 const sequelize = new Sequelize(
-  "desafiodb",
-  "desafio",
-  "TusentakkVashegul19!",
+  configValues.DATABASE,
+  configValues.DB_USER,
+  configValues.DB_PASSWORD,
   {
-    host: "localhost",
-    dialect: "mysql",
+    host: configValues.HOST,
+    dialect: configValues.DIALECT,
   }
 );
 
