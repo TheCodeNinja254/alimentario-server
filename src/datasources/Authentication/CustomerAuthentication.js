@@ -2,7 +2,7 @@ const { RESTDataSource } = require("apollo-datasource-rest");
 const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
-const Customer = require("../../models/Customer");
+const { Customer } = require("../../models");
 
 class CustomerAuthentication extends RESTDataSource {
   constructor() {

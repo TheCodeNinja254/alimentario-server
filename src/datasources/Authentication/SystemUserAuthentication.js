@@ -2,7 +2,7 @@ const { RESTDataSource } = require("apollo-datasource-rest");
 const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
-const User = require("../../models/User");
+const { User } = require("../../models");
 
 class SystemUserAuthentication extends RESTDataSource {
   // eslint-disable-next-line no-useless-constructor
