@@ -2,7 +2,7 @@ const { RESTDataSource } = require("apollo-datasource-rest");
 const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
-const { Customer } = require("../../models");
+const { Customer, WholesaleBusiness } = require("../../models");
 
 class CustomerAuthentication extends RESTDataSource {
   constructor() {
@@ -36,7 +36,13 @@ class CustomerAuthentication extends RESTDataSource {
           password,
           status: 1,
         },
+        include: {
+          model: WholesaleBusiness,
+          required: true,
+        },
       });
+
+      console.log(customer.WholesaleBusiness);
 
       /*
        * In the event we go nothing from the database
@@ -101,7 +107,7 @@ class CustomerAuthentication extends RESTDataSource {
         message: customer.firstName,
         username: email,
         firstName,
-        lastName,
+        lastName: customer.WholesaleBusiness.businessName,
         msisdn,
         customerStatus: customer.status,
         businessId,
