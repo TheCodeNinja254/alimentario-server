@@ -5,6 +5,7 @@ const typeDefs = gql`
 
   type Query {
     getRegions: RegionsData
+    getSignedInCustomer: SignedInCustomerResponse
     getEstates(regionId: Int!, pageSize: Int, pageNo: Int): EstatesData
   }
 
@@ -21,6 +22,18 @@ const typeDefs = gql`
     status: Boolean!
     message: String!
     role: String
+  }
+
+  type SignedInCustomerResponse {
+    username: String
+    customerStatus: String
+    firstName: String
+    lastName: String
+    msisdn: String
+    businessId: Int
+    emailAddress: String
+    verificationStatus: Int
+    bearerToken: String
   }
 
   type CustomerLoginResponse {

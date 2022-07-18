@@ -2,24 +2,35 @@ const { RESTDataSource } = require("apollo-datasource-rest");
 const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
-const Customer = require("../../models/Customer");
+const User = require("../../models/User");
 
-class CustomerAuthentication extends RESTDataSource {
-  async customerAuthentication(args) {
+class SystemUserAuthentication extends RESTDataSource {
+  // eslint-disable-next-line no-useless-constructor
+  constructor() {
+    super();
+  }
+
+  /**
+   * System user authentication
+   * @Expects: Username, Password
+   * @Returns: Status, Message and user Object
+   * */
+  async userAuthentication(args) {
     const { email, password } = args;
 
     try {
       /*
-       * Get customer from the database
+       * Get user from the database
        * */
-      const customer = await Customer.findOne({
+      const user = await User.findOne({
         attributes: [
           `id`,
+          `username`,
           `firstName`,
           `lastName`,
           `msisdn`,
+          `userRole`,
           `status`,
-          `businessId`,
           `emailAddress`,
           `verificationStatus`,
         ],
@@ -33,7 +44,7 @@ class CustomerAuthentication extends RESTDataSource {
       /*
        * In the event we go nothing from the database
        * */
-      if (!customer) {
+      if (!user) {
         Logger.log("error", "Error: ", {
           fullError: "Login failed",
           customError: "Login failed",
@@ -52,10 +63,10 @@ class CustomerAuthentication extends RESTDataSource {
         firstName,
         lastName,
         msisdn,
-        businessId,
+        userRole,
         emailAddress,
         verificationStatus,
-      } = customer;
+      } = user;
 
       /*
        * Create a @bearerToken for the loggedIn user.
@@ -75,11 +86,11 @@ class CustomerAuthentication extends RESTDataSource {
 
       this.context.session.customerDetails = {
         username: email,
-        customerStatus: customer.status,
+        customerStatus: user.status,
         firstName,
         lastName,
         msisdn,
-        businessId,
+        userRole,
         emailAddress,
         verificationStatus,
         bearerToken,
@@ -90,13 +101,13 @@ class CustomerAuthentication extends RESTDataSource {
        * */
       return {
         status: true,
-        message: customer.firstName,
+        message: user.firstName,
         username: email,
         firstName,
         lastName,
         msisdn,
-        customerStatus: customer.status,
-        businessId,
+        customerStatus: user.status,
+        userRole,
         emailAddress,
         verificationStatus,
       };
@@ -122,4 +133,4 @@ class CustomerAuthentication extends RESTDataSource {
   }
 }
 
-module.exports = CustomerAuthentication;
+module.exports = SystemUserAuthentication;

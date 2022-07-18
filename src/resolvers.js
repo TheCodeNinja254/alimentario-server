@@ -27,7 +27,7 @@ module.exports = {
   },
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) =>
-      dataSources.customerAuthentication.customerAuthentication(args),
+      dataSources.systemUserAuthentication.userAuthentication(args),
     checkLeadDetails: (_, args, { dataSources }) =>
       dataSources.lead.checkLeadDetails(args),
   },
