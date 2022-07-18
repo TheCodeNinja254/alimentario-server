@@ -84,7 +84,7 @@ class SystemUserAuthentication extends RESTDataSource {
        * Create session cookie
        * */
 
-      this.context.session.customerDetails = {
+      this.context.session.userDetails = {
         username: email,
         customerStatus: user.status,
         firstName,

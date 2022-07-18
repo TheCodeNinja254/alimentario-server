@@ -21,13 +21,15 @@ module.exports = {
   Query: {
     getSignedInCustomer: (_, __, { dataSources }) =>
       dataSources.authenticationSessions.getSignedInCustomer(),
+    getSignedInUser: (_, __, { dataSources }) =>
+      dataSources.authenticationSessions.getSignedInUser(),
     getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),
     getEstates: (_, args, { dataSources }) =>
       dataSources.location.getEstates(args),
   },
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) =>
-      dataSources.systemUserAuthentication.userAuthentication(args),
+      dataSources.customerAuthentication.customerAuthentication(args),
     checkLeadDetails: (_, args, { dataSources }) =>
       dataSources.lead.checkLeadDetails(args),
   },

@@ -6,6 +6,7 @@ const typeDefs = gql`
   type Query {
     getRegions: RegionsData
     getSignedInCustomer: SignedInCustomerResponse
+    getSignedInUser: SignedInUserResponse
     getEstates(regionId: Int!, pageSize: Int, pageNo: Int): EstatesData
   }
 
@@ -31,6 +32,18 @@ const typeDefs = gql`
     lastName: String
     msisdn: String
     businessId: Int
+    emailAddress: String
+    verificationStatus: Int
+    bearerToken: String
+  }
+
+  type SignedInUserResponse {
+    username: String
+    customerStatus: String
+    firstName: String
+    lastName: String
+    msisdn: String
+    userRole: Int
     emailAddress: String
     verificationStatus: Int
     bearerToken: String
