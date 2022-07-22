@@ -168,6 +168,22 @@ class CustomerAuthentication extends RESTDataSource {
       };
     }
   }
+
+  async signOut() {
+    const { bearerToken } = this.context.session.customerDetails;
+    if (await redis.set(bearerToken, Number(0))) {
+      delete this.context.session.customerDetails;
+
+      return {
+        status: true,
+        message: "Logout Successful",
+      };
+    }
+    return {
+      status: false,
+      message: "Session invalidation failed",
+    };
+  }
 }
 
 module.exports = CustomerAuthentication;

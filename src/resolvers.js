@@ -32,6 +32,8 @@ module.exports = {
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) =>
       dataSources.customerAuthentication.customerAuthentication(args),
+    signOut: (_, __, { dataSources }) =>
+      dataSources.customerAuthentication.signOut(),
     checkLeadDetails: (_, args, { dataSources }) =>
       dataSources.lead.checkLeadDetails(args),
   },

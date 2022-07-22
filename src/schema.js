@@ -17,6 +17,7 @@ const typeDefs = gql`
       email: String!
       password: String!
     ): CustomerLoginResponse!
+    signOut: Result!
     checkLeadDetails(input: LeadCheckData!): SingleLeadData
   }
 
