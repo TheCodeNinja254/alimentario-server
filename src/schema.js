@@ -13,13 +13,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createLead(input: LeadDetails!): createLeadResult!
     customerAuthentication(
       email: String!
       password: String!
     ): CustomerLoginResponse!
+    addToCart(input: AddToCartRequest): Result!
     signOut: Result!
-    checkLeadDetails(input: LeadCheckData!): SingleLeadData
   }
 
   type Result {
@@ -191,12 +190,6 @@ const typeDefs = gql`
     deletedAt: String
   }
 
-  type SingleLeadData {
-    getLeadStatus: Boolean!
-    message: String
-    leads: [Lead]
-  }
-
   type Lead {
     tId: Int!
     firstName: String
@@ -218,30 +211,10 @@ const typeDefs = gql`
     productType: String
   }
 
-  input LeadDetails {
-    firstName: String!
-    middleName: String
-    lastName: String
-    sponsorMsisdn: String!
-    sponsorAlternativeMsisdn: String
-    emailAddress: String
+  input AddToCartRequest {
     productId: Int!
-    preferredDate: String
-    preferredTimePeriod: String
-    passedEstateId: Int
-    areaName: String
-    regionId: Int
-    newEstateName: String
-    streetName: String
-    houseNumber: String
-    doctypeId: String
-    documentNumber: String
-    productType: String
-    addOns: String
-  }
-
-  input LeadCheckData {
-    uniqueIdentity: String!
+    customerSpecification: String
+    quantity: Int!
   }
 `;
 

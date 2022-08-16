@@ -91,7 +91,7 @@ class CustomerAuthentication extends RESTDataSource {
        * */
       const bearerToken = uuid();
 
-      /*
+      /**
        * Create session on Redis
        * This will allow for complete validation & invalidation upon logout
        * */

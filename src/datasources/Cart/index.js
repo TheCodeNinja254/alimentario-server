@@ -74,12 +74,72 @@ class CartAPI extends RESTDataSource {
           ? cartItems.map((cartItem) => CartAPI.cartReducer(cartItem))
           : [];
 
-      console.log(cartItems);
-
       return {
         status: true,
         message: "",
         cartItemsList,
+      };
+    } catch (e) {
+      /*
+       * Create a log instance with the error
+       * */
+      Logger.log("error", "Error: ", {
+        fullError: e,
+        customError: e,
+        actualError: e,
+        customerMessage:
+          "An error occurred. This is temporary and should resolve in a short time. " +
+          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+      });
+
+      return {
+        status: false,
+        message: e.message,
+      };
+    }
+  }
+
+  async addToCart(args) {
+    const {
+      input: { productId, quantity, customerSpecification },
+    } = args;
+    try {
+      /*
+       * Get products in cart from the database
+       * */
+      const {
+        customerDetails: { username },
+      } = this.context.session;
+      const cartCreate = await Cart.create({
+        productId,
+        quantity,
+        customerSpecification,
+        addedBy: username,
+      });
+
+      /*
+       * In the event we go nothing from the database
+       * */
+      if (!cartCreate) {
+        Logger.log("error", "Error: ", {
+          fullError: "Could not add to cart",
+          customError: "Could not add to cart",
+          actualError: "Could not add to cart",
+          customerMessage:
+            "We are unable to add to your cart at the moment. Please try again later!",
+        });
+        return {
+          status: false,
+          message:
+            "We are unable to add to your cart at the moment. Please try again later!",
+        };
+      }
+
+      console.log(cartCreate);
+
+      return {
+        status: true,
+        message: "Added to cart successfully",
       };
     } catch (e) {
       /*
