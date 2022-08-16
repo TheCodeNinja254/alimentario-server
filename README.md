@@ -15,7 +15,7 @@ npm i
 # or
 yarn
 # then
-npm run start
+npm start
 ```
 
 ### Setting Up Sequelize Data Models and Migrations
@@ -24,6 +24,15 @@ Read more on [`Sequelize`](https://sequelize.org/docs/v6/getting-started/).
 
 #### Available Sequelize commands
 ```bash
+# Install Sequelize
+npm install --save sequelize
+
+# Install sequilize-cli - if not already installed globally
+npm install -g sequelize-cli
+
+# To install mysql2 after sequilize
+npm install --save mysql2
+
 # To create a table from a model
 sequelize migration:create --name create_[table_name]_table
 

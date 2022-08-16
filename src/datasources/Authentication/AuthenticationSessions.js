@@ -14,7 +14,7 @@ class AuthenticationSessions extends RESTDataSource {
     };
 
     if (!this.context?.session?.customerDetails?.username) {
-      // its easier for the client to check this
+      // it's easier for the client to check this
       // in other cases, would have thrown an Authentication error
       return sessionData;
     }

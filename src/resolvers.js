@@ -23,6 +23,7 @@ module.exports = {
       dataSources.authenticationSessions.getSignedInCustomer(),
     getDisplayProducts: (_, __, { dataSources }) =>
       dataSources.products.getDisplayProducts(),
+    getCartItems: (_, __, { dataSources }) => dataSources.cart.getCartItems(),
     getSignedInUser: (_, __, { dataSources }) =>
       dataSources.authenticationSessions.getSignedInUser(),
     getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),

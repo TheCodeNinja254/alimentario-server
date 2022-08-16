@@ -45,7 +45,7 @@ class CustomerAuthentication extends RESTDataSource {
         },
       });
 
-      console.log(customer.WholesaleBusiness);
+      // console.log(customer.WholesaleBusiness);
 
       /*
        * In the event we go nothing from the database
@@ -87,7 +87,7 @@ class CustomerAuthentication extends RESTDataSource {
 
       /*
        * Create a @bearerToken for the loggedIn user.
-       * This will be stored in the InMemmory cache, Redis. The token is to be invalidated upon logout.
+       * This will be stored in the InMemory cache, Redis. The token is to be invalidated upon logout.
        * */
       const bearerToken = uuid();
 

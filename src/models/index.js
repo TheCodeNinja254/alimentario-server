@@ -17,6 +17,7 @@ const StorageFacilityModel = require("./Definitions/StorageFacility");
 const TransactionModel = require("./Definitions/Transaction");
 const UserModel = require("./Definitions/User");
 const WholesaleBusinessModel = require("./Definitions/WholesaleBusiness");
+const CartModel = require("./Definitions/Cart");
 
 /*
  * Declare & Invoke models
@@ -34,8 +35,9 @@ const StorageFacility = StorageFacilityModel(sequelize, Sequelize);
 const Transaction = TransactionModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
 const WholesaleBusiness = WholesaleBusinessModel(sequelize, Sequelize);
+const Cart = CartModel(sequelize, Sequelize);
 
-/*
+/**
  * Define Database Associations
  *
  * */
@@ -44,6 +46,11 @@ const WholesaleBusiness = WholesaleBusinessModel(sequelize, Sequelize);
 // Since no business has independent authentication, a user with management rights to the business can access the panel and manage
 Customer.hasOne(WholesaleBusiness, { foreignKey: "id" }); // fk belongs to child 2
 Customer.belongsTo(WholesaleBusiness, { foreignKey: "businessId" }); // fk belong to child 1
+
+// A cart item can only represent on product
+// the same product can be in the cart table multiple times (Under the same or different customer)
+Cart.hasOne(Product, { foreignKey: "id" });
+Cart.belongsTo(Product, { foreignKey: "productId" });
 
 /*
  * Module Exports
@@ -63,4 +70,5 @@ module.exports = {
   Transaction,
   User,
   WholesaleBusiness,
+  Cart,
 };

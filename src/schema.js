@@ -9,6 +9,7 @@ const typeDefs = gql`
     getSignedInUser: SignedInUserResponse
     getEstates(regionId: Int!, pageSize: Int, pageNo: Int): EstatesData
     getDisplayProducts: DisplayProductsResponse
+    getCartItems: CartProductsResponse
   }
 
   type Mutation {
@@ -31,6 +32,12 @@ const typeDefs = gql`
     status: Boolean!
     message: String
     productsList: [DisplayProductsData]
+  }
+
+  type CartProductsResponse {
+    status: Boolean!
+    message: String
+    cartItemsList: [CartProductsData]
   }
 
   type SignedInCustomerResponse {
@@ -105,7 +112,27 @@ const typeDefs = gql`
     stockStatus: Int
     productPrice: Int
     productStatus: Int
-    expiryDate: String
+    expiryDate: Date
+  }
+
+  type CartProductsData {
+    id: Int
+    productName: String
+    productDescription: String
+    productPicMain: String
+    productPicTwo: String
+    productPicThree: String
+    productPicFour: String
+    productUnitOfMeasure: String
+    productInstructionsLink: String
+    productVideoLink: String
+    stockStatus: Int
+    productPrice: Int
+    productStatus: Int
+    expiryDate: Date
+    customerSpecification: String
+    createdAt: Date
+    quantity: Int
   }
 
   type createLeadResult {
