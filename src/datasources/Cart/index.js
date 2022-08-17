@@ -1,11 +1,12 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
-const { Product, Cart } = require("../../models");
+const { Product, Cart, CartProduct } = require("../../models");
+const { redis } = require("../../Redis");
 
 class CartAPI extends RESTDataSource {
-  // eslint-disable-next-line no-useless-constructor
   constructor() {
     super();
+    this.signInError = "Please sign in";
   }
 
   /**
@@ -22,14 +23,14 @@ class CartAPI extends RESTDataSource {
         customerDetails: { username },
       } = this.context.session;
       const cartItems = await Cart.findAll({
-        attributes: [`customerSpecification`, `createdAt`, `quantity`],
+        attributes: [`id`, `customerSpecification`, `createdAt`, `quantity`],
         where: {
           addedBy: username,
         },
+        order: [[`createdAt`, `DESC`]],
         include: {
           model: Product,
           attributes: [
-            `id`,
             `productName`,
             `productDescription`,
             `productPicMain`,
@@ -49,14 +50,9 @@ class CartAPI extends RESTDataSource {
             productStatus: 1,
           },
         },
-      });
-
-      /*
-       * In the event we go nothing from the database
-       * */
-      if (!cartItems) {
+      }).catch((err) => {
         Logger.log("error", "Error: ", {
-          fullError: "Could not fetch products in cart",
+          fullError: err,
           customError: "Could not fetch products in cart",
           actualError: "Could not fetch products from the database.",
           customerMessage:
@@ -67,12 +63,16 @@ class CartAPI extends RESTDataSource {
           message:
             "Nothing to show here right now. Items you add to your cart will appear here.",
         };
-      }
+      });
+
+      console.log(JSON.stringify(cartItems));
 
       const cartItemsList =
         cartItems && Array.isArray(cartItems) && cartItems.length > 0
           ? cartItems.map((cartItem) => CartAPI.cartReducer(cartItem))
           : [];
+
+      console.log(cartItemsList);
 
       return {
         status: true,
@@ -103,6 +103,19 @@ class CartAPI extends RESTDataSource {
     const {
       input: { productId, quantity, customerSpecification },
     } = args;
+
+    if (!this.context.session.customerDetails) {
+      throw new Error(this.signInError);
+    }
+
+    // Authentication Check
+    // To add to cart, a customer must be logged in. This will ensure we maintain the cart across sessions and devices.
+    const { bearerToken } = this.context.session.customerDetails;
+    const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
+    if (Number(signInStatus) === 0) {
+      throw new Error(this.signInError);
+    }
+
     try {
       /*
        * Get products in cart from the database
@@ -110,32 +123,32 @@ class CartAPI extends RESTDataSource {
       const {
         customerDetails: { username },
       } = this.context.session;
-      const cartCreate = await Cart.create({
+      await Cart.create({
         productId,
         quantity,
         customerSpecification,
         addedBy: username,
-      });
-
-      /*
-       * In the event we go nothing from the database
-       * */
-      if (!cartCreate) {
-        Logger.log("error", "Error: ", {
-          fullError: "Could not add to cart",
-          customError: "Could not add to cart",
-          actualError: "Could not add to cart",
-          customerMessage:
-            "We are unable to add to your cart at the moment. Please try again later!",
+      })
+        .then(async (data) => {
+          await CartProduct.create({
+            cartId: data.id,
+            productId,
+          });
+        })
+        .catch((err) => {
+          Logger.log("error", "Error: ", {
+            fullError: err,
+            customError: "Could not add to cart",
+            actualError: "Could not add to cart",
+            customerMessage:
+              "We are unable to add to your cart at the moment. Please try again later!",
+          });
+          return {
+            status: false,
+            message:
+              "We are unable to add to your cart at the moment. Please try again later!",
+          };
         });
-        return {
-          status: false,
-          message:
-            "We are unable to add to your cart at the moment. Please try again later!",
-        };
-      }
-
-      console.log(cartCreate);
 
       return {
         status: true,
@@ -163,10 +176,12 @@ class CartAPI extends RESTDataSource {
 
   /*
    * Map products in cart
+   *
+   * Something about this Many to many is off. To be revisited
    * */
   static cartReducer(cartItem) {
     return {
-      id: cartItem.Product.id,
+      id: cartItem.id,
       productName: cartItem.Product.productName,
       productDescription: cartItem.Product.productDescription,
       productPicMain: cartItem.Product.productPicMain,

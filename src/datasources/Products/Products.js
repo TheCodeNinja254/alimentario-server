@@ -35,6 +35,7 @@ class ProductsAPI extends RESTDataSource {
           `productStatus`,
           `expiryDate`,
         ],
+        order: [[`createdAt`, `DESC`]],
         where: {
           productStatus: 1,
         },

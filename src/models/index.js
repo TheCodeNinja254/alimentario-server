@@ -18,6 +18,7 @@ const TransactionModel = require("./Definitions/Transaction");
 const UserModel = require("./Definitions/User");
 const WholesaleBusinessModel = require("./Definitions/WholesaleBusiness");
 const CartModel = require("./Definitions/Cart");
+const CartProductModel = require("./Definitions/CartProduct");
 
 /*
  * Declare & Invoke models
@@ -36,6 +37,7 @@ const Transaction = TransactionModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
 const WholesaleBusiness = WholesaleBusinessModel(sequelize, Sequelize);
 const Cart = CartModel(sequelize, Sequelize);
+const CartProduct = CartProductModel(sequelize, Sequelize);
 
 /**
  * Define Database Associations
@@ -47,9 +49,8 @@ const Cart = CartModel(sequelize, Sequelize);
 Customer.hasOne(WholesaleBusiness, { foreignKey: "id" }); // fk belongs to child 2
 Customer.belongsTo(WholesaleBusiness, { foreignKey: "businessId" }); // fk belong to child 1
 
-// A cart item can only represent on product
+// A cart item can only represent on product but a prodct can be in many carts
 // the same product can be in the cart table multiple times (Under the same or different customer)
-Cart.hasOne(Product, { foreignKey: "id" });
 Cart.belongsTo(Product, { foreignKey: "productId" });
 
 /*
@@ -71,4 +72,5 @@ module.exports = {
   User,
   WholesaleBusiness,
   Cart,
+  CartProduct,
 };
