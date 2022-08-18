@@ -128,27 +128,20 @@ class CartAPI extends RESTDataSource {
         quantity,
         customerSpecification,
         addedBy: username,
-      })
-        .then(async (data) => {
-          await CartProduct.create({
-            cartId: data.id,
-            productId,
-          });
-        })
-        .catch((err) => {
-          Logger.log("error", "Error: ", {
-            fullError: err,
-            customError: "Could not add to cart",
-            actualError: "Could not add to cart",
-            customerMessage:
-              "We are unable to add to your cart at the moment. Please try again later!",
-          });
-          return {
-            status: false,
-            message:
-              "We are unable to add to your cart at the moment. Please try again later!",
-          };
+      }).catch((err) => {
+        Logger.log("error", "Error: ", {
+          fullError: err,
+          customError: "Could not add to cart",
+          actualError: "Could not add to cart",
+          customerMessage:
+            "We are unable to add to your cart at the moment. Please try again later!",
         });
+        return {
+          status: false,
+          message:
+            "We are unable to add to your cart at the moment. Please try again later!",
+        };
+      });
 
       return {
         status: true,
