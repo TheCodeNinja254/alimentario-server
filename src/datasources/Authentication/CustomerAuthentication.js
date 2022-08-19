@@ -74,17 +74,6 @@ class CustomerAuthentication extends RESTDataSource {
         verificationStatus,
       } = customer;
 
-      const {
-        businessName,
-        registeredAddress,
-        businessLocationLatitude,
-        businessLocationLongitude,
-        businessType,
-        primaryEmailAddress,
-        primaryContact,
-        preferredCreditPeriod,
-      } = customer.WholesaleBusiness;
-
       /*
        * Create a @bearerToken for the loggedIn user.
        * This will be stored in the InMemory cache, Redis. The token is to be invalidated upon logout.
@@ -112,14 +101,14 @@ class CustomerAuthentication extends RESTDataSource {
         verificationStatus,
         bearerToken,
         associatedBusiness: {
-          businessName,
-          registeredAddress,
-          businessLocationLatitude,
-          businessLocationLongitude,
-          businessType,
-          primaryEmailAddress,
-          primaryContact,
-          preferredCreditPeriod,
+          businessName: customer.WholesaleBusiness?.businessName,
+          registeredAddress: customer.WholesaleBusiness?.businessName,
+          businessLocationLatitude: customer.WholesaleBusiness?.businessName,
+          businessLocationLongitude: customer.WholesaleBusiness?.businessName,
+          businessType: customer.WholesaleBusiness?.businessName,
+          primaryEmailAddress: customer.WholesaleBusiness?.businessName,
+          primaryContact: customer.WholesaleBusiness?.businessName,
+          preferredCreditPeriod: customer.WholesaleBusiness?.businessName,
         },
       };
 
@@ -138,14 +127,14 @@ class CustomerAuthentication extends RESTDataSource {
         emailAddress,
         verificationStatus,
         associatedBusiness: {
-          businessName,
-          registeredAddress,
-          businessLocationLatitude,
-          businessLocationLongitude,
-          businessType,
-          primaryEmailAddress,
-          primaryContact,
-          preferredCreditPeriod,
+          businessName: customer.WholesaleBusiness?.businessName,
+          registeredAddress: customer.WholesaleBusiness?.businessName,
+          businessLocationLatitude: customer.WholesaleBusiness?.businessName,
+          businessLocationLongitude: customer.WholesaleBusiness?.businessName,
+          businessType: customer.WholesaleBusiness?.businessName,
+          primaryEmailAddress: customer.WholesaleBusiness?.businessName,
+          primaryContact: customer.WholesaleBusiness?.businessName,
+          preferredCreditPeriod: customer.WholesaleBusiness?.businessName,
         },
       };
     } catch (e) {

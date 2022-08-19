@@ -17,7 +17,9 @@ const typeDefs = gql`
       email: String!
       password: String!
     ): CustomerLoginResponse!
+    customerAccountCreation(input: CustomerAccountRequest): Result!
     addToCart(input: AddToCartRequest): Result!
+    removeCartItem(id: Int!): Result!
     signOut: Result!
   }
 
@@ -215,6 +217,14 @@ const typeDefs = gql`
     productId: Int!
     customerSpecification: String
     quantity: Int!
+  }
+
+  input CustomerAccountRequest {
+    firstName: String!
+    lastName: String
+    password: String!
+    msisdn: String
+    emailAddress: String!
   }
 `;
 

@@ -3,6 +3,8 @@ const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
 const { Customer } = require("../../models");
+const { decrypt } = require("../../utils/encryptDecrypt");
+const errorHandler = require("../../utils/errorHandler");
 
 class CustomerAccountAPI extends RESTDataSource {
   constructor() {
@@ -12,8 +14,17 @@ class CustomerAccountAPI extends RESTDataSource {
 
   async customerAccountCreation(args) {
     const {
-      imput: { firstName, lastName, password, msisdn, emailAddress },
+      input: { firstName, lastName, password },
     } = args;
+
+    // encrypted values
+    let {
+      input: { msisdn, emailAddress },
+    } = args;
+
+    // decrypt
+    emailAddress = decrypt(emailAddress);
+    msisdn = decrypt(msisdn);
 
     // constants not passed from the App
     const verificationStatus = 1;
@@ -31,7 +42,7 @@ class CustomerAccountAPI extends RESTDataSource {
       /*
        * Create customer account
        * */
-      await Customer.create({
+      const customer = await Customer.create({
         username,
         firstName,
         lastName,
@@ -53,10 +64,18 @@ class CustomerAccountAPI extends RESTDataSource {
         });
         return {
           status: false,
-          message: "Account creation failed. Please try again later",
+          message:
+            errorHandler(err.message) ||
+            "Account creation failed. Please try again later",
         };
       });
 
+      if (customer.status === false) {
+        return {
+          status: false,
+          message: customer.message,
+        };
+      }
       /**
        * Create a @bearerToken for the loggedIn user.
        * This will be stored in the InMemory cache, Redis. The token is to be invalidated upon logout.
@@ -83,7 +102,16 @@ class CustomerAccountAPI extends RESTDataSource {
         emailAddress,
         verificationStatus,
         bearerToken,
-        associatedBusiness: null,
+        associatedBusiness: {
+          businessName: null,
+          registeredAddress: null,
+          businessLocationLatitude: null,
+          businessLocationLongitude: null,
+          businessType: null,
+          primaryEmailAddress: null,
+          primaryContact: null,
+          preferredCreditPeriod: null,
+        },
       };
 
       /*
@@ -91,16 +119,7 @@ class CustomerAccountAPI extends RESTDataSource {
        * */
       return {
         status: true,
-        message: firstName,
-        username,
-        firstName,
-        lastName,
-        msisdn,
-        customerStatus: status,
-        businessId,
-        emailAddress,
-        verificationStatus,
-        associatedBusiness: null,
+        message: "Account creation successful",
       };
     } catch (e) {
       /*

@@ -1,5 +1,9 @@
 [
   {
+    "technicalError": "Validation error",
+    "customerMessage": "Your account already exists. Please consider resetting your password."
+  },
+  {
     "technicalError": "Full rental entrusted payment is configured for the subscriber.",
     "customerMessage": "Sorry. We couldn't complete this transaction. Please contact @Desafio_Alimentario_Care on Twitter."
   },

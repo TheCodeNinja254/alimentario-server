@@ -1,6 +1,6 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
-const { Product, Cart, CartProduct } = require("../../models");
+const { Product, Cart } = require("../../models");
 const { redis } = require("../../Redis");
 
 class CartAPI extends RESTDataSource {
@@ -147,6 +147,80 @@ class CartAPI extends RESTDataSource {
         status: true,
         message: "Added to cart successfully",
       };
+    } catch (e) {
+      /*
+       * Create a log instance with the error
+       * */
+      Logger.log("error", "Error: ", {
+        fullError: e,
+        customError: e,
+        actualError: e,
+        customerMessage:
+          "An error occurred. This is temporary and should resolve in a short time. " +
+          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+      });
+
+      return {
+        status: false,
+        message: e.message,
+      };
+    }
+  }
+
+  async removeCartItem(args) {
+    const { id } = args;
+
+    if (!this.context.session.customerDetails) {
+      throw new Error(this.signInError);
+    }
+
+    // Authentication Check
+    // To add to cart, a customer must be logged in. This will ensure we maintain the cart across sessions and devices.
+    const { bearerToken } = this.context.session.customerDetails;
+    const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
+    if (Number(signInStatus) === 0) {
+      throw new Error(this.signInError);
+    }
+
+    try {
+      /*
+       * Get products in cart from the database
+       * */
+      const {
+        customerDetails: { username },
+      } = this.context.session;
+      return await Cart.destroy({
+        where: {
+          id,
+          addedBy: username,
+        },
+      })
+        .then((count) => {
+          if (!count) {
+            return {
+              status: false,
+              message: "Item could not be removed from the cart",
+            };
+          }
+          return {
+            status: true,
+            message: "Item deleted from the cart successfully",
+          };
+        })
+        .catch((err) => {
+          Logger.log("error", "Error: ", {
+            fullError: err,
+            customError: "Could not add to cart",
+            actualError: "Could not add to cart",
+            customerMessage:
+              "We are unable to add to your cart at the moment. Please try again later!",
+          });
+          return {
+            status: false,
+            message:
+              "We are unable to add to your cart at the moment. Please try again later!",
+          };
+        });
     } catch (e) {
       /*
        * Create a log instance with the error

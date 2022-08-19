@@ -33,7 +33,11 @@ module.exports = {
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) =>
       dataSources.customerAuthentication.customerAuthentication(args),
+    customerAccountCreation: (_, args, { dataSources }) =>
+      dataSources.customerAccount.customerAccountCreation(args),
     addToCart: (_, args, { dataSources }) => dataSources.cart.addToCart(args),
+    removeCartItem: (_, args, { dataSources }) =>
+      dataSources.cart.removeCartItem(args),
     signOut: (_, __, { dataSources }) =>
       dataSources.customerAuthentication.signOut(),
   },
