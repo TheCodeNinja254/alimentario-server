@@ -34,6 +34,7 @@ class ProductsAPI extends RESTDataSource {
           `productPrice`,
           `productStatus`,
           `expiryDate`,
+          `productCategory`,
         ],
         order: [[`createdAt`, `DESC`]],
         where: {
@@ -108,6 +109,7 @@ class ProductsAPI extends RESTDataSource {
       productPrice: product.productPrice,
       productStatus: product.productStatus,
       expiryDate: product.expiryDate,
+      productCategory: product.productCategory,
     };
   }
 }

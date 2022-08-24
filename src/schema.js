@@ -113,6 +113,7 @@ const typeDefs = gql`
     stockStatus: Int
     productPrice: Int
     productStatus: Int
+    productCategory: Int
     expiryDate: Date
   }
 
