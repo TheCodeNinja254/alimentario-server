@@ -65,7 +65,7 @@ class CountriesAPI extends RESTDataSource {
 
   async addCountry(args) {
     const {
-      input: { countryName, countryFlagUri },
+      input: { countryName },
     } = args;
 
     if (!this.context.session.userDetails) {
@@ -85,7 +85,7 @@ class CountriesAPI extends RESTDataSource {
     try {
       await Country.create({
         countryName,
-        countryFlagUri,
+        countryFlagUri: "",
         addedBy: username,
       }).catch((err) => {
         Logger.log("error", "Error: ", {
@@ -126,7 +126,7 @@ class CountriesAPI extends RESTDataSource {
     }
   }
 
-  async removeCounty(args) {
+  async removeCountry(args) {
     const { id } = args;
 
     if (!this.context.session.userDetails) {

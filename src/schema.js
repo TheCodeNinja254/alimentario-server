@@ -4,12 +4,14 @@ const typeDefs = gql`
   scalar Date
 
   type Query {
-    getRegions: RegionsData
     getSignedInCustomer: SignedInCustomerResponse
     getSignedInUser: SignedInUserResponse
-    getEstates(regionId: Int!, pageSize: Int, pageNo: Int): EstatesData
     getDisplayProducts: DisplayProductsResponse
     getCartItems: CartProductsResponse
+    getCountries: CountriesResponse
+    getCounties: CountiesResponse
+    getLocales: LocalesResponse
+    getDeliveryLocations: DeliveryLocationsResponse
   }
 
   type Mutation {
@@ -21,6 +23,14 @@ const typeDefs = gql`
     addToCart(input: AddToCartRequest): Result!
     removeCartItem(id: Int!): Result!
     signOut: Result!
+    addCountry(input: AddCountryInput): Result!
+    removeCountry(id: Int!): Result!
+    addCounty(input: AddCountyInput): Result!
+    removeCounty(id: Int!): Result!
+    addLocale(input: AddLocaleInput): Result!
+    removeLocale(id: Int!): Result!
+    addDeliveryLocation(input: AddDeliveryLocation): Result!
+    removeDeliveryLocation(id: Int!): Result!
   }
 
   type Result {
@@ -33,6 +43,60 @@ const typeDefs = gql`
     status: Boolean!
     message: String
     productsList: [DisplayProductsData]
+  }
+
+  type CountriesResponse {
+    status: Boolean!
+    message: String
+    countriesList: [CountriesData]
+  }
+
+  type CountiesResponse {
+    status: Boolean!
+    message: String
+    countiesList: [CountiesData]
+  }
+
+  type DeliveryLocationsResponse {
+    status: Boolean!
+    message: String
+    locationsList: [DeliveryLocationsData]
+  }
+
+  type LocalesResponse {
+    status: Boolean!
+    message: String
+    countiesList: [LocalesData]
+  }
+
+  type CountriesData {
+    id: Int!
+    countryName: String!
+    countyFlagUri: String
+  }
+
+  type CountiesData {
+    id: Int!
+    countyName: String!
+  }
+
+  type LocalesData {
+    id: Int!
+    localeName: String!
+  }
+
+  type DeliveryLocationsData {
+    id: Int!
+    countryId: Int!
+    countyId: Int!
+    localeId: Int!
+    deliveryPreciseLocation: String
+    deliveryAdditionalNotes: String
+    alternativePhoneNumber: String
+    countryName: String
+    countyFlagUri: String
+    countyName: String
+    countyName: String
   }
 
   type CartProductsResponse {
@@ -137,87 +201,32 @@ const typeDefs = gql`
     quantity: Int
   }
 
-  type createLeadResult {
-    status: Boolean!
-    message: String!
-    estateName: String
-    preferredDate: Date
-    preferredTimePeriod: String
-  }
-
-  type ZonesData {
-    getZonesStatus: Boolean!
-    zones: [Zones]
-  }
-  type Zones {
-    id: Int
-    zoneName: String
-    assignedDealerId: String
-    status: Int
-    createdAt: String
-  }
-
-  type RegionsData {
-    getRegionsStatus: Boolean!
-    regions: [Regions]
-  }
-
-  type Regions {
-    regionId: String
-    regionName: String
-  }
-
-  type EstatesData {
-    getEstatesStatus: Boolean!
-    getEstatesCount: Int
-    estates: [Estates]
-  }
-
-  type Estates {
-    estateId: Int
-    id: Int
-    estateName: String!
-    regionId: Int
-    status: String
-    contractorAgencyId: String
-    oltName: String
-    noOfHouses: String
-    occupancy: String
-    coordinates: String
-    houseNumbers: String
-    zoneId: Int
-    tierNumber: String
-    createdBy: String
-    createdAt: String
-    updatedAt: String
-    deletedAt: String
-  }
-
-  type Lead {
-    tId: Int!
-    firstName: String
-    middleName: String
-    lastName: String
-    sponsorMsisdn: String
-    sponsorAlternativeMsisdn: String
-    emailAddress: String
-    productId: String
-    preferredDate: String
-    preferredTimePeriod: String
-    estateId: String
-    estateName: String
-    areaName: String
-    streetName: String
-    houseNumber: String
-    doctypeId: Int
-    documentNumber: Int
-    productType: String
-  }
-
   input AddToCartRequest {
     productId: Int!
     customerSpecification: String
     quantity: Int!
+  }
+
+  input AddCountryInput {
+    countryName: String!
+  }
+
+  input AddCountyInput {
+    countryName: String!
+    countryId: Int!
+  }
+
+  input AddLocaleInput {
+    localeName: String!
+    countyId: Int!
+  }
+
+  input AddDeliveryLocation {
+    countyId: Int!
+    localeId: Int!
+    deliveryPreciseLocation: String
+    deliveryAdditionalNotes: String
+    alternativePhoneNumber: String
   }
 
   input CustomerAccountRequest {

@@ -27,6 +27,10 @@ const SystemUserAuthentication = require("./datasources/Authentication/SystemUse
 const ProductsAPI = require("./datasources/Products/Products");
 const CartAPI = require("./datasources/Cart");
 const CustomerAccountAPI = require("./datasources/CustomerAccount");
+const CountriesAPI = require("./datasources/Locations/Countries");
+const CountiesAPI = require("./datasources/Locations/Counties");
+const LocalesAPI = require("./datasources/Locations/Locales");
+const DeliveryLocationsAPI = require("./datasources/Locations/DeliveryLocations");
 
 const server = new ApolloServer({
   typeDefs,
@@ -79,6 +83,10 @@ const server = new ApolloServer({
     products: new ProductsAPI(),
     cart: new CartAPI(),
     customerAccount: new CustomerAccountAPI(),
+    countries: new CountriesAPI(),
+    counties: new CountiesAPI(),
+    locales: new LocalesAPI(),
+    deliveryLocations: new DeliveryLocationsAPI(),
   }),
   formatError: (err) => {
     // error variables override and redefine them everytime errors fallback here

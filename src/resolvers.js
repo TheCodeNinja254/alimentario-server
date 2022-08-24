@@ -26,9 +26,14 @@ module.exports = {
     getCartItems: (_, __, { dataSources }) => dataSources.cart.getCartItems(),
     getSignedInUser: (_, __, { dataSources }) =>
       dataSources.authenticationSessions.getSignedInUser(),
-    getRegions: (_, args, { dataSources }) => dataSources.location.getRegions(),
-    getEstates: (_, args, { dataSources }) =>
-      dataSources.location.getEstates(args),
+    getCountries: (_, __, { dataSources }) =>
+      dataSources.countries.getCountries(),
+    getCounties: (_, args, { dataSources }) =>
+      dataSources.counties.getCounties(args),
+    getLocales: (_, args, { dataSources }) =>
+      dataSources.locales.getLocales(args),
+    getDeliveryLocations: (_, args, { dataSources }) =>
+      dataSources.deliveryLocations.getDeliveryLocations(args),
   },
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) =>
@@ -40,5 +45,19 @@ module.exports = {
       dataSources.cart.removeCartItem(args),
     signOut: (_, __, { dataSources }) =>
       dataSources.customerAuthentication.signOut(),
+    addDeliveryLocation: (_, args, { dataSources }) =>
+      dataSources.deliveryLocations.addDeliveryLocation(args),
+    removeDeliveryLocation: (_, args, { dataSources }) =>
+      dataSources.deliveryLocations.removeDeliveryLocation(args),
+    addCountry: (_, args, { dataSources }) =>
+      dataSources.countries.addCountry(args),
+    removeCountry: (_, args, { dataSources }) =>
+      dataSources.countries.removeCountry(args),
+    removeCounty: (_, args, { dataSources }) =>
+      dataSources.counties.removeCounty(args),
+    addCounty: (_, args, { dataSources }) =>
+      dataSources.counties.addCounty(args),
+    addLocale: (_, args, { dataSources }) =>
+      dataSources.locales.addLocale(args),
   },
 };
