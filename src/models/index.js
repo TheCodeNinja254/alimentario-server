@@ -61,6 +61,11 @@ Customer.belongsTo(WholesaleBusiness, { foreignKey: "businessId" }); // fk belon
 // the same product can be in the cart table multiple times (Under the same or different customer)
 Cart.belongsTo(Product, { foreignKey: "productId" });
 
+// Delivery location has country, county/state, locale parameters. It belongs to all these.
+DeliveryLocations.belongsTo(Country, { foreignKey: "countryId" });
+DeliveryLocations.belongsTo(County, { foreignKey: "countyId" });
+DeliveryLocations.belongsTo(Locale, { foreignKey: "localeId" });
+
 /*
  * Module Exports
  * */

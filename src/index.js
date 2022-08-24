@@ -73,7 +73,6 @@ const server = new ApolloServer({
     },
   },
   dataSources: () => ({
-    location: new LocationsAPI(),
     customerAuthentication: new CustomerAuthentication(),
     authenticationSessions: new AuthenticationSessions(),
     systemUserAuthentication: new SystemUserAuthentication(),
