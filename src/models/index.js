@@ -19,6 +19,10 @@ const UserModel = require("./Definitions/User");
 const WholesaleBusinessModel = require("./Definitions/WholesaleBusiness");
 const CartModel = require("./Definitions/Cart");
 const CartProductModel = require("./Definitions/CartProduct");
+const CountryModel = require("./Definitions/Country");
+const CountyModel = require("./Definitions/County");
+const LocaleModel = require("./Definitions/Locale");
+const DeliveryLocationsModel = require("./Definitions/DeliveryLocations");
 
 /*
  * Declare & Invoke models
@@ -38,6 +42,10 @@ const User = UserModel(sequelize, Sequelize);
 const WholesaleBusiness = WholesaleBusinessModel(sequelize, Sequelize);
 const Cart = CartModel(sequelize, Sequelize);
 const CartProduct = CartProductModel(sequelize, Sequelize);
+const Country = CountryModel(sequelize, Sequelize);
+const County = CountyModel(sequelize, Sequelize);
+const DeliveryLocations = DeliveryLocationsModel(sequelize, Sequelize);
+const Locale = LocaleModel(sequelize, Sequelize);
 
 /**
  * Define Database Associations
@@ -73,4 +81,8 @@ module.exports = {
   WholesaleBusiness,
   Cart,
   CartProduct,
+  County,
+  Country,
+  DeliveryLocations,
+  Locale,
 };

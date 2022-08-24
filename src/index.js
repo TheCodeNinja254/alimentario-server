@@ -21,7 +21,6 @@ const configurations =
     ? require("../configs/production.json")
     : require("../configs/development.json");
 
-const LocationsAPI = require("./datasources/Locations");
 const CustomerAuthentication = require("./datasources/Authentication/CustomerAuthentication");
 const AuthenticationSessions = require("./datasources/Authentication/AuthenticationSessions");
 const SystemUserAuthentication = require("./datasources/Authentication/SystemUserAuthentication");
