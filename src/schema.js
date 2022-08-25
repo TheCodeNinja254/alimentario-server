@@ -95,6 +95,7 @@ const typeDefs = gql`
     countryName: String
     countyFlagUri: String
     countyName: String
+    localeName: String
   }
 
   type CartProductsResponse {

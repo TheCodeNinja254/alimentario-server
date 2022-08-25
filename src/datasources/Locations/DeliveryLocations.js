@@ -4,9 +4,9 @@ const { DeliveryLocations, Country, County, Locale } = require("../../models");
 const { redis } = require("../../Redis");
 
 class DeliveryLocationsAPI extends RESTDataSource {
-  // eslint-disable-next-line no-useless-constructor
   constructor() {
     super();
+    this.signInError = "Please sign in";
   }
 
   /**
@@ -106,7 +106,7 @@ class DeliveryLocationsAPI extends RESTDataSource {
       },
     } = args;
 
-    if (!this.context.session.userDetails) {
+    if (!this.context.session.customerDetails) {
       throw new Error(this.signInError);
     }
 
@@ -132,6 +132,7 @@ class DeliveryLocationsAPI extends RESTDataSource {
         alternativePhoneNumber,
         addedBy: username,
       }).catch((err) => {
+        console.error(err);
         Logger.log("error", "Error: ", {
           fullError: err,
           customError: "Could not add to locales list",
@@ -154,6 +155,7 @@ class DeliveryLocationsAPI extends RESTDataSource {
       /*
        * Create a log instance with the error
        * */
+      console.error(e);
       Logger.log("error", "Error: ", {
         fullError: e,
         customError: e,
@@ -246,8 +248,9 @@ class DeliveryLocationsAPI extends RESTDataSource {
       deliveryAdditionalNotes: locale.deliveryAdditionalNotes,
       alternativePhoneNumber: locale.alternativePhoneNumber,
       countryName: locale.Country.countryName,
-      countyFlagUri: locale.Country.countyFlagUri,
+      countryFlagUri: locale.Country.countyFlagUri,
       localeName: locale.Locale.localeName,
+      countyName: locale.County.countyName,
     };
   }
 }

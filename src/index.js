@@ -85,7 +85,7 @@ const server = new ApolloServer({
     customerAccount: new CustomerAccountAPI(),
     countries: new CountriesAPI(),
     counties: new CountiesAPI(),
-    locales: new LocalesAPI(),
+    deliveryAreas: new LocalesAPI(),
     deliveryLocations: new DeliveryLocationsAPI(),
   }),
   formatError: (err) => {

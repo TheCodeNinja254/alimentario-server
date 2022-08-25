@@ -31,7 +31,7 @@ module.exports = {
     getCounties: (_, args, { dataSources }) =>
       dataSources.counties.getCounties(args),
     getLocales: (_, args, { dataSources }) =>
-      dataSources.locales.getLocales(args),
+      dataSources.deliveryAreas.getLocales(args),
     getDeliveryLocations: (_, args, { dataSources }) =>
       dataSources.deliveryLocations.getDeliveryLocations(args),
   },
@@ -58,8 +58,8 @@ module.exports = {
     addCounty: (_, args, { dataSources }) =>
       dataSources.counties.addCounty(args),
     addLocale: (_, args, { dataSources }) =>
-      dataSources.locales.addLocale(args),
+      dataSources.deliveryAreas.addLocale(args),
     removeLocale: (_, args, { dataSources }) =>
-      dataSources.locales.removeLocale(args),
+      dataSources.deliveryAreas.removeLocale(args),
   },
 };
