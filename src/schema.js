@@ -9,8 +9,8 @@ const typeDefs = gql`
     getDisplayProducts: DisplayProductsResponse
     getCartItems: CartProductsResponse
     getCountries: CountriesResponse
-    getCounties: CountiesResponse
-    getLocales: LocalesResponse
+    getCounties(countryId: Int!): CountiesResponse
+    getLocales(countyId: Int!): LocalesResponse
     getDeliveryLocations: DeliveryLocationsResponse
   }
 
@@ -36,7 +36,6 @@ const typeDefs = gql`
   type Result {
     status: Boolean!
     message: String!
-    role: String
   }
 
   type DisplayProductsResponse {
@@ -66,7 +65,7 @@ const typeDefs = gql`
   type LocalesResponse {
     status: Boolean!
     message: String
-    countiesList: [LocalesData]
+    localesList: [LocalesData]
   }
 
   type CountriesData {
@@ -81,8 +80,8 @@ const typeDefs = gql`
   }
 
   type LocalesData {
-    id: Int!
-    localeName: String!
+    id: Int
+    localeName: String
   }
 
   type DeliveryLocationsData {
@@ -95,7 +94,6 @@ const typeDefs = gql`
     alternativePhoneNumber: String
     countryName: String
     countyFlagUri: String
-    countyName: String
     countyName: String
   }
 

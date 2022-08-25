@@ -59,5 +59,7 @@ module.exports = {
       dataSources.counties.addCounty(args),
     addLocale: (_, args, { dataSources }) =>
       dataSources.locales.addLocale(args),
+    removeLocale: (_, args, { dataSources }) =>
+      dataSources.locales.removeLocale(args),
   },
 };

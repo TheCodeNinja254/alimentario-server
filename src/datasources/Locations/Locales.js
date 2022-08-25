@@ -196,7 +196,7 @@ class LocalesAPI extends RESTDataSource {
   static localesReducer(locale) {
     return {
       id: locale.id,
-      localeName: locale.countyName,
+      localeName: locale.localeName,
     };
   }
 }

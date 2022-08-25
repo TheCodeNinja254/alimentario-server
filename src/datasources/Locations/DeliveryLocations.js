@@ -128,7 +128,7 @@ class DeliveryLocationsAPI extends RESTDataSource {
         countyId,
         localeId,
         deliveryPreciseLocation,
-        deliveryAdditionalNotes,
+        deliveryAdditionalNotes: deliveryAdditionalNotes || "",
         alternativePhoneNumber,
         addedBy: username,
       }).catch((err) => {
@@ -247,7 +247,6 @@ class DeliveryLocationsAPI extends RESTDataSource {
       alternativePhoneNumber: locale.alternativePhoneNumber,
       countryName: locale.Country.countryName,
       countyFlagUri: locale.Country.countyFlagUri,
-      countyName: locale.County.localeName,
       localeName: locale.Locale.localeName,
     };
   }
