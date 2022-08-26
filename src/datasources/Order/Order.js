@@ -1,10 +1,9 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
-const { County } = require("../../models");
+const { County, Order, OrderSpecification, Cart } = require("../../models");
 const { redis } = require("../../Redis");
 
-class CountiesAPI extends RESTDataSource {
-  // eslint-disable-next-line no-useless-constructor
+class OrdersAPI extends RESTDataSource {
   constructor() {
     super();
     this.signInError = "Please sign in";
@@ -38,7 +37,7 @@ class CountiesAPI extends RESTDataSource {
 
       const countiesList =
         counties && Array.isArray(counties) && counties.length > 0
-          ? counties.map((county) => CountiesAPI.countiesReducer(county))
+          ? counties.map((county) => OrdersAPI.countiesReducer(county))
           : [];
 
       return {
@@ -66,19 +65,21 @@ class CountiesAPI extends RESTDataSource {
     }
   }
 
-  async addCounty(args) {
+  async addOrder(args) {
     const {
-      input: { countyName, countryId },
+      input: { cartItemsList, amountDue, deliveryLocationId, orderType },
     } = args;
 
-    if (!this.context.session.userDetails) {
+    if (!this.context.session.customerDetails) {
       throw new Error(this.signInError);
     }
+
+    const paymentId = 1;
 
     // Authentication Check
     // To add to cart, a customer must be logged in. This will ensure we maintain the cart across sessions and devices.
     const {
-      userDetails: { username, bearerToken },
+      customerDetails: { username, bearerToken },
     } = this.context.session;
     const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
     if (Number(signInStatus) === 0) {
@@ -86,93 +87,60 @@ class CountiesAPI extends RESTDataSource {
     }
 
     try {
-      await County.create({
-        countyName,
-        countryId,
+      await Order.create({
+        amountDue,
+        deliveryLocationId,
+        orderType,
+        paymentId,
         addedBy: username,
-      }).catch((err) => {
-        Logger.log("error", "Error: ", {
-          fullError: err,
-          customError: "Could not add to county list",
-          actualError: "Could not add to county list",
-          customerMessage:
-            "We are unable to add the county at the moment. Please try again later!",
-        });
-        return {
-          status: false,
-          message:
-            "We are unable to add the county at the moment. Please try again later!",
-        };
-      });
-
-      return {
-        status: true,
-        message: "County added successfully",
-      };
-    } catch (e) {
-      /*
-       * Create a log instance with the error
-       * */
-      Logger.log("error", "Error: ", {
-        fullError: e,
-        customError: e,
-        actualError: e,
-        customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
-      });
-
-      return {
-        status: false,
-        message: e.message,
-      };
-    }
-  }
-
-  async removeCounty(args) {
-    const { id } = args;
-
-    if (!this.context.session.userDetails) {
-      throw new Error(this.signInError);
-    }
-
-    // Authentication Check
-    // To add to cart, a customer must be logged in. This will ensure we maintain the cart across sessions and devices.
-    const { bearerToken } = this.context.session.userDetails;
-    const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
-    if (Number(signInStatus) === 0) {
-      throw new Error(this.signInError);
-    }
-
-    try {
-      return await County.destroy({
-        where: {
-          id,
-        },
       })
-        .then((count) => {
-          if (!count) {
-            return {
-              status: false,
-              message: "County could not be deleted",
-            };
+        .then((res) => {
+          if (Array.isArray(cartItemsList) && cartItemsList.length > 0) {
+            cartItemsList.map(async (item) => {
+              await OrderSpecification.create({
+                orderId: res.id,
+                productId: item.productId,
+                productQuantity: item.quantity,
+                orderSpecification: item.customerSpecification,
+                addedBy: username,
+              });
+            });
           }
+        })
+        .then(() => {
+          cartItemsList.map(async (cartItem) => {
+            await Cart.destroy({
+              where: {
+                id: cartItem.id,
+              },
+            }).catch((err) => {
+              Logger.log("error", "Error: ", {
+                fullError: err,
+                customError: "Could not delete cart item",
+                actualError: "Could not delete cart item",
+                customerMessage:
+                  "We are unable to remove the item from the cart.",
+              });
+            });
+          });
+        })
+        .then(() => {
           return {
             status: true,
-            message: "County could not be deleted",
+            message: "Order created successfully",
           };
         })
         .catch((err) => {
           Logger.log("error", "Error: ", {
             fullError: err,
-            customError: "county could not be deleted",
-            actualError: "county could not be deleted",
+            customError: "Could not create order",
+            actualError: "Could not create order",
             customerMessage:
-              "county could not be deleted. Please try again later!",
+              "We are unable to add the order. Please try again later!",
           });
           return {
             status: false,
-            message: "County could not be deleted. Please try again later!",
+            message: "We are unable to add the order. Please try again later!",
           };
         });
     } catch (e) {
@@ -203,4 +171,4 @@ class CountiesAPI extends RESTDataSource {
   }
 }
 
-module.exports = CountiesAPI;
+module.exports = OrdersAPI;

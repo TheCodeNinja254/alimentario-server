@@ -31,6 +31,7 @@ const typeDefs = gql`
     removeLocale(id: Int!): Result!
     addDeliveryLocation(input: AddDeliveryLocation): Result!
     removeDeliveryLocation(id: Int!): Result!
+    addOrder(input: ConfirmOrderInput): Result!
   }
 
   type Result {
@@ -198,6 +199,7 @@ const typeDefs = gql`
     customerSpecification: String
     createdAt: Date
     quantity: Int
+    productId: Int
   }
 
   input AddToCartRequest {
@@ -226,6 +228,20 @@ const typeDefs = gql`
     deliveryPreciseLocation: String
     deliveryAdditionalNotes: String
     alternativePhoneNumber: String
+  }
+
+  input ConfirmOrderInput {
+    cartItemsList: [CartItemsInput]
+    amountDue: Int!
+    deliveryLocationId: Int!
+    orderType: String!
+  }
+
+  input CartItemsInput {
+    id: Int!
+    productId: Int!
+    quantity: Int!
+    customerSpecification: String!
   }
 
   input CustomerAccountRequest {

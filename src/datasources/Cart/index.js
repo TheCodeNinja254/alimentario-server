@@ -44,6 +44,7 @@ class CartAPI extends RESTDataSource {
             `productPrice`,
             `productStatus`,
             `expiryDate`,
+            `id`,
           ],
           required: true,
           where: {
@@ -65,14 +66,10 @@ class CartAPI extends RESTDataSource {
         };
       });
 
-      console.log(JSON.stringify(cartItems));
-
       const cartItemsList =
         cartItems && Array.isArray(cartItems) && cartItems.length > 0
           ? cartItems.map((cartItem) => CartAPI.cartReducer(cartItem))
           : [];
-
-      console.log(cartItemsList);
 
       return {
         status: true,
@@ -262,6 +259,7 @@ class CartAPI extends RESTDataSource {
       productPrice: cartItem.Product.productPrice,
       productStatus: cartItem.Product.productStatus,
       expiryDate: cartItem.Product.expiryDate,
+      productId: cartItem.Product.id,
       customerSpecification: cartItem.customerSpecification,
       createdAt: cartItem.createdAt,
       quantity: cartItem.quantity,

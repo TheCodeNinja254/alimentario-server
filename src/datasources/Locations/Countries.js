@@ -7,6 +7,7 @@ class CountriesAPI extends RESTDataSource {
   // eslint-disable-next-line no-useless-constructor
   constructor() {
     super();
+    this.signInError = "Please sign in";
   }
 
   /**

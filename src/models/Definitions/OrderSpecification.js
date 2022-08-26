@@ -19,11 +19,8 @@ module.exports = (sequelize, Sequelize) =>
       productQuantity: {
         type: Sequelize.INTEGER,
       },
-      orderSpacification: {
+      orderSpecification: {
         type: Sequelize.STRING(255),
-      },
-      msisdn: {
-        type: Sequelize.STRING(30),
       },
       addedBy: Sequelize.STRING(30), // customerId
       updatedBy: Sequelize.STRING(30),

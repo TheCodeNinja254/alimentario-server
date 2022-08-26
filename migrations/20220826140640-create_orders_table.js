@@ -23,26 +23,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      deliveryPreference: {
-        type: Sequelize.STRING(255),
-      },
-      deliveryLocation: {
-        type: Sequelize.STRING(255),
-      },
-      deliveryPreciseLocation: {
-        type: Sequelize.STRING(255),
-      },
-      deliveryLocationLatitude: {
-        type: Sequelize.STRING(255),
-      },
-      deliveryLocationLongitude: {
-        type: Sequelize.STRING(255),
-      },
-      deliveryAdditionalNotes: {
-        type: Sequelize.STRING(255),
-      },
-      alternativePhoneNumber: {
-        type: Sequelize.STRING(30),
+      deliveryLocationId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       orderStatus: {
         type: Sequelize.STRING(30),

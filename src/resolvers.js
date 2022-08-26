@@ -61,5 +61,6 @@ module.exports = {
       dataSources.deliveryAreas.addLocale(args),
     removeLocale: (_, args, { dataSources }) =>
       dataSources.deliveryAreas.removeLocale(args),
+    addOrder: (_, args, { dataSources }) => dataSources.orders.addOrder(args),
   },
 };
