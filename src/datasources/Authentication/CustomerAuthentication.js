@@ -3,6 +3,7 @@ const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
 const { Customer, WholesaleBusiness } = require("../../models");
+const {decrypt} = require("../../utils/encryptDecrypt");
 
 class CustomerAuthentication extends RESTDataSource {
   constructor() {
@@ -12,9 +13,9 @@ class CustomerAuthentication extends RESTDataSource {
 
   // eslint-disable-next-line no-unused-vars
   async customerAuthentication(args) {
-    // const { email, password } = args;
-    const email = "m.mwangi.fredrick";
-    const password = "trial";
+    const { email, password } = args;
+    // const email = "m.mwangi.fredrick";
+    // const password = "trial";
 
     try {
       /*
@@ -32,8 +33,8 @@ class CustomerAuthentication extends RESTDataSource {
           `verificationStatus`,
         ],
         where: {
-          username: email,
-          password,
+          username: decrypt(email),
+          password: decrypt(password),
           status: 1,
         },
         include: {
