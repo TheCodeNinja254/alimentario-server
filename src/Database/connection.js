@@ -10,7 +10,19 @@ const sequelize = new Sequelize(
   {
     host: configValues.HOST,
     dialect: configValues.DIALECT,
-  }
+    dialectOptions: process.env.NODE_ENV !== 'production' && {
+      socketPath: '/tmp/mysql.sock',
+    },
+  },
 );
+
+// sequelize
+//     .authenticate()
+//     .then(() => {
+//         console.log('Connection has been established successfully.');
+//     })
+//     .catch(err => {
+//         console.error('Unable to connect to the database:', err);
+//     });
 
 module.exports = sequelize;

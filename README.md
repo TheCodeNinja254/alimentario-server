@@ -36,7 +36,7 @@ npm install --save mysql2
 # To create a table from a model
 sequelize migration:create --name create_[table_name]_table
 
-# To create the database with tables
+# To create the database with all tables
 sequelize db:migrate
 
 # To undo the latest database action

@@ -1,7 +1,15 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
+const { Sequelize } = require("sequelize");
 const Logger = require("../../utils/logging");
-const { County, Order, OrderSpecification, Cart } = require("../../models");
+const {
+  County, Order, OrderSpecification, Cart,
+} = require("../../models");
 const { redis } = require("../../Redis");
+const sequelize = require("../../Database/connection");
+const {
+  selectOrdersCountQuery, selectOrdersWithoutStatusQuery, selectOrderSpecificationsQuery,
+  selectPendingOrdersQuery, selectClosedOrdersQuery, selectPendingOrdersCountQuery, selectClosedOrdersCountQuery,
+} = require("../../Database/queryStrings");
 
 class OrdersAPI extends RESTDataSource {
   constructor() {
@@ -9,10 +17,6 @@ class OrdersAPI extends RESTDataSource {
     this.signInError = "Please sign in";
   }
 
-  /**
-   * Get counties in db for the public web-app
-   * @Returns: object with counties, count and query status
-   * */
   async getCounties(args) {
     const { countryId } = args;
     try {
@@ -26,19 +30,18 @@ class OrdersAPI extends RESTDataSource {
           customError: "Could not fetch counties",
           actualError: "Could not fetch counties",
           customerMessage:
-            "Nothing to show here right now. Please come back later as we work to resolve this.",
+                        "Nothing to show here right now. Please come back later as we work to resolve this.",
         });
         return {
           status: false,
           message:
-            "Nothing to show here right now. Items you add to your cart will appear here.",
+                        "Nothing to show here right now. Items you add to your cart will appear here.",
         };
       });
 
-      const countiesList =
-        counties && Array.isArray(counties) && counties.length > 0
-          ? counties.map((county) => OrdersAPI.countiesReducer(county))
-          : [];
+      const countiesList = counties && Array.isArray(counties) && counties.length > 0
+        ? counties.map((county) => OrdersAPI.countiesReducer(county))
+        : [];
 
       return {
         status: true,
@@ -46,16 +49,13 @@ class OrdersAPI extends RESTDataSource {
         countiesList,
       };
     } catch (e) {
-      /*
-       * Create a log instance with the error
-       * */
       Logger.log("error", "Error: ", {
         fullError: e,
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+                    "An error occurred. This is temporary and should resolve in a short time. "
+                    + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
@@ -67,7 +67,9 @@ class OrdersAPI extends RESTDataSource {
 
   async addOrder(args) {
     const {
-      input: { cartItemsList, amountDue, deliveryLocationId, orderType },
+      input: {
+        cartItemsList, amountDue, deliveryLocationId, orderType,
+      },
     } = args;
 
     if (!this.context.session.customerDetails) {
@@ -76,15 +78,19 @@ class OrdersAPI extends RESTDataSource {
 
     const paymentId = 1;
 
-    // Authentication Check
-    // To add to cart, a customer must be logged in. This will ensure we maintain the cart across sessions and devices.
     const {
       customerDetails: { username, bearerToken },
     } = this.context.session;
+
     const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
     if (Number(signInStatus) === 0) {
       throw new Error(this.signInError);
     }
+
+    let result = {
+      status: false,
+      message: "We are unable to create your order. We regret this and will fix shortly. Please try again later!",
+    };
 
     try {
       await Order.create({
@@ -118,16 +124,16 @@ class OrdersAPI extends RESTDataSource {
                 fullError: err,
                 customError: "Could not delete cart item",
                 actualError: "Could not delete cart item",
-                customerMessage:
-                  "We are unable to remove the item from the cart.",
+                customerMessage: "We are unable to remove the item from the cart.",
               });
             });
           });
         })
         .then(() => {
-          return {
+          result = {
             status: true,
-            message: "Order created successfully",
+            message: "Good job! Your order is made. We will prepare the sumptuous meal and bring it to you in a time. "
+                            + "You can proceed to track your order. Thank you for shopping with Desafio.",
           };
         })
         .catch((err) => {
@@ -136,24 +142,149 @@ class OrdersAPI extends RESTDataSource {
             customError: "Could not create order",
             actualError: "Could not create order",
             customerMessage:
-              "We are unable to add the order. Please try again later!",
+                            "We are unable to add the order. Please try again later!",
           });
-          return {
+          result = {
             status: false,
-            message: "We are unable to add the order. Please try again later!",
+            message: "We are unable to create your order. We regret this and will fix shortly. Please try again later!",
           };
         });
+
+      return result;
     } catch (e) {
-      /*
-       * Create a log instance with the error
-       * */
       Logger.log("error", "Error: ", {
         fullError: e,
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+                    "An error occurred. This is temporary and should resolve in a short time. "
+                    + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+      });
+
+      return {
+        status: false,
+        message: e.message,
+      };
+    }
+  }
+
+  async getMyOrders(args) {
+    const { pageSize, orderStatus } = args;
+
+    if (!this.context.session.customerDetails) {
+      throw new Error(this.signInError);
+    }
+
+    const {
+      customerDetails: { username, bearerToken },
+    } = this.context.session;
+
+    const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
+    if (Number(signInStatus) === 0) {
+      throw new Error(this.signInError);
+    }
+
+    try {
+      let result = {
+        status: false,
+        message: "No orders to show",
+        myOrders: [],
+      };
+
+      const selectOrdersQuery = (_username, _pageSize) => {
+        switch (orderStatus) {
+          case 'pending':
+            return selectPendingOrdersQuery(_username, _pageSize);
+          case 'closed':
+            return selectClosedOrdersQuery(_username, _pageSize);
+          default:
+            return selectOrdersWithoutStatusQuery(_username, _pageSize);
+        }
+      };
+
+      const selectCountQuery = (_username) => {
+        switch (orderStatus) {
+          case 'pending':
+            return selectPendingOrdersCountQuery(_username);
+          case 'closed':
+            return selectClosedOrdersCountQuery(_username);
+          default:
+            return selectOrdersCountQuery(_username);
+        }
+      };
+
+      const orders = await sequelize.query(selectOrdersQuery(username, pageSize), {
+        type: Sequelize.QueryTypes.SELECT,
+      });
+
+      if (orders && orders.length > 0) {
+        const ordersCount = await sequelize.query(selectCountQuery(username), { type: Sequelize.QueryTypes.SELECT });
+
+        const ordersMap = {};
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const order of orders) {
+          const { orderId } = order;
+
+          if (!ordersMap[orderId]) {
+            ordersMap[orderId] = {
+              orderId: order.orderId,
+              paymentId: order.paymentId,
+              amountDue: order.amountDue,
+              deliveryLocationId: order.deliveryLocationId,
+              orderStatus: order.orderStatus,
+              orderType: order.orderType,
+              addedBy: order.addedBy,
+              updatedBy: order.updatedBy,
+              createdAt: order.createdAt,
+              updatedAt: order.updatedAt,
+              countryId: order.countryId,
+              countyId: order.countyId,
+              localeId: order.localeId,
+              deliveryLocation: {
+                id: order.deliveryLocationId,
+                deliveryLocation: order.deliveryLocation,
+                deliveryPreciseLocation: order.deliveryPreciseLocation,
+                latitude: order.deliveryLocationLatitude,
+                longitude: order.deliveryLocationLongitude,
+                additionalNotes: order.deliveryAdditionalNotes,
+                alternativePhoneNumber: order.alternativePhoneNumber,
+                countryName: order.countryName,
+                countyName: order.countyName,
+                localeName: order.localeName,
+              },
+              specifications: [],
+            };
+          }
+
+          // eslint-disable-next-line no-await-in-loop
+          const specifications = await sequelize.query(selectOrderSpecificationsQuery(orderId), { type: Sequelize.QueryTypes.SELECT });
+
+          ordersMap[orderId].specifications.push(...specifications);
+        }
+
+        const ordersArray = Object.values(ordersMap);
+
+        result = {
+          status: true,
+          message: "Orders fetched successfully!",
+          myOrders: {
+            currentSelection: pageSize,
+            totalElements: ordersCount[0].orderCount || 0,
+            content: ordersArray.reverse(),
+          },
+        };
+        return result;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      Logger.log("error", "Error: ", {
+        fullError: e,
+        customError: e,
+        actualError: e,
+        customerMessage: "An error occurred. This is temporary and should resolve in a short time. "
+                    + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

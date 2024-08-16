@@ -16,9 +16,6 @@ class CartAPI extends RESTDataSource {
    * */
   async getCartItems() {
     try {
-      /*
-       * Get products in cart from the database
-       * */
       const {
         customerDetails: { username },
       } = this.context.session;
@@ -66,10 +63,9 @@ class CartAPI extends RESTDataSource {
         };
       });
 
-      const cartItemsList =
-        cartItems && Array.isArray(cartItems) && cartItems.length > 0
-          ? cartItems.map((cartItem) => CartAPI.cartReducer(cartItem))
-          : [];
+      const cartItemsList = cartItems && Array.isArray(cartItems) && cartItems.length > 0
+        ? cartItems.map((cartItem) => CartAPI.cartReducer(cartItem))
+        : [];
 
       return {
         status: true,
@@ -77,16 +73,13 @@ class CartAPI extends RESTDataSource {
         cartItemsList,
       };
     } catch (e) {
-      /*
-       * Create a log instance with the error
-       * */
       Logger.log("error", "Error: ", {
         fullError: e,
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
@@ -105,8 +98,6 @@ class CartAPI extends RESTDataSource {
       throw new Error(this.signInError);
     }
 
-    // Authentication Check
-    // To add to cart, a customer must be logged in. This will ensure we maintain the cart across sessions and devices.
     const { bearerToken } = this.context.session.customerDetails;
     const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
     if (Number(signInStatus) === 0) {
@@ -114,9 +105,6 @@ class CartAPI extends RESTDataSource {
     }
 
     try {
-      /*
-       * Get products in cart from the database
-       * */
       const {
         customerDetails: { username },
       } = this.context.session;
@@ -153,8 +141,8 @@ class CartAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
@@ -180,9 +168,6 @@ class CartAPI extends RESTDataSource {
     }
 
     try {
-      /*
-       * Get products in cart from the database
-       * */
       const {
         customerDetails: { username },
       } = this.context.session;
@@ -219,16 +204,13 @@ class CartAPI extends RESTDataSource {
           };
         });
     } catch (e) {
-      /*
-       * Create a log instance with the error
-       * */
       Logger.log("error", "Error: ", {
         fullError: e,
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
@@ -238,11 +220,6 @@ class CartAPI extends RESTDataSource {
     }
   }
 
-  /*
-   * Map products in cart
-   *
-   * Something about this Many to many is off. To be revisited
-   * */
   static cartReducer(cartItem) {
     return {
       id: cartItem.id,

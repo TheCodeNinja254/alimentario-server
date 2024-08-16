@@ -19,48 +19,30 @@ module.exports = {
     },
   }),
   Query: {
-    getSignedInCustomer: (_, __, { dataSources }) =>
-      dataSources.authenticationSessions.getSignedInCustomer(),
-    getDisplayProducts: (_, __, { dataSources }) =>
-      dataSources.products.getDisplayProducts(),
+    getSignedInCustomer: (_, __, { dataSources }) => dataSources.authenticationSessions.getSignedInCustomer(),
+    getDisplayProducts: (_, args, { dataSources }) => dataSources.products.getDisplayProducts(args),
     getCartItems: (_, __, { dataSources }) => dataSources.cart.getCartItems(),
-    getSignedInUser: (_, __, { dataSources }) =>
-      dataSources.authenticationSessions.getSignedInUser(),
-    getCountries: (_, __, { dataSources }) =>
-      dataSources.countries.getCountries(),
-    getCounties: (_, args, { dataSources }) =>
-      dataSources.counties.getCounties(args),
-    getLocales: (_, args, { dataSources }) =>
-      dataSources.deliveryAreas.getLocales(args),
-    getDeliveryLocations: (_, args, { dataSources }) =>
-      dataSources.deliveryLocations.getDeliveryLocations(args),
+    getSignedInUser: (_, __, { dataSources }) => dataSources.authenticationSessions.getSignedInUser(),
+    getCountries: (_, __, { dataSources }) => dataSources.countries.getCountries(),
+    getCounties: (_, args, { dataSources }) => dataSources.counties.getCounties(args),
+    getLocales: (_, args, { dataSources }) => dataSources.deliveryAreas.getLocales(args),
+    getMyOrders: (_, args, { dataSources }) => dataSources.orders.getMyOrders(args),
+    getDeliveryLocations: (_, args, { dataSources }) => dataSources.deliveryLocations.getDeliveryLocations(args),
   },
   Mutation: {
-    customerAuthentication: (_, args, { dataSources }) =>
-      dataSources.customerAuthentication.customerAuthentication(args),
-    customerAccountCreation: (_, args, { dataSources }) =>
-      dataSources.customerAccount.customerAccountCreation(args),
+    customerAuthentication: (_, args, { dataSources }) => dataSources.customerAuthentication.customerAuthentication(args),
+    customerAccountCreation: (_, args, { dataSources }) => dataSources.customerAccount.customerAccountCreation(args),
     addToCart: (_, args, { dataSources }) => dataSources.cart.addToCart(args),
-    removeCartItem: (_, args, { dataSources }) =>
-      dataSources.cart.removeCartItem(args),
-    signOut: (_, __, { dataSources }) =>
-      dataSources.customerAuthentication.signOut(),
-    addDeliveryLocation: (_, args, { dataSources }) =>
-      dataSources.deliveryLocations.addDeliveryLocation(args),
-    removeDeliveryLocation: (_, args, { dataSources }) =>
-      dataSources.deliveryLocations.removeDeliveryLocation(args),
-    addCountry: (_, args, { dataSources }) =>
-      dataSources.countries.addCountry(args),
-    removeCountry: (_, args, { dataSources }) =>
-      dataSources.countries.removeCountry(args),
-    removeCounty: (_, args, { dataSources }) =>
-      dataSources.counties.removeCounty(args),
-    addCounty: (_, args, { dataSources }) =>
-      dataSources.counties.addCounty(args),
-    addLocale: (_, args, { dataSources }) =>
-      dataSources.deliveryAreas.addLocale(args),
-    removeLocale: (_, args, { dataSources }) =>
-      dataSources.deliveryAreas.removeLocale(args),
+    removeCartItem: (_, args, { dataSources }) => dataSources.cart.removeCartItem(args),
+    signOut: (_, __, { dataSources }) => dataSources.customerAuthentication.signOut(),
+    addDeliveryLocation: (_, args, { dataSources }) => dataSources.deliveryLocations.addDeliveryLocation(args),
+    removeDeliveryLocation: (_, args, { dataSources }) => dataSources.deliveryLocations.removeDeliveryLocation(args),
+    addCountry: (_, args, { dataSources }) => dataSources.countries.addCountry(args),
+    removeCountry: (_, args, { dataSources }) => dataSources.countries.removeCountry(args),
+    removeCounty: (_, args, { dataSources }) => dataSources.counties.removeCounty(args),
+    addCounty: (_, args, { dataSources }) => dataSources.counties.addCounty(args),
+    addLocale: (_, args, { dataSources }) => dataSources.deliveryAreas.addLocale(args),
+    removeLocale: (_, args, { dataSources }) => dataSources.deliveryAreas.removeLocale(args),
     addOrder: (_, args, { dataSources }) => dataSources.orders.addOrder(args),
   },
 };

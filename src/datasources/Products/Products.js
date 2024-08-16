@@ -9,15 +9,29 @@ class ProductsAPI extends RESTDataSource {
   }
 
   /**
-   * Get products for the mail public web-app
-   * @Expects: pagination parameters, Password
+   * Get products for the main public web-app
+   * @Expects: pagination parameters
    * @Returns: object with products, count and query status
    * */
-  async getDisplayProducts() {
+  async getDisplayProducts(args) {
+    const { productCategory } = args;
+
     try {
-      /*
+      /**
        * Get products from the database
        * */
+
+      let filters = {
+        productStatus: 1,
+        productCategory,
+      };
+
+      if (productCategory === 0) {
+        filters = {
+          productStatus: 1,
+        };
+      }
+
       const products = await Product.findAll({
         attributes: [
           `id`,
@@ -36,10 +50,8 @@ class ProductsAPI extends RESTDataSource {
           `expiryDate`,
           `productCategory`,
         ],
-        order: [[`createdAt`, `DESC`]],
-        where: {
-          productStatus: 1,
-        },
+        order: [[`productPrice`, `DESC`]],
+        where: filters,
       });
 
       /*
@@ -60,10 +72,9 @@ class ProductsAPI extends RESTDataSource {
         };
       }
 
-      const productsList =
-        products && Array.isArray(products) && products.length > 0
-          ? products.map((product) => ProductsAPI.productsReducer(product))
-          : [];
+      const productsList = products && Array.isArray(products) && products.length > 0
+        ? products.map((product) => ProductsAPI.productsReducer(product))
+        : [];
 
       return {
         status: true,
@@ -79,8 +90,8 @@ class ProductsAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

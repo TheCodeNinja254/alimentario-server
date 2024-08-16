@@ -6,11 +6,12 @@ const typeDefs = gql`
   type Query {
     getSignedInCustomer: SignedInCustomerResponse
     getSignedInUser: SignedInUserResponse
-    getDisplayProducts: DisplayProductsResponse
+    getDisplayProducts(productCategory: Int!): DisplayProductsResponse
     getCartItems: CartProductsResponse
     getCountries: CountriesResponse
     getCounties(countryId: Int!): CountiesResponse
     getLocales(countyId: Int!): LocalesResponse
+    getMyOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getDeliveryLocations: DeliveryLocationsResponse
   }
 
@@ -68,6 +69,18 @@ const typeDefs = gql`
     message: String
     localesList: [LocalesData]
   }
+  
+  type OrdersResponse {
+    status: Boolean!
+    message: String
+    myOrders: MyOrdersObject
+  }
+  
+  type MyOrdersObject {
+    currentSelection: Int
+    totalElements: Int
+    content: [OrdersData]
+  }
 
   type CountriesData {
     id: Int!
@@ -83,13 +96,58 @@ const typeDefs = gql`
   type LocalesData {
     id: Int
     localeName: String
+  }  
+  
+  type OrdersData {
+    orderId: Int
+    paymentId: Int
+    amountDue: Int
+    deliveryLocationId: Int
+    orderStatus: String
+    orderType: String
+    addedBy: String
+    updatedBy: String
+    createdAt: Date
+    updatedAt: Date
+    countryId: Int
+    countyId: Int
+    localeId: Int
+    deliveryLocation: DeliveryLocationsData
+    specifications: [SpecificationsData]
+  }
+
+  type SpecificationsData {
+    id: Int
+    orderId: Int
+    productId: Int
+    productQuantity: Int
+    orderSpecification: String
+    addedBy: String
+    updatedBy: String
+    createdAt: Date
+    updatedAt: Date
+    productName: String
+    productDescription: String
+    productPicMain: String
+    productPicTwo: String
+    productPicThree: String
+    productPicFour: String
+    productUnitOfMeasure: String
+    productInstructionsLink: String
+    productVideoLink: String
+    stockStatus: String
+    productStatus: Int
+    productPrice: Int
+    productCategory: Int
+    expiryDate: Date
+    productStorageFacility: Int
   }
 
   type DeliveryLocationsData {
-    id: Int!
-    countryId: Int!
-    countyId: Int!
-    localeId: Int!
+    id: Int
+    countryId: Int
+    countyId: Int
+    localeId: Int
     deliveryPreciseLocation: String
     deliveryAdditionalNotes: String
     alternativePhoneNumber: String

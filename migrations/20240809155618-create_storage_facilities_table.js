@@ -16,7 +16,7 @@ module.exports = {
         autoIncrement: true,
       },
       facilityName: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: true,
       },

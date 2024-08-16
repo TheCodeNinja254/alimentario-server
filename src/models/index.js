@@ -66,6 +66,11 @@ DeliveryLocations.belongsTo(Country, { foreignKey: "countryId" });
 DeliveryLocations.belongsTo(County, { foreignKey: "countyId" });
 DeliveryLocations.belongsTo(Locale, { foreignKey: "localeId" });
 
+Order.hasMany(OrderSpecification, { foreignKey: 'orderId' });
+OrderSpecification.belongsTo(Order, { foreignKey: 'orderId' });
+OrderSpecification.belongsTo(Product, { foreignKey: 'productId' });
+Order.belongsTo(DeliveryLocations, { foreignKey: 'deliveryLocationId' });
+
 /*
  * Module Exports
  * */
