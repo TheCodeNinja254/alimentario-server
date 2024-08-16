@@ -16,10 +16,9 @@ const Logger = require("./utils/logging");
 
 config.config();
 const configValues = process.env;
-const configurations =
-  configValues.NODE_ENV === "production"
-    ? require("../configs/production.json")
-    : require("../configs/development.json");
+const configurations = configValues.NODE_ENV === "production"
+  ? require("../configs/production.json")
+  : require("../configs/development.json");
 
 const CustomerAuthentication = require("./datasources/Authentication/CustomerAuthentication");
 const AuthenticationSessions = require("./datasources/Authentication/AuthenticationSessions");
@@ -32,6 +31,7 @@ const CountiesAPI = require("./datasources/Locations/Counties");
 const LocalesAPI = require("./datasources/Locations/Locales");
 const DeliveryLocationsAPI = require("./datasources/Locations/DeliveryLocations");
 const OrdersAPI = require("./datasources/Order/Order");
+const fs = require("fs");
 
 const server = new ApolloServer({
   typeDefs,
@@ -246,7 +246,7 @@ const app = new Koa();
 // use random keys to sign the data
 app.keys = new Keygrip(
   [crypto.randomBytes(64), crypto.randomBytes(64)],
-  "sha512"
+  "sha512",
 );
 
 app.use(userAgent);
@@ -266,14 +266,14 @@ app.use(
     cors({
       origin: checkOriginAgainstWhitelist,
       credentials: true,
-    })
-  )
+    }),
+  ),
 );
 
 app.use(helmet());
 configurations.session.options.secretKey = Buffer.from(
   configValues.COOKIE_ENCRYPTION_KEY,
-  "base64"
+  "base64",
 );
 app.use(session(configurations.session.options, app));
 
@@ -292,13 +292,18 @@ app.use((ctx, next) => {
 
 server.applyMiddleware({ app, path: "/desafio-api" });
 
+const options = {
+  key: fs.readFileSync('/opt/ssl/key.pem'),
+  cert: fs.readFileSync('/opt/ssl/cert.pem'),
+};
+
 // Localhost Version
 const http = app.listen({ port: configValues.SERVER_PORT || 5052 }, () => {
   // eslint-disable-next-line no-console
   console.log(
     `🚀 Server ready at http://desafio.co.ke:${
       configValues.SERVER_PORT || 5052
-    }${server.graphqlPath}`
+    }${server.graphqlPath}`,
   );
 });
 

@@ -81,6 +81,6 @@
 },
   {
     "technicalError": "Context creation failed: Oops! You are not authorised to access this server",
-    "customerMessage": "Sorry, you are not allowed to access this page"
+    "customerMessage": "Sorry, you are not allowed to access this page. Error."
   }
 ]
