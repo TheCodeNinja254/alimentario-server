@@ -5,8 +5,11 @@ const { ApolloServer } = require("apollo-server-koa");
 const session = require("koa-encrypted-session");
 const cors = require("@koa/cors");
 const convert = require("koa-convert");
+const fs = require("fs");
 const config = require("dotenv");
 const helmet = require("koa-helmet");
+const https =require('https');
+const http = require("http");
 const { userAgent } = require("koa-useragent");
 const Keygrip = require("keygrip");
 const typeDefs = require("./schema");
@@ -16,10 +19,9 @@ const Logger = require("./utils/logging");
 
 config.config();
 const configValues = process.env;
-const configurations =
-  configValues.NODE_ENV === "production"
-    ? require("../configs/production.json")
-    : require("../configs/development.json");
+const configurations = configValues.NODE_ENV === "production"
+  ? require("../configs/production.json")
+  : require("../configs/development.json");
 
 const CustomerAuthentication = require("./datasources/Authentication/CustomerAuthentication");
 const AuthenticationSessions = require("./datasources/Authentication/AuthenticationSessions");
@@ -246,7 +248,7 @@ const app = new Koa();
 // use random keys to sign the data
 app.keys = new Keygrip(
   [crypto.randomBytes(64), crypto.randomBytes(64)],
-  "sha512"
+  "sha512",
 );
 
 app.use(userAgent);
@@ -266,14 +268,14 @@ app.use(
     cors({
       origin: checkOriginAgainstWhitelist,
       credentials: true,
-    })
-  )
+    }),
+  ),
 );
 
 app.use(helmet());
 configurations.session.options.secretKey = Buffer.from(
   configValues.COOKIE_ENCRYPTION_KEY,
-  "base64"
+  "base64",
 );
 app.use(session(configurations.session.options, app));
 
@@ -292,14 +294,23 @@ app.use((ctx, next) => {
 
 server.applyMiddleware({ app, path: "/desafio-api" });
 
-// Localhost Version
-const http = app.listen({ port: configValues.SERVER_PORT || 5052 }, () => {
-  // eslint-disable-next-line no-console
-  console.log(
-    `🚀 Server ready at http://desafio.co.ke:${
-      configValues.SERVER_PORT || 5052
-    }${server.graphqlPath}`
-  );
-});
+let xServer;
+if (process.env.NODE_ENV === 'production') {
+  // Set up HTTPS options
+  const options = {
+    key: fs.readFileSync('/opt/ssl/cert.key'),
+    cert: fs.readFileSync('/opt/ssl/cert.crt'),
+    // passphrase: `${process.env.SERVER_SSL_PASSPHRASE}`,
+  };
 
-module.exports = http;
+  // Initialize HTTPS server
+  xServer = https.createServer(options, app.callback()).listen(configValues.SERVER_PORT || 5052);
+} else {
+  // Start HTTP server
+  xServer = http.createServer(app.callback()).listen(configValues.SERVER_PORT || 5052);
+}
+
+// eslint-disable-next-line max-len,no-console
+console.log(`🚀 Server ready at http${process.env.NODE_ENV === 'production' ? 's' : ''}://localhost:${configValues.SERVER_PORT || 4000}${server.graphqlPath}`);
+
+module.exports = xServer;
