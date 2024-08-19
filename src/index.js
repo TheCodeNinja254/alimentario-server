@@ -311,6 +311,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // eslint-disable-next-line max-len,no-console
-console.log(`🚀 Server ready at http${process.env.NODE_ENV === 'production' ? 's' : ''}://localhost:${configValues.SERVER_PORT || 4000}${server.graphqlPath}`);
+console.log(`🚀 Server ready at http${process.env.NODE_ENV === 'production' ? 's' : ''}://desafio.co.ke:${configValues.SERVER_PORT || 5052}${server.graphqlPath}`);
 
 module.exports = xServer;
