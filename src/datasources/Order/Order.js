@@ -7,8 +7,13 @@ const {
 const { redis } = require("../../Redis");
 const sequelize = require("../../Database/connection");
 const {
-  selectOrdersCountQuery, selectOrdersWithoutStatusQuery, selectOrderSpecificationsQuery,
-  selectPendingOrdersQuery, selectClosedOrdersQuery, selectPendingOrdersCountQuery, selectClosedOrdersCountQuery,
+  selectOrdersCountQuery,
+  selectOrdersWithoutStatusQuery,
+  selectOrderSpecificationsQuery,
+  selectPendingOrdersQuery,
+  selectClosedOrdersQuery,
+  selectPendingOrdersCountQuery,
+  selectClosedOrdersCountQuery,
 } = require("../../Database/queryStrings");
 
 class OrdersAPI extends RESTDataSource {
@@ -172,7 +177,11 @@ class OrdersAPI extends RESTDataSource {
     const { pageSize, orderStatus } = args;
 
     if (!this.context.session.customerDetails) {
-      throw new Error(this.signInError);
+      // throw new Error(this.signInError);
+      return {
+        status: false,
+        message: "User not signed in",
+      };
     }
 
     const {
@@ -181,7 +190,11 @@ class OrdersAPI extends RESTDataSource {
 
     const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
     if (Number(signInStatus) === 0) {
-      throw new Error(this.signInError);
+      // throw new Error(this.signInError);
+      return {
+        status: false,
+        message: "User not signed in",
+      };
     }
 
     try {

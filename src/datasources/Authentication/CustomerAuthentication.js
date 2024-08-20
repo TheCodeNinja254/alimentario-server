@@ -3,7 +3,7 @@ const uuid = require("uuid/v4");
 const { redis } = require("../../Redis/index");
 const Logger = require("../../utils/logging");
 const { Customer, WholesaleBusiness } = require("../../models");
-const {decrypt} = require("../../utils/encryptDecrypt");
+const { decrypt } = require("../../utils/encryptDecrypt");
 
 class CustomerAuthentication extends RESTDataSource {
   constructor() {
@@ -11,14 +11,15 @@ class CustomerAuthentication extends RESTDataSource {
     this.info = "";
   }
 
-  // eslint-disable-next-line no-unused-vars
   async customerAuthentication(args) {
+    // both encrypted
     const { email, password } = args;
-    // const email = "m.mwangi.fredrick";
-    // const password = "trial";
+    const decryptedEmailAddress = decrypt(email);
+
+    const username = decryptedEmailAddress.match(/^([^@]*)@/)[1];
 
     try {
-      /*
+      /**
        * Get customer from the database
        * */
       const customer = await Customer.findOne({
@@ -33,8 +34,8 @@ class CustomerAuthentication extends RESTDataSource {
           `verificationStatus`,
         ],
         where: {
-          username: decrypt(email),
-          password: decrypt(password),
+          username,
+          password,
           status: 1,
         },
         include: {
@@ -46,9 +47,7 @@ class CustomerAuthentication extends RESTDataSource {
         },
       });
 
-      // console.log(customer.WholesaleBusiness);
-
-      /*
+      /**
        * In the event we go nothing from the database
        * */
       if (!customer) {
@@ -75,7 +74,7 @@ class CustomerAuthentication extends RESTDataSource {
         verificationStatus,
       } = customer;
 
-      /*
+      /**
        * Create a @bearerToken for the loggedIn user.
        * This will be stored in the InMemory cache, Redis. The token is to be invalidated upon logout.
        * */
@@ -87,12 +86,23 @@ class CustomerAuthentication extends RESTDataSource {
        * */
       await redis.set(bearerToken, Number(1));
 
-      /*
+      /**
        * Create session cookie
        * */
 
-      this.context.session.customerDetails = {
-        username: email,
+      const customerBusinessObject = customer.WholesaleBusiness ? {
+        businessName: customer.WholesaleBusiness.businessName || null,
+        registeredAddress: customer.WholesaleBusiness.registeredAddress || null,
+        businessLocationLatitude: customer.WholesaleBusiness.businessLocationLatitude || null,
+        businessLocationLongitude: customer.WholesaleBusiness.businessLocationLongitude || null,
+        businessType: customer.WholesaleBusiness.businessType || null,
+        primaryEmailAddress: customer.WholesaleBusiness.primaryEmailAddress || null,
+        primaryContact: customer.WholesaleBusiness.primaryContact || null,
+        preferredCreditPeriod: customer.WholesaleBusiness.preferredCreditPeriod || null,
+      }: {};
+
+      const customerInfoObject = {
+        username, // encrypted
         customerStatus: customer.status,
         firstName,
         lastName,
@@ -102,15 +112,12 @@ class CustomerAuthentication extends RESTDataSource {
         verificationStatus,
         bearerToken,
         associatedBusiness: {
-          businessName: customer.WholesaleBusiness?.businessName,
-          registeredAddress: customer.WholesaleBusiness?.businessName,
-          businessLocationLatitude: customer.WholesaleBusiness?.businessName,
-          businessLocationLongitude: customer.WholesaleBusiness?.businessName,
-          businessType: customer.WholesaleBusiness?.businessName,
-          primaryEmailAddress: customer.WholesaleBusiness?.businessName,
-          primaryContact: customer.WholesaleBusiness?.businessName,
-          preferredCreditPeriod: customer.WholesaleBusiness?.businessName,
+          ...customerBusinessObject,
         },
+      };
+
+      this.context.session.customerDetails = {
+        ...customerInfoObject,
       };
 
       /*
@@ -118,28 +125,11 @@ class CustomerAuthentication extends RESTDataSource {
        * */
       return {
         status: true,
-        message: customer.firstName,
-        username: email,
-        firstName,
-        lastName,
-        msisdn,
-        customerStatus: customer.status,
-        businessId,
-        emailAddress,
-        verificationStatus,
-        associatedBusiness: {
-          businessName: customer.WholesaleBusiness?.businessName,
-          registeredAddress: customer.WholesaleBusiness?.businessName,
-          businessLocationLatitude: customer.WholesaleBusiness?.businessName,
-          businessLocationLongitude: customer.WholesaleBusiness?.businessName,
-          businessType: customer.WholesaleBusiness?.businessName,
-          primaryEmailAddress: customer.WholesaleBusiness?.businessName,
-          primaryContact: customer.WholesaleBusiness?.businessName,
-          preferredCreditPeriod: customer.WholesaleBusiness?.businessName,
-        },
+        message: "Sign in successful",
+        ...customerInfoObject,
       };
     } catch (e) {
-      /*
+      /**
        * Create a log instance with the error
        * */
       Logger.log("error", "Error: ", {
@@ -147,8 +137,8 @@ class CustomerAuthentication extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

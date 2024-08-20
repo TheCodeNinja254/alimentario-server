@@ -39,7 +39,7 @@ class CustomerAccountAPI extends RESTDataSource {
     const username = emailAddress.match(/^([^@]*)@/)[1];
 
     try {
-      /*
+      /**
        * Create customer account
        * */
       const customer = await Customer.create({
@@ -65,8 +65,8 @@ class CustomerAccountAPI extends RESTDataSource {
         return {
           status: false,
           message:
-            errorHandler(err.message) ||
-            "Account creation failed. Please try again later",
+            errorHandler(err.message)
+            || "Account creation failed. Please try again later",
         };
       });
 
@@ -76,6 +76,7 @@ class CustomerAccountAPI extends RESTDataSource {
           message: customer.message,
         };
       }
+
       /**
        * Create a @bearerToken for the loggedIn user.
        * This will be stored in the InMemory cache, Redis. The token is to be invalidated upon logout.
@@ -114,7 +115,7 @@ class CustomerAccountAPI extends RESTDataSource {
         },
       };
 
-      /*
+      /**
        * Return the Schema object
        * */
       return {
@@ -122,7 +123,7 @@ class CustomerAccountAPI extends RESTDataSource {
         message: "Account creation successful",
       };
     } catch (e) {
-      /*
+      /**
        * Create a log instance with the error
        * */
       Logger.log("error", "Error: ", {
@@ -130,8 +131,8 @@ class CustomerAccountAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

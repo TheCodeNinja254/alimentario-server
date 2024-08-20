@@ -15,10 +15,27 @@ class CartAPI extends RESTDataSource {
    * @Returns: object with products, count and query status
    * */
   async getCartItems() {
+    if (!this.context.session.customerDetails) {
+      return {
+        status: false,
+        message: this.signInError,
+      };
+    }
+
+    const { bearerToken } = this.context.session.customerDetails;
+    const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
+    if (Number(signInStatus) === 0) {
+      return {
+        status: false,
+        message: this.signInError,
+      };
+    }
+
     try {
       const {
         customerDetails: { username },
       } = this.context.session;
+
       const cartItems = await Cart.findAll({
         attributes: [`id`, `customerSpecification`, `createdAt`, `quantity`],
         where: {
