@@ -5,10 +5,8 @@ node_modules/
 .env.production
 error.log
 yarn-error.log
-safNeo.log
 *.log
 logs/
-yarn.lock
 coverage/
 tempConfigs/
 .scannerwork/

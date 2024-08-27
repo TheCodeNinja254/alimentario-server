@@ -11,11 +11,9 @@ To start the project, create an .env file then copy paste the values in env.exam
 After that, install the npm packages and start the project
 
 ```bash
-npm i
-# or
 yarn
 # then
-npm start
+yarn start
 ```
 
 ### Setting Up Sequelize Data Models and Migrations
@@ -25,13 +23,13 @@ Read more on [`Sequelize`](https://sequelize.org/docs/v6/getting-started/).
 #### Available Sequelize commands
 ```bash
 # Install Sequelize
-npm install --save sequelize
+yarn add --save sequelize
 
 # Install sequilize-cli - if not already installed globally
-npm install -g sequelize-cli
+yarn add sequelize-cli
 
 # To install mysql2 after sequilize
-npm install --save mysql2
+yarn add --save mysql2
 
 # To create a table from a model
 sequelize migration:create --name create_[table_name]_table
