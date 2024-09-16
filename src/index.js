@@ -34,6 +34,7 @@ const CountiesAPI = require("./datasources/Locations/Counties");
 const LocalesAPI = require("./datasources/Locations/Locales");
 const DeliveryLocationsAPI = require("./datasources/Locations/DeliveryLocations");
 const OrdersAPI = require("./datasources/Order/Order");
+const OrdersInternalView = require("./datasources/Admin/OrdersView");
 
 const server = new ApolloServer({
   typeDefs,
@@ -91,6 +92,7 @@ const server = new ApolloServer({
     deliveryAreas: new LocalesAPI(),
     deliveryLocations: new DeliveryLocationsAPI(),
     orders: new OrdersAPI(),
+    ordersInternalView: new OrdersInternalView(),
   }),
   formatError: (err) => {
     // error variables override and redefine them everytime errors fallback here

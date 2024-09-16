@@ -1,6 +1,8 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const Logger = require("../../utils/logging");
-const { DeliveryLocations, Country, County, Locale } = require("../../models");
+const {
+  DeliveryLocations, Country, County, Locale,
+} = require("../../models");
 const { redis } = require("../../Redis");
 
 class DeliveryLocationsAPI extends RESTDataSource {
@@ -63,12 +65,9 @@ class DeliveryLocationsAPI extends RESTDataSource {
         };
       });
 
-      const locationsList =
-        locales && Array.isArray(locales) && locales.length > 0
-          ? locales.map((locale) =>
-              DeliveryLocationsAPI.deliveryLocationsReducer(locale)
-            )
-          : [];
+      const locationsList = locales && Array.isArray(locales) && locales.length > 0
+        ? locales.map((locale) => DeliveryLocationsAPI.deliveryLocationsReducer(locale))
+        : [];
 
       return {
         status: true,
@@ -84,8 +83,8 @@ class DeliveryLocationsAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
@@ -161,8 +160,8 @@ class DeliveryLocationsAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

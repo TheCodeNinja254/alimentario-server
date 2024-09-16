@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-CMD ["node", "src/index.js"]
+CMD ["node", "src/Auth.js"]
 
 

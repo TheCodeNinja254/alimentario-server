@@ -29,6 +29,9 @@ module.exports = {
       orderSpecification: {
         type: Sequelize.STRING(255),
       },
+      checkoutRequestId: {
+        type: Sequelize.STRING(30),
+      },
       addedBy: Sequelize.STRING(30), // customerId
       updatedBy: Sequelize.STRING(30),
       createdAt: Sequelize.DATE,

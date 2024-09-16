@@ -26,9 +26,6 @@ module.exports = {
       orderId: {
         type: Sequelize.INTEGER,
       },
-      transactionId: {
-        type: Sequelize.INTEGER,
-      },
       orderType: {
         type: Sequelize.STRING(30),
         defaultValue: "Single", // enum: Single || Standing Order
@@ -39,6 +36,21 @@ module.exports = {
       updatedBy: Sequelize.STRING(30),
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
+      merchantRequestId: {
+        type: Sequelize.STRING(30),
+      },
+      checkoutRequestId: {
+        type: Sequelize.STRING(30),
+      },
+      mpesaReceiptNumber: {
+        type: Sequelize.STRING(30),
+      },
+      transactionDate: {
+        type: Sequelize.STRING(30),
+      },
+      phoneNumber: {
+        type: Sequelize.STRING(30),
+      },
     });
   },
 

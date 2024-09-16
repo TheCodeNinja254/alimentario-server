@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
+    "start-callback": "nodemon src/mpesa-callback.js",
     "start:prod": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
@@ -17,8 +18,10 @@
     "apollo-datasource-rest": "^0.6.11",
     "apollo-server-koa": "^2.9.16",
     "apollo-server-testing": "^2.9.16",
+    "body-parser": "^1.20.3",
     "date-fns": "^2.8.1",
     "dotenv": "^8.2.0",
+    "express": "^4.21.0",
     "fs": "^0.0.1-security",
     "global": "^4.4.0",
     "graphql": "^14.5.8",

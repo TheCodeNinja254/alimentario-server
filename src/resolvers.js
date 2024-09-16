@@ -27,6 +27,7 @@ module.exports = {
     getCounties: (_, args, { dataSources }) => dataSources.counties.getCounties(args),
     getLocales: (_, args, { dataSources }) => dataSources.deliveryAreas.getLocales(args),
     getMyOrders: (_, args, { dataSources }) => dataSources.orders.getMyOrders(args),
+    getAllOrders: (_, args, { dataSources }) => dataSources.ordersInternalView.getAllOrders(args),
     getDeliveryLocations: (_, args, { dataSources }) => dataSources.deliveryLocations.getDeliveryLocations(args),
   },
   Mutation: {
@@ -44,5 +45,6 @@ module.exports = {
     addLocale: (_, args, { dataSources }) => dataSources.deliveryAreas.addLocale(args),
     removeLocale: (_, args, { dataSources }) => dataSources.deliveryAreas.removeLocale(args),
     addOrder: (_, args, { dataSources }) => dataSources.orders.addOrder(args),
+    updateOrderStatus: (_, args, { dataSources }) => dataSources.ordersInternalView.updateOrderStatus(args),
   },
 };

@@ -12,6 +12,7 @@ const typeDefs = gql`
     getCounties(countryId: Int!): CountiesResponse
     getLocales(countyId: Int!): LocalesResponse
     getMyOrders(pageSize: Int!, orderStatus: String): OrdersResponse
+    getAllOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getDeliveryLocations: DeliveryLocationsResponse
   }
 
@@ -33,6 +34,7 @@ const typeDefs = gql`
     addDeliveryLocation(input: AddDeliveryLocation): Result!
     removeDeliveryLocation(id: Int!): Result!
     addOrder(input: ConfirmOrderInput): Result!
+    updateOrderStatus(input: UpdateOrderStatusInput): Result!
   }
 
   type Result {
@@ -112,8 +114,16 @@ const typeDefs = gql`
     countryId: Int
     countyId: Int
     localeId: Int
+    customerInfo: CustomerInfo
     deliveryLocation: DeliveryLocationsData
     specifications: [SpecificationsData]
+  }
+  
+  type CustomerInfo {
+    firstName: String
+    lastName: String
+    msisdn: String
+    emailAddress: String
   }
 
   type SpecificationsData {
@@ -293,6 +303,11 @@ const typeDefs = gql`
     amountDue: Int!
     deliveryLocationId: Int!
     orderType: String!
+  }
+  
+  input UpdateOrderStatusInput {
+    orderId: Int!
+    status: String!
   }
 
   input CartItemsInput {

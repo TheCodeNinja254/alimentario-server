@@ -6,7 +6,9 @@ const getTimeStamp = require("./getTimestamp");
 
 const configValues = config.parsed;
 
-const { combine, timestamp, label, printf } = format;
+const {
+  combine, timestamp, label, printf,
+} = format;
 
 const logStringBuilder = (meta, message, level) => {
   let logString = `${getTimeStamp()}|message=${message}|level=${level}`;
@@ -55,15 +57,14 @@ const logStringBuilder = (meta, message, level) => {
   return logString;
 };
 
-const timezoned = () =>
-  new Date().toLocaleString("en-US", {
-    timeZone: configValues.TIME_ZONE,
-  });
+const timezoned = () => new Date().toLocaleString("en-US", {
+  timeZone: configValues.TIME_ZONE,
+});
 
 const logFormat = printf(
-  ({ level, message, ...meta }) => `${logStringBuilder(meta, message, level)}`
+  ({ level, message, ...meta }) => `${logStringBuilder(meta, message, level)}`,
 );
-const logFilePath = `${configValues.LOG_DIRECTORY}/server-portal-logs-%DATE%.log`;
+const logFilePath = `${configValues.NODE_ENV === 'production' ? configValues.LOG_DIRECTORY_PRODUCTION: configValues.LOG_DIRECTORY}/server-portal-logs-%DATE%.log`;
 
 const logger = createLogger({
   transports: [
@@ -77,7 +78,7 @@ const logger = createLogger({
     timestamp({
       format: timezoned,
     }),
-    logFormat
+    logFormat,
   ),
 });
 
