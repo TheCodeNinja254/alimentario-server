@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => sequelize.define(
       autoIncrement: true,
     },
     paymentId: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING(120),
       allowNull: false,
     },
     amountDue: {

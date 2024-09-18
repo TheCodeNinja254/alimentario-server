@@ -16,7 +16,7 @@ module.exports = {
         autoIncrement: true,
       },
       paymentId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(120),
         allowNull: false,
       },
       amountDue: {

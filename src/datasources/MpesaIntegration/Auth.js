@@ -28,11 +28,10 @@ class GetOAuthTokenAPI extends RESTDataSource {
   }
 
   async getOauthToken() {
-    const oauth = "oauth2";
     const { mpesaToken } = this.context.session;
     if (!GetOAuthTokenAPI.isMPESATokenValid(mpesaToken)) {
       const response = await this.post(
-        `${oauth}/v3/generate?grant_type=client_credentials`,
+        `/oauth/v1/generate?grant_type=client_credentials`,
         {},
         {
           agent: new https.Agent({
@@ -54,7 +53,7 @@ class GetOAuthTokenAPI extends RESTDataSource {
             request: 'getOAuthTokenHome',
             // response, // Uncomment for debugging only
             tokenExpirationTime,
-            url: `${this.baseURL}/${oauth}/v3/generate?grant_type=client_credentials`,
+            url: `/oauth/v1/generate?grant_type=client_credentials`,
           },
         );
         this.context.session.homeToken = {
