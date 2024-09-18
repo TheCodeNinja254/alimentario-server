@@ -3,6 +3,8 @@ const moment = require("moment");
 const https = require("https");
 const headersConfig = require("../../utils/headersConfig");
 const GetOAuthTokenAPI = require("./Auth");
+const { decrypt } = require("../../utils/encryptDecrypt");
+const formatPhoneNumber = require("../../utils/normalizePhoneNumber");
 
 class MpesaTransactions extends RESTDataSource {
   constructor() {
@@ -13,7 +15,6 @@ class MpesaTransactions extends RESTDataSource {
   // override function for setting custom fetch headers. Intercepts below async/await functions
   willSendRequest(request) {
     request.accessToken = this.context.session.mpesaToken.accessToken;
-    request.username = this.context.session.username;
     headersConfig.prototype.mpesaTransactionsHeaders(request);
   }
 
@@ -25,7 +26,13 @@ class MpesaTransactions extends RESTDataSource {
     return null;
   }
 
-  async lipaNaMpesaOnline(amount, phoneNumber, accountReference, transactionDesc) {
+  async lipaNaMpesaOnline(args) {
+    const { amount, phoneNumber, paymentCorrelationId } = args;
+    // decryption
+    const phoneNumberDecrypted = decrypt(phoneNumber) || 0;
+    const amountDecrypted = Number(decrypt(amount)) || 0;
+
+    // env values
     const shortcode = process.env.SHORTCODE;
     const passkey = process.env.LNM_PASSKEY;
     const timestamp = moment().format('YYYYMMDDHHmmss');
@@ -43,19 +50,19 @@ class MpesaTransactions extends RESTDataSource {
 
     try {
       const response = await this.post(
-        '/mpesa/stkpush/v1/processrequest',
+        `/mpesa/stkpush/v1/processrequest`,
         {
           BusinessShortCode: shortcode,
           Password: password,
           Timestamp: timestamp,
           TransactionType: 'CustomerPayBillOnline',
-          Amount: amount,
-          PartyA: phoneNumber,
+          Amount: amountDecrypted,
+          PartyA: formatPhoneNumber(phoneNumberDecrypted),
           PartyB: shortcode,
-          PhoneNumber: phoneNumber,
-          CallBackURL: process.env.CALLBACK_URL,
-          AccountReference: accountReference,
-          TransactionDesc: transactionDesc,
+          PhoneNumber: formatPhoneNumber(phoneNumberDecrypted),
+          CallBackURL: `${process.env.CALLBACK_URL}:${process.env.CALLBACK_PORTAL_PORT}/mpesa/${paymentCorrelationId}`,
+          AccountReference: process.env.ACCOUNT_REFERENCE, // Max of 12
+          TransactionDesc: 'Toasted',
         },
         {
           agent: new https.Agent({
@@ -63,10 +70,8 @@ class MpesaTransactions extends RESTDataSource {
           }),
         },
       );
-      console.log('STK Push response:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error initiating STK Push:', error);
       throw error;
     }
   }

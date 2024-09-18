@@ -27,7 +27,7 @@ class HeadersConfig {
 
   mpesaTransactionsHeaders(request) {
     const headers = {
-      Authorization: `Bearer ${request.accessToken}}`,
+      Authorization: `Bearer ${request.accessToken}`,
     };
 
     _.forOwn(commonHeaders, (header, name) => {

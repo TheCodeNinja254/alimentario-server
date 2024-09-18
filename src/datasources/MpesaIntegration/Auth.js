@@ -30,7 +30,7 @@ class GetOAuthTokenAPI extends RESTDataSource {
   async getOauthToken() {
     const { mpesaToken } = this.context.session;
     if (!GetOAuthTokenAPI.isMPESATokenValid(mpesaToken)) {
-      const response = await this.post(
+      const response = await this.get(
         `/oauth/v1/generate?grant_type=client_credentials`,
         {},
         {
@@ -39,6 +39,7 @@ class GetOAuthTokenAPI extends RESTDataSource {
           }),
         },
       );
+
       const { accessToken, expiresIn } = convertKeys(response);
       const dateNow = Date.now();
       if (expiresIn) {
@@ -56,7 +57,7 @@ class GetOAuthTokenAPI extends RESTDataSource {
             url: `/oauth/v1/generate?grant_type=client_credentials`,
           },
         );
-        this.context.session.homeToken = {
+        this.context.session.mpesaToken = {
           accessToken,
           expirationTime: tokenExpirationTime.getTime(),
         };

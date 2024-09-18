@@ -46,5 +46,6 @@ module.exports = {
     removeLocale: (_, args, { dataSources }) => dataSources.deliveryAreas.removeLocale(args),
     addOrder: (_, args, { dataSources }) => dataSources.orders.addOrder(args),
     updateOrderStatus: (_, args, { dataSources }) => dataSources.ordersInternalView.updateOrderStatus(args),
+    lipaNaMpesaOnline: (_, args, { dataSources }) => dataSources.mpesaIntegration.lipaNaMpesaOnline(args),
   },
 };

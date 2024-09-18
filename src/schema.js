@@ -33,13 +33,20 @@ const typeDefs = gql`
     removeLocale(id: Int!): Result!
     addDeliveryLocation(input: AddDeliveryLocation): Result!
     removeDeliveryLocation(id: Int!): Result!
-    addOrder(input: ConfirmOrderInput): Result!
+    addOrder(input: ConfirmOrderInput): AddOrderResponse!
     updateOrderStatus(input: UpdateOrderStatusInput): Result!
+    lipaNaMpesaOnline(amount: String!, phoneNumber: String!, paymentCorrelationId: String!): Result!
   }
 
   type Result {
     status: Boolean!
     message: String!
+  }
+  
+  type AddOrderResponse {
+    status: Boolean!
+    message: String!
+    paymentCorrelationId: String!
   }
 
   type DisplayProductsResponse {

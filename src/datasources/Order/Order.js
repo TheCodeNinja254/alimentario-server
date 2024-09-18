@@ -1,5 +1,6 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const { Sequelize } = require("sequelize");
+const uuid = require("uuid/v4");
 const Logger = require("../../utils/logging");
 const {
   County, Order, OrderSpecification, Cart,
@@ -81,7 +82,7 @@ class OrdersAPI extends RESTDataSource {
       throw new Error(this.signInError);
     }
 
-    const paymentId = 1;
+    const paymentId = uuid();
 
     const {
       customerDetails: { username, bearerToken },
@@ -137,6 +138,7 @@ class OrdersAPI extends RESTDataSource {
         .then(() => {
           result = {
             status: true,
+            paymentCorrelationId: paymentId,
             message: "Good job! Your order is made. We will prepare the sumptuous meal and bring it to you in a time. "
                             + "You can proceed to track your order. Thank you for shopping with Desafio.",
           };
@@ -151,6 +153,7 @@ class OrdersAPI extends RESTDataSource {
           });
           result = {
             status: false,
+            paymentCorrelationId: '',
             message: "We are unable to create your order. We regret this and will fix shortly. Please try again later!",
           };
         });
@@ -168,6 +171,7 @@ class OrdersAPI extends RESTDataSource {
 
       return {
         status: false,
+        paymentCorrelationId: '',
         message: e.message,
       };
     }
