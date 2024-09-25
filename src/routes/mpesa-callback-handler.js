@@ -1,13 +1,14 @@
 const express = require("express");
 
 const router = express.Router();
-const Payment = require('../models/Definitions/Payment'); // Import the Payment model
+const { Payment } = require("../models");
+const Logger = require("../utils/logging"); // Import the Payment model
 
-// Callback handler to insert payment into the database
-router.post('/mpesa/callback', async (req, res) => {
+router.post('/:paymentCorrelationId', async (req, res) => {
+  const { paymentCorrelationId } = req.params;
+  console.log(paymentCorrelationId);
   const callbackData = req.body;
 
-  // Extract data from callback
   const {
     MerchantRequestID,
     CheckoutRequestID,
@@ -16,7 +17,6 @@ router.post('/mpesa/callback', async (req, res) => {
     CallbackMetadata,
   } = callbackData.Body.stkCallback;
 
-  // Only proceed if the transaction was successful (ResultCode 0 means success)
   if (ResultCode === 0) {
     const amount = CallbackMetadata.Item.find((item) => item.Name === 'Amount').Value;
     const transactionId = CallbackMetadata.Item.find((item) => item.Name === 'MpesaReceiptNumber').Value;
@@ -25,10 +25,9 @@ router.post('/mpesa/callback', async (req, res) => {
     const mpesaReceiptNumber = CallbackMetadata.Item.find((item) => item.Name === 'MpesaReceiptNumber').Value;
 
     try {
-      // Insert into the database, correlating the request by MerchantRequestID or CheckoutRequestID
-      await Payment.create({
+      const createPayment = await Payment.create({
         paymentMethod: 'M-PESA',
-        amountPaid: amount,
+        amountPaid: Number(amount),
         orderId: null, // If you have the orderId, set it here
         transactionId,
         merchantRequestId: MerchantRequestID,
@@ -36,14 +35,72 @@ router.post('/mpesa/callback', async (req, res) => {
         mpesaReceiptNumber,
         transactionDate,
         phoneNumber,
+        paymentCorrelationId,
+        resultCode: ResultCode, // Store ResultCode
+        resultDesc: ResultDesc, // Store ResultDesc
+      }).catch((err) => {
+        console.log(err);
+        Logger.log("error", "Error: ", {
+          fullError: err,
+          customError: "Could not add to payments",
+          actualError: "Could not add to payments",
+          customerMessage:
+              "We are unable to add to your payments at the moment. Please try again later!",
+        });
+        res.status(500).json({ error: 'Error recording payment' });
+      });
+
+      Logger.log("info", "Success: ", {
+        fullError: req.body,
+        customError: req.body,
+        actualError: req.body,
+        customerMessage:
+            "Nothing to show here right now. Please come back later as we work to resolve this.",
       });
 
       res.status(200).json({ message: 'Payment recorded successfully' });
     } catch (error) {
       console.error('Error saving payment:', error);
+
+      Logger.log("error", "Error: ", {
+        fullError: error,
+        customError: error,
+        actualError: error,
+        customerMessage:
+            "Nothing to show here right now. Please come back later as we work to resolve this.",
+      });
+
       res.status(500).json({ error: 'Error recording payment' });
     }
   } else {
-    res.status(400).json({ message: 'Transaction failed or canceled', description: ResultDesc });
+    try {
+      // Save failed transaction details
+      await Payment.create({
+        paymentMethod: 'M-PESA',
+        amountPaid: 0, // Failed transactions may not have an amount
+        orderId: null, // If applicable, store orderId
+        merchantRequestId: MerchantRequestID,
+        checkoutRequestId: CheckoutRequestID,
+        paymentCorrelationId,
+        resultCode: ResultCode, // Store failure ResultCode
+        resultDesc: ResultDesc, // Store failure ResultDesc
+      });
+
+      Logger.log("error", "Error: ", {
+        request: req.params,
+        fullError: req.body,
+        customError: req.body,
+        actualError: req.body,
+        customerMessage:
+            "Payment failed. Please try again later!",
+      });
+
+      res.status(400).json({ message: 'Transaction failed or canceled', description: ResultDesc });
+    } catch (error) {
+      console.error('Error saving failed payment:', error);
+      res.status(500).json({ error: 'Error recording failed payment' });
+    }
   }
 });
+
+module.exports = router;

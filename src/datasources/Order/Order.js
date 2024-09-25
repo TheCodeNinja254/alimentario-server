@@ -82,7 +82,14 @@ class OrdersAPI extends RESTDataSource {
       throw new Error(this.signInError);
     }
 
-    const paymentId = uuid();
+    const paymentId = uuid(); // this will then become paymentCorrelationId
+
+    /**
+     * The @paymentCorrelationId (above referred to as the paymentId) is associated to an order,
+     * it is sent to a callback URL as part of the URL-Slug, the last part
+     * The callback processor picks it and updates the payments table with the
+     * payment information indicating the paymentCorrelationId on the payments table
+     * */
 
     const {
       customerDetails: { username, bearerToken },
@@ -103,7 +110,7 @@ class OrdersAPI extends RESTDataSource {
         amountDue,
         deliveryLocationId,
         orderType,
-        paymentId,
+        paymentId, // creates the correlation id in the database here.
         addedBy: username,
       })
         .then((res) => {

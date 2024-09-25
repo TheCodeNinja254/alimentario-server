@@ -51,6 +51,15 @@ module.exports = {
       phoneNumber: {
         type: Sequelize.STRING(30),
       },
+      paymentCorrelationId: {
+        type: Sequelize.STRING(50),
+      },
+      resultCode: {
+        type: Sequelize.INTEGER,
+      },
+      resultDesc: {
+        type: Sequelize.STRING(50),
+      },
     });
   },
 

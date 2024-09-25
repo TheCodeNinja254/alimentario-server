@@ -29,6 +29,7 @@ module.exports = {
     getMyOrders: (_, args, { dataSources }) => dataSources.orders.getMyOrders(args),
     getAllOrders: (_, args, { dataSources }) => dataSources.ordersInternalView.getAllOrders(args),
     getDeliveryLocations: (_, args, { dataSources }) => dataSources.deliveryLocations.getDeliveryLocations(args),
+    checkPaymentStatus: (_, args, { dataSources }) => dataSources.mpesaIntegration.checkPaymentStatus(args),
   },
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) => dataSources.customerAuthentication.customerAuthentication(args),

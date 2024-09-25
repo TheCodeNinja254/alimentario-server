@@ -30,18 +30,31 @@ yarn add sequelize-cli
 
 # To install mysql2 after sequilize
 yarn add --save mysql2
+```
 
+```bash
 # To create a table from a model
 sequelize migration:create --name create_[table_name]_table
+```
 
+```bash
 # To create the database with all tables
 sequelize db:migrate
+```
 
+```bash
 # To undo the latest database action
 sequelize db:migrate:undo
+```
 
+```bash
 # To undo all database migration actions
 sequelize db:migrate:undo all
+```
+
+```bash
+# To check for any running ports
+netstat -vanp tcp | grep 5052
 ```
 
 ### Viewing the Application on the browser

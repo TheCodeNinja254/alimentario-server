@@ -14,6 +14,7 @@ const typeDefs = gql`
     getMyOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getAllOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getDeliveryLocations: DeliveryLocationsResponse
+    checkPaymentStatus(paymentCorrelationId: String!): CheckPaymentStatusResponse
   }
 
   type Mutation {
@@ -35,12 +36,34 @@ const typeDefs = gql`
     removeDeliveryLocation(id: Int!): Result!
     addOrder(input: ConfirmOrderInput): AddOrderResponse!
     updateOrderStatus(input: UpdateOrderStatusInput): Result!
-    lipaNaMpesaOnline(amount: String!, phoneNumber: String!, paymentCorrelationId: String!): Result!
+    lipaNaMpesaOnline(amount: String!, phoneNumber: String!, paymentCorrelationId: String!): LipaNaMPesaOnlineResponse!
   }
 
   type Result {
     status: Boolean!
     message: String!
+  }
+  
+  type LipaNaMPesaOnlineResponse {
+    status: Boolean!
+    responseMessage: String
+    customerMessageExtended: String
+    customerMessage: String
+  }
+  
+  type CheckPaymentStatusResponse {
+    pollingComplete: Boolean
+    status: Boolean!
+    message: String
+    paymentDetails: PaymentDetailsData
+  }
+  
+  type PaymentDetailsData {
+    id: Int
+    paymentMethod: String
+    amountPaid: Int
+    resultCode: String
+    resultDesc: String
   }
   
   type AddOrderResponse {

@@ -4,7 +4,9 @@ const https = require("https");
 const headersConfig = require("../../utils/headersConfig");
 const GetOAuthTokenAPI = require("./Auth");
 const { decrypt } = require("../../utils/encryptDecrypt");
+const Logger = require("../../utils/logging");
 const formatPhoneNumber = require("../../utils/normalizePhoneNumber");
+const { Payment } = require("../../models");
 
 class MpesaTransactions extends RESTDataSource {
   constructor() {
@@ -26,8 +28,10 @@ class MpesaTransactions extends RESTDataSource {
     return null;
   }
 
+  // STK Push
   async lipaNaMpesaOnline(args) {
     const { amount, phoneNumber, paymentCorrelationId } = args;
+
     // decryption
     const phoneNumberDecrypted = decrypt(phoneNumber) || 0;
     const amountDecrypted = Number(decrypt(amount)) || 0;
@@ -39,9 +43,10 @@ class MpesaTransactions extends RESTDataSource {
 
     const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
 
-    // Check OATH2 Token
+    // Check OATH2 Token - MPESA
     await this.getOAuthToken();
     const { mpesaToken } = this.context.session;
+
     if (!mpesaToken) {
       throw new Error(
         "No token found",
@@ -60,7 +65,7 @@ class MpesaTransactions extends RESTDataSource {
           PartyA: formatPhoneNumber(phoneNumberDecrypted),
           PartyB: shortcode,
           PhoneNumber: formatPhoneNumber(phoneNumberDecrypted),
-          CallBackURL: `${process.env.CALLBACK_URL}:${process.env.CALLBACK_PORTAL_PORT}/mpesa/${paymentCorrelationId}`,
+          CallBackURL: `${process.env.CALLBACK_URL}:${process.env.CALLBACK_PORTAL_PORT}/mpesa/${paymentCorrelationId}`, // adds the correlation to the URL here
           AccountReference: process.env.ACCOUNT_REFERENCE, // Max of 12
           TransactionDesc: 'Toasted',
         },
@@ -70,9 +75,105 @@ class MpesaTransactions extends RESTDataSource {
           }),
         },
       );
-      return response.data;
+
+      const { ResponseDescription, CustomerMessage } = response;
+
+      if (response && response.ResponseCode === '0') {
+        return {
+          status: true,
+          responseMessage: ResponseDescription,
+          customerMessageExtended: CustomerMessage,
+          customerMessage: "An STK Push (Pop-up) has been sent to your phone. Enter a your M-PESA PIN to complete the transaction.",
+        };
+      }
+      Logger.log('error', 'Could not initiate STK Push: ', {
+        fullError: ResponseDescription,
+        customError: 'Could not initiate STK Push',
+        actualError: ResponseDescription,
+        customerMessage: CustomerMessage,
+      });
+
+      return {
+        status: false,
+        responseMessage: ResponseDescription,
+        customerMessageExtended: CustomerMessage,
+        customerMessage: "An error occurred. We could not send an STK Push (Pop-up) to your phone. Use Lipa Na M-PESA, (Buy Goods Instructions provided below)",
+      };
     } catch (error) {
-      throw error;
+      Logger.log('error', 'Could not initiate STK Push ', {
+        fullError: error,
+        customError: 'Could not initiate STK Push',
+        actualError: error,
+        customerMessage: 'Could not initiate STK Push',
+      });
+
+      return {
+        status: false,
+        responseMessage: error.message,
+        customerMessageExtended: error.message,
+        customerMessage: "An error occurred. We could not send an STK Push (Pop-up) to your phone. Use Lipa Na M-PESA, (Buy Goods Instructions provided below)",
+      };
+    }
+  }
+
+  async checkPaymentStatus(args) {
+    const { paymentCorrelationId } = args;
+
+    try {
+      const payment = await Payment.findOne({
+        attributes: ['id', 'paymentMethod', 'amountPaid', 'resultCode', 'resultDesc'],
+        where: { paymentCorrelationId },
+      }).catch((err) => {
+        Logger.log('error', 'Error fetching payment status: ', {
+          fullError: err,
+          customError: 'Could not fetch payment status',
+          actualError: err,
+          customerMessage: 'Unable to fetch payment status at this time. Please try again later.',
+        });
+
+        return {
+          pollingComplete: true,
+          status: false,
+          message: 'Unable to fetch payment status at this time. Please try again later.',
+        };
+      });
+
+      if (!payment) {
+        return {
+          pollingComplete: false,
+          status: false,
+          message: 'Payment not found.',
+        };
+      }
+
+      // Return the payment status and other relevant info
+      return {
+        pollingComplete: true,
+        status: true,
+        message: 'Payment status retrieved successfully.',
+        paymentDetails: {
+          id: payment.id,
+          paymentMethod: payment.paymentMethod,
+          amountPaid: payment.amountPaid,
+          resultCode: payment.resultCode,
+          resultDesc: payment.resultDesc,
+        },
+      };
+    } catch (e) {
+      // Log the error and return a friendly message to the user
+      Logger.log('error', 'Error checking payment status: ', {
+        fullError: e,
+        customError: e,
+        actualError: e,
+        customerMessage:
+            'An error occurred while fetching the payment status. Please try again later.',
+      });
+
+      return {
+        pollingComplete: true,
+        status: false,
+        message: e.message || 'An unexpected error occurred.',
+      };
     }
   }
 }
