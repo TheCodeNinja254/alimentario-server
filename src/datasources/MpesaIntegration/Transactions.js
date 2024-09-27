@@ -53,6 +53,8 @@ class MpesaTransactions extends RESTDataSource {
       );
     }
 
+    const callbackURL = `${process.env.CALLBACK_URL}:${process.env.CALLBACK_PORTAL_PORT}/igw-pay-preprocess-desfio/${paymentCorrelationId}`;
+
     try {
       const response = await this.post(
         `/mpesa/stkpush/v1/processrequest`,
@@ -65,7 +67,7 @@ class MpesaTransactions extends RESTDataSource {
           PartyA: formatPhoneNumber(phoneNumberDecrypted),
           PartyB: shortcode,
           PhoneNumber: formatPhoneNumber(phoneNumberDecrypted),
-          CallBackURL: `${process.env.CALLBACK_URL}:${process.env.CALLBACK_PORTAL_PORT}/mpesa/${paymentCorrelationId}`, // adds the correlation to the URL here
+          CallBackURL: callbackURL,
           AccountReference: process.env.ACCOUNT_REFERENCE, // Max of 12
           TransactionDesc: 'Toasted',
         },
@@ -97,7 +99,9 @@ class MpesaTransactions extends RESTDataSource {
         status: false,
         responseMessage: ResponseDescription,
         customerMessageExtended: CustomerMessage,
-        customerMessage: "An error occurred. We could not send an STK Push (Pop-up) to your phone. Use Lipa Na M-PESA, (Buy Goods Instructions provided below)",
+        customerMessage:
+            "An error occurred. We could not send an STK Push (Pop-up) to your phone. "
+            + "Use Lipa Na M-PESA, (Buy Goods Instructions provided below)",
       };
     } catch (error) {
       Logger.log('error', 'Could not initiate STK Push ', {
@@ -111,7 +115,9 @@ class MpesaTransactions extends RESTDataSource {
         status: false,
         responseMessage: error.message,
         customerMessageExtended: error.message,
-        customerMessage: "An error occurred. We could not send an STK Push (Pop-up) to your phone. Use Lipa Na M-PESA, (Buy Goods Instructions provided below)",
+        customerMessage:
+            "An error occurred. We could not send an STK Push (Pop-up) to your phone. "
+            + "Use Lipa Na M-PESA, (Buy Goods Instructions provided below)",
       };
     }
   }
@@ -121,7 +127,7 @@ class MpesaTransactions extends RESTDataSource {
 
     try {
       const payment = await Payment.findOne({
-        attributes: ['id', 'paymentMethod', 'amountPaid', 'resultCode', 'resultDesc'],
+        attributes: ['id', 'paymentMethod', 'amountPaid', 'resultCode', 'resultDesc', 'mpesaReceiptNumber', 'transactionDate'],
         where: { paymentCorrelationId },
       }).catch((err) => {
         Logger.log('error', 'Error fetching payment status: ', {
@@ -138,27 +144,49 @@ class MpesaTransactions extends RESTDataSource {
         };
       });
 
-      if (!payment) {
+      if (payment && payment.dataValues) {
+        /**
+         * Return the payment status and other relevant info
+        * */
+        if (payment.resultCode === 0 || payment.resultCode === "0") {
+          return {
+            pollingComplete: true,
+            status: true,
+            message: 'Payment status retrieved successfully.',
+            paymentDetails: {
+              id: payment.id,
+              paymentMethod: payment.paymentMethod,
+              amountPaid: payment.amountPaid,
+              resultCode: payment.resultCode,
+              resultDesc: payment.resultDesc,
+              mpesaReceiptNumber: payment.mpesaReceiptNumber,
+              transactionDate: payment.transactionDate,
+            },
+          };
+        } else {
+          /**
+           * A case where STK was sent to customer but something
+           * happened and the transaction did not complete the transaction.
+           * */
+          return {
+            pollingComplete: true,
+            status: true,
+            message: payment.resultDesc,
+          };
+        }
+      } else if (!payment.status) {
+        return {
+          pollingComplete: true,
+          status: false,
+          message: payment.message,
+        };
+      } else {
         return {
           pollingComplete: false,
           status: false,
           message: 'Payment not found.',
         };
       }
-
-      // Return the payment status and other relevant info
-      return {
-        pollingComplete: true,
-        status: true,
-        message: 'Payment status retrieved successfully.',
-        paymentDetails: {
-          id: payment.id,
-          paymentMethod: payment.paymentMethod,
-          amountPaid: payment.amountPaid,
-          resultCode: payment.resultCode,
-          resultDesc: payment.resultDesc,
-        },
-      };
     } catch (e) {
       // Log the error and return a friendly message to the user
       Logger.log('error', 'Error checking payment status: ', {

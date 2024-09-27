@@ -64,6 +64,8 @@ const typeDefs = gql`
     amountPaid: Int
     resultCode: String
     resultDesc: String
+    mpesaReceiptNumber: String
+    transactionDate: String
   }
   
   type AddOrderResponse {
