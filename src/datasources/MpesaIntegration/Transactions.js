@@ -170,11 +170,11 @@ class MpesaTransactions extends RESTDataSource {
            * */
           return {
             pollingComplete: true,
-            status: true,
+            status: false,
             message: payment.resultDesc,
           };
         }
-      } else if (!payment.status) {
+      } else if (payment && !payment.status) {
         return {
           pollingComplete: true,
           status: false,
