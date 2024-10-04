@@ -171,7 +171,10 @@ class MpesaTransactions extends RESTDataSource {
           return {
             pollingComplete: true,
             status: false,
-            message: payment.resultDesc,
+            message:
+                payment.resultDesc === 'Request cancelled by user'
+                  ? "Did you cancel the request? Did it timeout? You can click the Retry button to give it another try."
+                  : payment.resultDesc,
           };
         }
       } else if (payment && !payment.status) {
