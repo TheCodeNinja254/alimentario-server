@@ -57,6 +57,15 @@ module.exports = (sequelize, Sequelize) =>
       productStorageFacility: {
         type: Sequelize.INTEGER,
       },
+      vendor: {
+        type: Sequelize.STRING(255),
+      },
+      productFamily: {
+        type: Sequelize.STRING(255),
+      },
+      products: {
+        type: Sequelize.STRING(10),
+      },
       addedBy: Sequelize.STRING(30),
       updatedBy: Sequelize.STRING(30),
       createdAt: Sequelize.DATE,

@@ -38,6 +38,7 @@ class MpesaTransactions extends RESTDataSource {
 
     // env values
     const shortcode = process.env.SHORTCODE;
+    const tillNumber = process.env.LIPA_NA_MPESA_TILL;
     const passkey = process.env.LNM_PASSKEY;
     const timestamp = moment().format('YYYYMMDDHHmmss');
 
@@ -62,10 +63,10 @@ class MpesaTransactions extends RESTDataSource {
           BusinessShortCode: shortcode,
           Password: password,
           Timestamp: timestamp,
-          TransactionType: 'CustomerPayBillOnline',
+          TransactionType: process.env.LIPA_NA_MPESA_TRANSACTION_TYPE,
           Amount: amountDecrypted,
           PartyA: formatPhoneNumber(phoneNumberDecrypted),
-          PartyB: shortcode,
+          PartyB: tillNumber,
           PhoneNumber: formatPhoneNumber(phoneNumberDecrypted),
           CallBackURL: callbackURL,
           AccountReference: process.env.ACCOUNT_REFERENCE, // Max of 12
