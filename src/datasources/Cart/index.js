@@ -36,10 +36,20 @@ class CartAPI extends RESTDataSource {
         customerDetails: { username },
       } = this.context.session;
 
-      const cartItems = await Cart.findAll({
-        attributes: [`id`, `customerSpecification`, `createdAt`, `quantity`],
+      // Assumption that there will be items that were pre-ordered
+      let preOrderItemsFound = true;
+
+      let cartItems = await Cart.findAll({
+        attributes: [
+          `id`,
+          `customerSpecification`,
+          `createdAt`,
+          `quantity`,
+          `orderType`,
+        ],
         where: {
           addedBy: username,
+          orderType: 'pre-order', // First attempt: Fetch only pre-orders
         },
         order: [[`createdAt`, `DESC`]],
         include: {
@@ -80,6 +90,60 @@ class CartAPI extends RESTDataSource {
         };
       });
 
+      // If no records are found, retry the fetch without filtering by orderType
+      if (!cartItems || cartItems.length === 0) {
+        preOrderItemsFound = false;
+        cartItems = await Cart.findAll({
+          attributes: [
+            `id`,
+            `customerSpecification`,
+            `createdAt`,
+            `quantity`,
+            `orderType`,
+          ],
+          where: {
+            addedBy: username, // No filter for orderType
+          },
+          order: [[`createdAt`, `DESC`]],
+          include: {
+            model: Product,
+            attributes: [
+              `productName`,
+              `productDescription`,
+              `productPicMain`,
+              `productPicTwo`,
+              `productPicThree`,
+              `productPicFour`,
+              `productUnitOfMeasure`,
+              `productInstructionsLink`,
+              `productVideoLink`,
+              `stockStatus`,
+              `productPrice`,
+              `productStatus`,
+              `expiryDate`,
+              `id`,
+            ],
+            required: true,
+            where: {
+              productStatus: 1,
+            },
+          },
+        }).catch((err) => {
+          Logger.log("error", "Error: ", {
+            fullError: err,
+            customError: "Could not fetch products in cart",
+            actualError: "Could not fetch products from the database.",
+            customerMessage:
+              "Nothing to show here right now. Please come back later as we work to resolve this.",
+          });
+          return {
+            status: false,
+            message:
+              "Nothing to show here right now. Items you add to your cart will appear here.",
+          };
+        });
+      }
+
       const cartItemsList = cartItems && Array.isArray(cartItems) && cartItems.length > 0
         ? cartItems.map((cartItem) => CartAPI.cartReducer(cartItem))
         : [];
@@ -87,6 +151,7 @@ class CartAPI extends RESTDataSource {
       return {
         status: true,
         message: "",
+        preOrderItemsFound,
         cartItemsList,
       };
     } catch (e) {
@@ -107,8 +172,11 @@ class CartAPI extends RESTDataSource {
   }
 
   async addToCart(args) {
+    // orderType is given as either normal or pre-order
     const {
-      input: { productId, quantity, customerSpecification },
+      input: {
+        productId, quantity, customerSpecification, orderType,
+      },
     } = args;
 
     if (!this.context.session.customerDetails) {
@@ -129,6 +197,7 @@ class CartAPI extends RESTDataSource {
         productId,
         quantity,
         customerSpecification,
+        orderType,
         addedBy: username,
       }).catch((err) => {
         Logger.log("error", "Error: ", {

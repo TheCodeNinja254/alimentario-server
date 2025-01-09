@@ -30,6 +30,10 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: true,
       },
+      orderType: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
       addedBy: {
         type: Sequelize.STRING(30),
       },

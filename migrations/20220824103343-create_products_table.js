@@ -73,6 +73,9 @@ module.exports = {
       products: {
         type: Sequelize.STRING(10),
       },
+      tag: {
+        type: Sequelize.STRING(255),
+      },
       addedBy: Sequelize.STRING(30),
       updatedBy: Sequelize.STRING(30),
       createdAt: Sequelize.DATE,

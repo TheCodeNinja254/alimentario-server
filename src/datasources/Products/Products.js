@@ -59,8 +59,12 @@ class ProductsAPI extends RESTDataSource {
           `productStatus`,
           `expiryDate`,
           `productCategory`,
+          `tag`,
+          `productFamily`,
+          `vendor`,
+          `originCountry`,
         ],
-        order: [[`productPrice`, `DESC`]],
+        order: [[`popularity`, `DESC`]],
         where: filters,
       });
 
@@ -131,6 +135,10 @@ class ProductsAPI extends RESTDataSource {
       productStatus: product.productStatus,
       expiryDate: product.expiryDate,
       productCategory: product.productCategory,
+      tag: product.tag,
+      productFamily: product.productFamily,
+      originCountry: product.originCountry,
+      vendor: product.vendor,
     };
   }
 }

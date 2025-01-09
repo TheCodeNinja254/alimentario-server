@@ -71,7 +71,7 @@ OrderSpecification.belongsTo(Order, { foreignKey: 'orderId' });
 OrderSpecification.belongsTo(Product, { foreignKey: 'productId' });
 Order.belongsTo(DeliveryLocations, { foreignKey: 'deliveryLocationId' });
 
-/*
+/**
  * Module Exports
  * */
 

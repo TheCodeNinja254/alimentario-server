@@ -211,6 +211,7 @@ const typeDefs = gql`
   type CartProductsResponse {
     status: Boolean!
     message: String
+    preOrderItemsFound: Boolean
     cartItemsList: [CartProductsData]
   }
 
@@ -288,6 +289,10 @@ const typeDefs = gql`
     productStatus: Int
     productCategory: Int
     expiryDate: Date
+    tag: String
+    productFamily: String
+    vendor: String
+    originCountry: String
   }
 
   type CartProductsData {
@@ -315,6 +320,7 @@ const typeDefs = gql`
     productId: Int!
     customerSpecification: String
     quantity: Int!
+    orderType: String
   }
 
   input AddCountryInput {
