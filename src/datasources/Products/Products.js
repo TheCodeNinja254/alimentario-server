@@ -82,10 +82,9 @@ class ProductsAPI extends RESTDataSource {
         };
       }
 
-      const productsList =
-        products && Array.isArray(products) && products.length > 0
-          ? products.map((product) => ProductsAPI.productsReducer(product))
-          : [];
+      const productsList = products && Array.isArray(products) && products.length > 0
+        ? products.map((product) => ProductsAPI.productsReducer(product))
+        : [];
 
       return {
         status: true,
@@ -101,8 +100,8 @@ class ProductsAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. " +
-          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
