@@ -14,21 +14,31 @@ class ProductsAPI extends RESTDataSource {
    * @Returns: object with products, count and query status
    * */
   async getDisplayProducts(args) {
-    const { productCategory } = args;
+    const { productCategory, productFamily } = args;
 
     try {
       /**
        * Get products from the database
        * */
 
+      /**
+       * Get products from the DB that match a given
+       * product category, family and product status = 1 (Still on sale)
+       *  */
       let filters = {
         productStatus: 1,
         productCategory,
+        productFamily,
       };
 
+      /**
+       * Get all products relevant to a specific product family and
+       * product status = 1 meaning the product is still on sale
+       *  */
       if (productCategory === 0) {
         filters = {
           productStatus: 1,
+          productFamily,
         };
       }
 
@@ -54,7 +64,7 @@ class ProductsAPI extends RESTDataSource {
         where: filters,
       });
 
-      /*
+      /**
        * In the event we go nothing from the database
        * */
       if (!products) {
@@ -72,9 +82,10 @@ class ProductsAPI extends RESTDataSource {
         };
       }
 
-      const productsList = products && Array.isArray(products) && products.length > 0
-        ? products.map((product) => ProductsAPI.productsReducer(product))
-        : [];
+      const productsList =
+        products && Array.isArray(products) && products.length > 0
+          ? products.map((product) => ProductsAPI.productsReducer(product))
+          : [];
 
       return {
         status: true,
@@ -82,7 +93,7 @@ class ProductsAPI extends RESTDataSource {
         productsList,
       };
     } catch (e) {
-      /*
+      /**
        * Create a log instance with the error
        * */
       Logger.log("error", "Error: ", {
@@ -90,8 +101,8 @@ class ProductsAPI extends RESTDataSource {
         customError: e,
         actualError: e,
         customerMessage:
-          "An error occurred. This is temporary and should resolve in a short time. "
-          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+          "An error occurred. This is temporary and should resolve in a short time. " +
+          "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {
@@ -101,7 +112,7 @@ class ProductsAPI extends RESTDataSource {
     }
   }
 
-  /*
+  /**
    * Map products
    * */
   static productsReducer(product) {

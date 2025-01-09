@@ -6,7 +6,10 @@ const typeDefs = gql`
   type Query {
     getSignedInCustomer: SignedInCustomerResponse
     getSignedInUser: SignedInUserResponse
-    getDisplayProducts(productCategory: Int!): DisplayProductsResponse
+    getDisplayProducts(
+      productCategory: Int!
+      productFamily: String!
+    ): DisplayProductsResponse
     getCartItems: CartProductsResponse
     getCountries: CountriesResponse
     getCounties(countryId: Int!): CountiesResponse
@@ -14,7 +17,9 @@ const typeDefs = gql`
     getMyOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getAllOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getDeliveryLocations: DeliveryLocationsResponse
-    checkPaymentStatus(paymentCorrelationId: String!): CheckPaymentStatusResponse
+    checkPaymentStatus(
+      paymentCorrelationId: String!
+    ): CheckPaymentStatusResponse
   }
 
   type Mutation {
@@ -36,28 +41,32 @@ const typeDefs = gql`
     removeDeliveryLocation(id: Int!): Result!
     addOrder(input: ConfirmOrderInput): AddOrderResponse!
     updateOrderStatus(input: UpdateOrderStatusInput): Result!
-    lipaNaMpesaOnline(amount: String!, phoneNumber: String!, paymentCorrelationId: String!): LipaNaMPesaOnlineResponse!
+    lipaNaMpesaOnline(
+      amount: String!
+      phoneNumber: String!
+      paymentCorrelationId: String!
+    ): LipaNaMPesaOnlineResponse!
   }
 
   type Result {
     status: Boolean!
     message: String!
   }
-  
+
   type LipaNaMPesaOnlineResponse {
     status: Boolean!
     responseMessage: String
     customerMessageExtended: String
     customerMessage: String
   }
-  
+
   type CheckPaymentStatusResponse {
     pollingComplete: Boolean
     status: Boolean!
     message: String
     paymentDetails: PaymentDetailsData
   }
-  
+
   type PaymentDetailsData {
     id: Int
     paymentMethod: String
@@ -67,7 +76,7 @@ const typeDefs = gql`
     mpesaReceiptNumber: String
     transactionDate: String
   }
-  
+
   type AddOrderResponse {
     status: Boolean!
     message: String!
@@ -103,13 +112,13 @@ const typeDefs = gql`
     message: String
     localesList: [LocalesData]
   }
-  
+
   type OrdersResponse {
     status: Boolean!
     message: String
     myOrders: MyOrdersObject
   }
-  
+
   type MyOrdersObject {
     currentSelection: Int
     totalElements: Int
@@ -130,8 +139,8 @@ const typeDefs = gql`
   type LocalesData {
     id: Int
     localeName: String
-  }  
-  
+  }
+
   type OrdersData {
     orderId: Int
     paymentId: Int
@@ -150,7 +159,7 @@ const typeDefs = gql`
     deliveryLocation: DeliveryLocationsData
     specifications: [SpecificationsData]
   }
-  
+
   type CustomerInfo {
     firstName: String
     lastName: String
@@ -336,7 +345,7 @@ const typeDefs = gql`
     deliveryLocationId: Int!
     orderType: String!
   }
-  
+
   input UpdateOrderStatusInput {
     orderId: Int!
     status: String!
