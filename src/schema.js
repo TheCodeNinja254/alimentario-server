@@ -350,6 +350,8 @@ const typeDefs = gql`
     amountDue: Int!
     deliveryLocationId: Int!
     orderType: String!
+    isPreorder: Boolean,
+    preferredDeliveryTime: String
   }
 
   input UpdateOrderStatusInput {

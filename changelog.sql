@@ -20,7 +20,18 @@ alter table products
 alter table products
             add tag varchar(255) null;
 
+alter table products
+            add popularity int null;
+
 alter table cart
-                add orderType varchar(20) null;
+        add orderType varchar(20) null;
+
+alter table orders
+            add isPreorder boolean null;
+
+alter table orders
+           add preferredDeliveryTime varchar(20) null;
+
+-- add default location for rececourse event
 
 

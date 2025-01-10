@@ -35,6 +35,12 @@ module.exports = {
         type: Sequelize.STRING(30),
         defaultValue: "Retail",
       },
+      isPreorder: {
+        type: Sequelize.BOOLEAN,
+      },
+      preferredDeliveryTime: {
+        type: Sequelize.STRING(20),
+      },
       addedBy: {
         type: Sequelize.STRING(30),
       },

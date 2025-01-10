@@ -74,7 +74,8 @@ class OrdersAPI extends RESTDataSource {
   async addOrder(args) {
     const {
       input: {
-        cartItemsList, amountDue, deliveryLocationId, orderType,
+        cartItemsList, amountDue, deliveryLocationId, orderType, isPreorder,
+        preferredDeliveryTime,
       },
     } = args;
 
@@ -111,6 +112,8 @@ class OrdersAPI extends RESTDataSource {
         deliveryLocationId,
         orderType,
         paymentId, // creates the correlation id in the database here.
+        isPreorder,
+        preferredDeliveryTime,
         addedBy: username,
       })
         .then((res) => {

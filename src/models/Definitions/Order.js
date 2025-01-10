@@ -33,6 +33,13 @@ module.exports = (sequelize, Sequelize) => sequelize.define(
     addedBy: {
       type: Sequelize.STRING(30),
     },
+    isPreorder: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
+    preferredDeliveryTime: {
+      type: Sequelize.STRING(20),
+    },
     updatedBy: Sequelize.STRING(30),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE,
