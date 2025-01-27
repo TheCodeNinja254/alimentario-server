@@ -33,6 +33,46 @@ const selectOrdersWithoutStatusQuery = (username, pageSize) => (`
     LIMIT ${pageSize};
     `);
 
+const selectOrdersWithoutStatusQueryAdminView = (pageSize) => (`
+      SELECT a.id as orderId,
+       paymentId,
+       amountDue,
+       deliveryLocationId,
+       orderStatus,
+       orderType,
+       a.addedBy,
+       a.updatedBy,
+       a.createdAt,
+       a.updatedAt,
+       b.countryId,
+       b.countyId,
+       c.countryName,
+       d.countyName,
+       e.localeName,
+       b.localeId,
+       b.deliveryLocation,
+       b.deliveryPreciseLocation,
+       b.deliveryLocationLatitude,
+       b.deliveryLocationLongitude,
+       b.deliveryAdditionalNotes,
+       b.alternativePhoneNumber,
+       cust.firstName, 
+       cust.lastName,
+       cust.username,
+       cust.emailAddress,
+       cust.msisdn
+    FROM orders a
+        JOIN delivery_locations b ON a.deliveryLocationId = b.id
+        JOIN countries c ON b.countryId = c.id
+        JOIN counties d ON b.countyId = d.id
+        JOIN locales e ON b.localeId = e.id
+        JOIN customers cust ON a.addedBy = cust.username
+    WHERE a.orderType = 'Retail'
+    GROUP BY a.id
+    ORDER BY a.id DESC
+    LIMIT ${pageSize};
+    `);
+
 const selectAllOrdersWithoutStatusQuery = (pageSize) => (`
       SELECT a.id as orderId,
        paymentId,
@@ -102,6 +142,53 @@ const selectPendingOrdersQuery = (username, pageSize) => (`
         JOIN locales e ON b.localeId = e.id
     WHERE a.addedBy = '${username}'
     AND a.orderType = 'Retail'
+    AND a.orderStatus in (
+    'New',
+    'Pending',
+    'Enroute',
+    'Preparation',
+    'Delayed'
+    )
+    GROUP BY a.id
+    ORDER BY a.id DESC
+    LIMIT ${pageSize};
+    `);
+
+const selectPendingOrdersQueryAdminView = (pageSize) => (`
+      SELECT a.id as orderId,
+       paymentId,
+       amountDue,
+       deliveryLocationId,
+       orderStatus,
+       orderType,
+       a.addedBy,
+       a.updatedBy,
+       a.createdAt,
+       a.updatedAt,
+       b.countryId,
+       b.countyId,
+       c.countryName,
+       d.countyName,
+       e.localeName,
+       b.localeId,
+       b.deliveryLocation,
+       b.deliveryPreciseLocation,
+       b.deliveryLocationLatitude,
+       b.deliveryLocationLongitude,
+       b.deliveryAdditionalNotes,
+       b.alternativePhoneNumber,
+       cust.firstName, 
+       cust.lastName,
+       cust.username,
+       cust.emailAddress,
+       cust.msisdn
+    FROM orders a
+        JOIN delivery_locations b ON a.deliveryLocationId = b.id
+        JOIN countries c ON b.countryId = c.id
+        JOIN counties d ON b.countyId = d.id
+        JOIN locales e ON b.localeId = e.id
+        JOIN customers cust ON a.addedBy = cust.username
+    WHERE a.orderType = 'Retail'
     AND a.orderStatus in (
     'New',
     'Pending',
@@ -202,6 +289,53 @@ const selectClosedOrdersQuery = (username, pageSize) => (`
     LIMIT ${pageSize};
     `);
 
+const selectClosedOrdersQueryAdminView = (pageSize) => (`
+      SELECT a.id as orderId,
+       paymentId,
+       amountDue,
+       deliveryLocationId,
+       orderStatus,
+       orderType,
+       a.addedBy,
+       a.updatedBy,
+       a.createdAt,
+       a.updatedAt,
+       b.countryId,
+       b.countyId,
+       c.countryName,
+       d.countyName,
+       e.localeName,
+       b.localeId,
+       b.deliveryLocation,
+       b.deliveryPreciseLocation,
+       b.deliveryLocationLatitude,
+       b.deliveryLocationLongitude,
+       b.deliveryAdditionalNotes,
+       b.alternativePhoneNumber
+       cust.firstName, 
+       cust.lastName,
+       cust.username,
+       cust.emailAddress,
+       cust.msisdn
+    FROM orders a
+        JOIN delivery_locations b ON a.deliveryLocationId = b.id
+        JOIN countries c ON b.countryId = c.id
+        JOIN counties d ON b.countyId = d.id
+        JOIN locales e ON b.localeId = e.id
+        JOIN customers cust ON a.addedBy = cust.username
+    WHERE a.orderType = 'Retail'
+    AND a.orderStatus not in (
+    'New',
+    'Pending',
+    'Enroute',
+    'Preparation',
+    'Delayed'
+    )
+    GROUP BY a.id
+    ORDER BY a.id DESC
+    LIMIT ${pageSize};
+    `);
+
 const selectAllClosedOrdersQuery = (pageSize) => (`
       SELECT a.id as orderId,
        paymentId,
@@ -275,6 +409,19 @@ const selectPendingOrdersCountQuery = (username) => (`
     );
     `);
 
+const selectOrdersCountQueryAdminView = () => (`
+      SELECT count(id) as orderCount
+      FROM orders
+      WHERE orderType = 'Retail'
+      AND orderStatus  in (
+        'New',
+        'Pending',
+        'Enroute',
+        'Preparation',
+        'Delayed'
+    );
+    `);
+
 const selectAllPendingOrdersCountQuery = () => (`
       SELECT count(id) as orderCount
       FROM orders
@@ -293,6 +440,19 @@ const selectClosedOrdersCountQuery = (username) => (`
       FROM orders
       WHERE addedBy = '${username}'
       AND orderType = 'Retail'
+      AND orderStatus not in (
+        'New',
+        'Pending',
+        'Enroute',
+        'Preparation',
+        'Delayed'
+    );
+    `);
+
+const selectClosedOrdersCountQueryAdminView = () => (`
+      SELECT count(id) as orderCount
+      FROM orders
+      WHERE orderType = 'Retail'
       AND orderStatus not in (
         'New',
         'Pending',
@@ -338,4 +498,9 @@ module.exports = {
   selectAllPendingOrdersCountQuery,
   selectAllClosedOrdersCountQuery,
   selectAllOrdersCountQuery,
+  selectOrdersCountQueryAdminView,
+  selectClosedOrdersCountQueryAdminView,
+  selectPendingOrdersQueryAdminView,
+  selectClosedOrdersQueryAdminView,
+  selectOrdersWithoutStatusQueryAdminView,
 };

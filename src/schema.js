@@ -15,6 +15,7 @@ const typeDefs = gql`
     getCounties(countryId: Int!): CountiesResponse
     getLocales(countyId: Int!): LocalesResponse
     getMyOrders(pageSize: Int!, orderStatus: String): OrdersResponse
+    getOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getAllOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getDeliveryLocations: DeliveryLocationsResponse
     checkPaymentStatus(
@@ -27,10 +28,15 @@ const typeDefs = gql`
       email: String!
       password: String!
     ): CustomerLoginResponse!
+    userAuthentication(
+      email: String!
+      password: String!
+    ): UserLoginResponse!
     customerAccountCreation(input: CustomerAccountRequest): Result!
     addToCart(input: AddToCartRequest): Result!
     removeCartItem(id: Int!): Result!
     signOut: Result!
+    userSignOut: Result!
     addCountry(input: AddCountryInput): Result!
     removeCountry(id: Int!): Result!
     addCounty(input: AddCountyInput): Result!
@@ -118,6 +124,12 @@ const typeDefs = gql`
     message: String
     myOrders: MyOrdersObject
   }
+  
+  type AdminOrdersResponse {
+    status: Boolean!
+    message: String
+    orders: MyOrdersObject
+  }
 
   type MyOrdersObject {
     currentSelection: Int
@@ -165,6 +177,7 @@ const typeDefs = gql`
     lastName: String
     msisdn: String
     emailAddress: String
+    username: String
   }
 
   type SpecificationsData {
@@ -254,7 +267,7 @@ const typeDefs = gql`
     firstName: String
     lastName: String
     msisdn: String
-    userRole: Int
+    userRole: String
     emailAddress: String
     verificationStatus: Int
     bearerToken: String
@@ -269,6 +282,19 @@ const typeDefs = gql`
     msisdn: String
     customerStatus: String
     businessId: String
+    emailAddress: String
+    verificationStatus: String
+  } 
+  
+  type UserLoginResponse {
+    status: Boolean!
+    message: String!
+    username: String
+    firstName: String
+    lastName: String
+    msisdn: String
+    userRole: String
+    userStatus: String
     emailAddress: String
     verificationStatus: String
   }

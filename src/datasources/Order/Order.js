@@ -15,6 +15,11 @@ const {
   selectClosedOrdersQuery,
   selectPendingOrdersCountQuery,
   selectClosedOrdersCountQuery,
+  selectOrdersCountQueryAdminView,
+  selectClosedOrdersCountQueryAdminView,
+  selectPendingOrdersQueryAdminView,
+  selectClosedOrdersQueryAdminView,
+  selectOrdersWithoutStatusQueryAdminView,
 } = require("../../Database/queryStrings");
 
 class OrdersAPI extends RESTDataSource {
@@ -312,6 +317,145 @@ class OrdersAPI extends RESTDataSource {
         actualError: e,
         customerMessage: "An error occurred. This is temporary and should resolve in a short time. "
                     + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
+      });
+
+      return {
+        status: false,
+        message: e.message,
+      };
+    }
+  }
+
+  async getOrders(args) {
+    const { pageSize, orderStatus } = args;
+
+    if (!this.context.session.userDetails) {
+      // throw new Error(this.signInError);
+      return {
+        status: false,
+        message: "User not signed in",
+      };
+    }
+
+    const {
+      userDetails: { username, bearerToken },
+    } = this.context.session;
+
+    const signInStatus = await redis.get(bearerToken, (err, reply) => reply);
+    if (Number(signInStatus) === 0) {
+      // throw new Error(this.signInError);
+      return {
+        status: false,
+        message: "User not signed in",
+      };
+    }
+
+    try {
+      let result = {
+        status: false,
+        message: "No orders to show",
+        orders: [],
+      };
+
+      const selectOrdersQuery = (_pageSize) => {
+        switch (orderStatus) {
+          case 'pending':
+            return selectPendingOrdersQueryAdminView(_pageSize);
+          case 'closed':
+            return selectClosedOrdersQueryAdminView(_pageSize);
+          default:
+            return selectOrdersWithoutStatusQueryAdminView(_pageSize);
+        }
+      };
+
+      const selectCountQueryAdminView = () => {
+        switch (orderStatus) {
+          case 'pending':
+            return selectOrdersCountQueryAdminView();
+          case 'closed':
+            return selectClosedOrdersCountQueryAdminView();
+          default:
+            return selectOrdersCountQueryAdminView();
+        }
+      };
+
+      const orders = await sequelize.query(selectOrdersQuery(username, pageSize), {
+        type: Sequelize.QueryTypes.SELECT,
+      });
+
+      if (orders && orders.length > 0) {
+        const ordersCount = await sequelize.query(selectCountQueryAdminView(), { type: Sequelize.QueryTypes.SELECT });
+
+        const ordersMap = {};
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const order of orders) {
+          const { orderId } = order;
+
+          if (!ordersMap[orderId]) {
+            ordersMap[orderId] = {
+              orderId: order.orderId,
+              paymentId: order.paymentId,
+              amountDue: order.amountDue,
+              deliveryLocationId: order.deliveryLocationId,
+              orderStatus: order.orderStatus,
+              orderType: order.orderType,
+              addedBy: order.addedBy,
+              updatedBy: order.updatedBy,
+              createdAt: order.createdAt,
+              updatedAt: order.updatedAt,
+              countryId: order.countryId,
+              countyId: order.countyId,
+              localeId: order.localeId,
+              firstName: order.firstName,
+              lastName: order.lastName,
+              username: order.username,
+              emailAddress: order.emailAddress,
+              msisdn: order.msisdn,
+              deliveryLocation: {
+                id: order.deliveryLocationId,
+                deliveryLocation: order.deliveryLocation,
+                deliveryPreciseLocation: order.deliveryPreciseLocation,
+                latitude: order.deliveryLocationLatitude,
+                longitude: order.deliveryLocationLongitude,
+                additionalNotes: order.deliveryAdditionalNotes,
+                alternativePhoneNumber: order.alternativePhoneNumber,
+                countryName: order.countryName,
+                countyName: order.countyName,
+                localeName: order.localeName,
+              },
+              specifications: [],
+            };
+          }
+
+          // eslint-disable-next-line no-await-in-loop
+          const specifications = await sequelize.query(selectOrderSpecificationsQuery(orderId), { type: Sequelize.QueryTypes.SELECT });
+
+          ordersMap[orderId].specifications.push(...specifications);
+        }
+
+        const ordersArray = Object.values(ordersMap);
+
+        result = {
+          status: true,
+          message: "Orders fetched successfully!",
+          orders: {
+            currentSelection: pageSize,
+            totalElements: ordersCount[0].orderCount || 0,
+            content: ordersArray.reverse(),
+          },
+        };
+        return result;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      Logger.log("error", "Error: ", {
+        fullError: e,
+        customError: e,
+        actualError: e,
+        customerMessage: "An error occurred. This is temporary and should resolve in a short time. "
+          + "If the error persists, reach out to @Desafio_Alimentario_Care on twitter.",
       });
 
       return {

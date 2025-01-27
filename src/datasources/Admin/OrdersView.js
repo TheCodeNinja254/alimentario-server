@@ -86,6 +86,7 @@ class OrdersViewAPI extends InternalAuthMainClass {
                 lastName: order.lastName,
                 msisdn: order.msisdn,
                 emailAddress: order.emailAddress,
+                username: order.addedBy,
               },
               deliveryLocation: {
                 id: order.deliveryLocationId,

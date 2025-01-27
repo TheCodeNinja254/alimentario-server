@@ -25,7 +25,7 @@ const configurations = configValues.NODE_ENV === "production"
 
 const CustomerAuthentication = require("./datasources/Authentication/CustomerAuthentication");
 const AuthenticationSessions = require("./datasources/Authentication/AuthenticationSessions");
-const SystemUserAuthentication = require("./datasources/Authentication/SystemUserAuthentication");
+const SystemUserAuthentication = require("./datasources/Authentication/UserAuthentication");
 const ProductsAPI = require("./datasources/Products/Products");
 const CartAPI = require("./datasources/Cart");
 const CustomerAccountAPI = require("./datasources/CustomerAccount");
@@ -36,6 +36,7 @@ const DeliveryLocationsAPI = require("./datasources/Locations/DeliveryLocations"
 const OrdersAPI = require("./datasources/Order/Order");
 const OrdersInternalView = require("./datasources/Admin/OrdersView");
 const MpesaTransactions = require("./datasources/MpesaIntegration/Transactions");
+const UserAuthentication = require("./datasources/Authentication/UserAuthentication");
 
 const server = new ApolloServer({
   typeDefs,
@@ -95,6 +96,7 @@ const server = new ApolloServer({
     orders: new OrdersAPI(),
     ordersInternalView: new OrdersInternalView(),
     mpesaIntegration: new MpesaTransactions(),
+    userAuthentication: new UserAuthentication(),
   }),
   formatError: (err) => {
     // error variables override and redefine them everytime errors fallback here

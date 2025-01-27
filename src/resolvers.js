@@ -33,10 +33,12 @@ module.exports = {
   },
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) => dataSources.customerAuthentication.customerAuthentication(args),
+    userAuthentication: (_, args, { dataSources }) => dataSources.userAuthentication.userAuthentication(args),
     customerAccountCreation: (_, args, { dataSources }) => dataSources.customerAccount.customerAccountCreation(args),
     addToCart: (_, args, { dataSources }) => dataSources.cart.addToCart(args),
     removeCartItem: (_, args, { dataSources }) => dataSources.cart.removeCartItem(args),
     signOut: (_, __, { dataSources }) => dataSources.customerAuthentication.signOut(),
+    userSignOut: (_, __, { dataSources }) => dataSources.userAuthentication().userSignOut(),
     addDeliveryLocation: (_, args, { dataSources }) => dataSources.deliveryLocations.addDeliveryLocation(args),
     removeDeliveryLocation: (_, args, { dataSources }) => dataSources.deliveryLocations.removeDeliveryLocation(args),
     addCountry: (_, args, { dataSources }) => dataSources.countries.addCountry(args),

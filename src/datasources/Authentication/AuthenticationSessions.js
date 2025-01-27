@@ -120,12 +120,12 @@ class AuthenticationSessions extends RESTDataSource {
           user: AuthenticationSessions.userSessionReducer(userDetails),
         };
       } catch (e) {
-        /*
-         * Message to customer
+        /**
+         * Message to user
          * */
         const customerMessage = "Sorry, we were unable to get details";
 
-        /*
+        /**
          * Create a log instance
          * */
         Logger.log("error", "Error: ", {
