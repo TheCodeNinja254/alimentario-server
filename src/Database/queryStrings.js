@@ -73,7 +73,7 @@ const selectOrdersWithoutStatusQueryAdminView = (pageSize) => (`
     LIMIT ${pageSize};
     `);
 
-const selectAllOrdersWithoutStatusQuery = (pageSize) => (`
+const selectAllOrdersWithoutStatusQuery = (pageSize, isPreorder) => (`
       SELECT a.id as orderId,
        paymentId,
        amountDue,
@@ -106,10 +106,53 @@ const selectAllOrdersWithoutStatusQuery = (pageSize) => (`
         JOIN counties d ON b.countyId = d.id
         JOIN locales e ON b.localeId = e.id
         JOIN customers f on a.addedBy = f.username
-    WHERE a.orderType = 'Retail'
+    WHERE a.orderType = 'Retail' AND AND a.isPreorder = ${isPreorder}
     GROUP BY a.id
     ORDER BY a.id DESC
     LIMIT ${pageSize};
+    `);
+
+const selectAllOrdersWithSearch = (searchTerm) => (`
+      SELECT 
+    a.id AS orderId,
+    a.paymentId,
+    a.amountDue,
+    a.deliveryLocationId,
+    a.orderStatus,
+    a.orderType,
+    a.addedBy,
+    a.updatedBy,
+    a.createdAt,
+    a.updatedAt,
+    b.countryId,
+    b.countyId,
+    c.countryName,
+    d.countyName,
+    e.localeName,
+    b.localeId,
+    f.firstName,
+    f.lastName,
+    f.msisdn,
+    f.emailAddress,
+    b.deliveryLocation,
+    b.deliveryPreciseLocation,
+    b.deliveryLocationLatitude,
+    b.deliveryLocationLongitude,
+    b.deliveryAdditionalNotes,
+    b.alternativePhoneNumber
+FROM orders a
+    JOIN delivery_locations b ON a.deliveryLocationId = b.id
+    JOIN countries c ON b.countryId = c.id
+    JOIN counties d ON b.countyId = d.id
+    JOIN locales e ON b.localeId = e.id
+    JOIN customers f ON a.addedBy = f.username
+WHERE a.orderType = 'Retail'
+  AND (
+    LOWER(f.firstName) LIKE CONCAT('%', LOWER('${searchTerm}'), '%') OR 
+    LOWER(f.lastName) LIKE CONCAT('%', LOWER('${searchTerm}'), '%')
+)
+GROUP BY a.id
+ORDER BY a.id DESC;
     `);
 
 const selectPendingOrdersQuery = (username, pageSize) => (`
@@ -201,7 +244,7 @@ const selectPendingOrdersQueryAdminView = (pageSize) => (`
     LIMIT ${pageSize};
     `);
 
-const selectAllPendingOrdersQuery = (pageSize) => (`
+const selectAllPendingOrdersQuery = (pageSize, isPreorder) => (`
       SELECT a.id as orderId,
        paymentId,
        amountDue,
@@ -242,6 +285,7 @@ const selectAllPendingOrdersQuery = (pageSize) => (`
     'Preparation',
     'Delayed'
     )
+    AND a.isPreorder = ${isPreorder}
     GROUP BY a.id
     ORDER BY a.id DESC
     LIMIT ${pageSize};
@@ -336,7 +380,7 @@ const selectClosedOrdersQueryAdminView = (pageSize) => (`
     LIMIT ${pageSize};
     `);
 
-const selectAllClosedOrdersQuery = (pageSize) => (`
+const selectAllClosedOrdersQuery = (pageSize, isPreorder) => (`
       SELECT a.id as orderId,
        paymentId,
        amountDue,
@@ -377,6 +421,7 @@ const selectAllClosedOrdersQuery = (pageSize) => (`
     'Preparation',
     'Delayed'
     )
+  AND a.isPreorder = ${isPreorder}
     GROUP BY a.id
     ORDER BY a.id DESC
     LIMIT ${pageSize};
@@ -389,10 +434,10 @@ const selectOrdersCountQuery = (username) => (`
       AND orderType = 'Retail';
     `);
 
-const selectAllOrdersCountQuery = () => (`
+const selectAllOrdersCountQuery = (isPreorder) => (`
       SELECT count(id) as orderCount
       FROM orders
-      WHERE orderType = 'Retail';
+      WHERE orderType = 'Retail' AND isPreorder = ${isPreorder};
     `);
 
 const selectPendingOrdersCountQuery = (username) => (`
@@ -422,10 +467,11 @@ const selectOrdersCountQueryAdminView = () => (`
     );
     `);
 
-const selectAllPendingOrdersCountQuery = () => (`
+const selectAllPendingOrdersCountQuery = (isPreorder) => (`
       SELECT count(id) as orderCount
       FROM orders
       WHERE orderType = 'Retail'
+      AND isPreorder = ${isPreorder}
       AND orderStatus  in (
         'New',
         'Pending',
@@ -462,10 +508,11 @@ const selectClosedOrdersCountQueryAdminView = () => (`
     );
     `);
 
-const selectAllClosedOrdersCountQuery = () => (`
+const selectAllClosedOrdersCountQuery = (isPreorder) => (`
       SELECT count(id) as orderCount
       FROM orders
       WHERE orderType = 'Retail'
+      AND isPreorder = ${isPreorder}
       AND orderStatus not in (
         'New',
         'Pending',
@@ -503,4 +550,5 @@ module.exports = {
   selectPendingOrdersQueryAdminView,
   selectClosedOrdersQueryAdminView,
   selectOrdersWithoutStatusQueryAdminView,
+  selectAllOrdersWithSearch,
 };

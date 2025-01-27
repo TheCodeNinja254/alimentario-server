@@ -8,6 +8,7 @@ const {
   selectAllPendingOrdersCountQuery,
   selectAllClosedOrdersCountQuery,
   selectAllOrdersCountQuery,
+  selectAllOrdersWithSearch,
 } = require("../../Database/queryStrings");
 const sequelize = require("../../Database/connection");
 const Logger = require("../../utils/logging");
@@ -22,7 +23,9 @@ class OrdersViewAPI extends InternalAuthMainClass {
   }
 
   async getAllOrders(args) {
-    const { pageSize, orderStatus } = args;
+    const {
+      pageSize, orderStatus, hasSearch, searchValue, isPreorder,
+    } = args;
 
     try {
       let result = {
@@ -31,29 +34,37 @@ class OrdersViewAPI extends InternalAuthMainClass {
         myOrders: [],
       };
 
+      // query with search
+
+      const selectOrdersQueryWithSearch = () => selectAllOrdersWithSearch(searchValue, isPreorder);
+
+      // query
       const selectOrdersQuery = (_pageSize) => {
         switch (orderStatus) {
           case 'pending':
-            return selectAllPendingOrdersQuery(_pageSize);
+            return selectAllPendingOrdersQuery(_pageSize, isPreorder);
           case 'closed':
-            return selectAllClosedOrdersQuery(_pageSize);
+            return selectAllClosedOrdersQuery(_pageSize, isPreorder);
           default:
-            return selectAllOrdersWithoutStatusQuery(_pageSize);
+            return selectAllOrdersWithoutStatusQuery(_pageSize, isPreorder);
         }
       };
 
+      // count
       const selectCountQuery = () => {
         switch (orderStatus) {
           case 'pending':
-            return selectAllPendingOrdersCountQuery();
+            return selectAllPendingOrdersCountQuery(isPreorder);
           case 'closed':
-            return selectAllClosedOrdersCountQuery();
+            return selectAllClosedOrdersCountQuery(isPreorder);
           default:
-            return selectAllOrdersCountQuery();
+            return selectAllOrdersCountQuery(isPreorder);
         }
       };
 
-      const orders = await sequelize.query(selectOrdersQuery(pageSize), {
+      const selectQuery = () => (hasSearch ? selectOrdersQueryWithSearch(): selectOrdersQuery(pageSize));
+
+      const orders = await sequelize.query(selectQuery(pageSize), {
         type: Sequelize.QueryTypes.SELECT,
       });
 
@@ -166,8 +177,6 @@ class OrdersViewAPI extends InternalAuthMainClass {
         };
       });
 
-      console.log(updateResult);
-
       // Check if the update was successful by looking at the number of affected rows
       if (updateResult[0] === 0) {
         return {
@@ -181,7 +190,7 @@ class OrdersViewAPI extends InternalAuthMainClass {
         message: "Order status updated successfully.",
       };
     } catch (e) {
-      /*
+      /**
        * Create a log instance with the error
        */
       Logger.log("error", "Error: ", {

@@ -16,7 +16,7 @@ const typeDefs = gql`
     getLocales(countyId: Int!): LocalesResponse
     getMyOrders(pageSize: Int!, orderStatus: String): OrdersResponse
     getOrders(pageSize: Int!, orderStatus: String): OrdersResponse
-    getAllOrders(pageSize: Int!, orderStatus: String): OrdersResponse
+    getAllOrders(pageSize: Int!, orderStatus: String, hasSearch: Boolean, searchValue: String, isPreorder: Int): OrdersResponse
     getDeliveryLocations: DeliveryLocationsResponse
     checkPaymentStatus(
       paymentCorrelationId: String!
