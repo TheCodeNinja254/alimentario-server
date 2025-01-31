@@ -29,6 +29,9 @@ module.exports = (sequelize, Sequelize) => sequelize.define(
     addedBy: {
       type: Sequelize.STRING(30),
     },
+    guestId: {
+      type: Sequelize.STRING(255),
+    },
     updatedBy: Sequelize.STRING(30),
     createdAt: Sequelize.DATE,
     updatedAt: Sequelize.DATE,

@@ -34,4 +34,8 @@ alter table orders
 
 -- add default location for rececourse event
 
+-- Changes from 31st Jan - leading upto POS
+
+alter table cart
+    add guestId varchar(255) null comment 'Only applies to customers sold to via POS';
 

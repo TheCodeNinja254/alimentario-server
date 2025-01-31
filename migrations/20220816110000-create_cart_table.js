@@ -34,6 +34,9 @@ module.exports = {
         type: Sequelize.STRING(20),
         allowNull: true,
       },
+      guestId: {
+        type: Sequelize.STRING(255),
+      },
       addedBy: {
         type: Sequelize.STRING(30),
       },

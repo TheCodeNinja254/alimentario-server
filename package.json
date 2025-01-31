@@ -1,6 +1,6 @@
 {
   "name": "desafio-alimentario-app",
-  "version": "0.0.9",
+  "version": "1.0.9",
   "description": "An E-Commerce application for selling products to retail and whole sale customers.",
   "main": "src/index.js",
   "scripts": {
