@@ -82,6 +82,15 @@ router.post('/:paymentCorrelationId', async (req, res) => {
         paymentCorrelationId,
         resultCode: ResultCode, // Store failure ResultCode
         resultDesc: ResultDesc, // Store failure ResultDesc
+      }).catch((err) => {
+        Logger.log("error", "Error: ", {
+          fullError: err,
+          customError: "Could not add to payments",
+          actualError: "Could not add to payments",
+          customerMessage:
+            "We are unable to add to your payments at the moment. Please try again later!",
+        });
+        res.status(500).json({ error: 'Error recording payment' });
       });
 
       Logger.log("error", "Error: ", {
