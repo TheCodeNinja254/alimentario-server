@@ -14,8 +14,8 @@ let xServer;
 
 if (process.env.NODE_ENV === 'production') {
   const options = {
-    key: fs.readFileSync('/opt/ssl/cert.key'),
-    cert: fs.readFileSync('/opt/ssl/cert.crt'),
+    key: fs.readFileSync("/opt/ssl/privkey.pem"),
+    cert: fs.readFileSync("/opt/ssl/fullchain.pem"),
   };
 
   // Start HTTPS server with Express app in production

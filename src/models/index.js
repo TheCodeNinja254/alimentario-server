@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../Database/connection");
 
-/*
+/**
  * Import models
  * */
 const BusinessContactPersonModel = require("./Definitions/BusinessContactPerson");
@@ -24,7 +24,7 @@ const CountyModel = require("./Definitions/County");
 const LocaleModel = require("./Definitions/Locale");
 const DeliveryLocationsModel = require("./Definitions/DeliveryLocations");
 
-/*
+/**
  * Declare & Invoke models
  * */
 const BusinessContactPerson = BusinessContactPersonModel(sequelize, Sequelize);

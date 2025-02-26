@@ -30,6 +30,7 @@ module.exports = {
     getAllOrders: (_, args, { dataSources }) => dataSources.ordersInternalView.getAllOrders(args),
     getDeliveryLocations: (_, args, { dataSources }) => dataSources.deliveryLocations.getDeliveryLocations(args),
     checkPaymentStatus: (_, args, { dataSources }) => dataSources.mpesaIntegration.checkPaymentStatus(args),
+    getPOSCartItems: (_, args, { dataSources }) => dataSources.posCart.getPOSCartItems(args),
   },
   Mutation: {
     customerAuthentication: (_, args, { dataSources }) => dataSources.customerAuthentication.customerAuthentication(args),
@@ -50,5 +51,7 @@ module.exports = {
     addOrder: (_, args, { dataSources }) => dataSources.orders.addOrder(args),
     updateOrderStatus: (_, args, { dataSources }) => dataSources.ordersInternalView.updateOrderStatus(args),
     lipaNaMpesaOnline: (_, args, { dataSources }) => dataSources.mpesaIntegration.lipaNaMpesaOnline(args),
+    addToPOSCart: (_, args, { dataSources }) => dataSources.posCart.addToPOSCart(args),
+    removePOSCartItem: (_, args, { dataSources }) => dataSources.posCart.removePOSCartItem(args),
   },
 };

@@ -37,6 +37,7 @@ const OrdersAPI = require("./datasources/Order/Order");
 const OrdersInternalView = require("./datasources/Admin/OrdersView");
 const MpesaTransactions = require("./datasources/MpesaIntegration/Transactions");
 const UserAuthentication = require("./datasources/Authentication/UserAuthentication");
+const POSCartAPI = require("./datasources/Cart/POSCart");
 
 const server = new ApolloServer({
   typeDefs,
@@ -97,6 +98,7 @@ const server = new ApolloServer({
     ordersInternalView: new OrdersInternalView(),
     mpesaIntegration: new MpesaTransactions(),
     userAuthentication: new UserAuthentication(),
+    posCart: new POSCartAPI(),
   }),
   formatError: (err) => {
     // error variables override and redefine them everytime errors fallback here
@@ -304,9 +306,8 @@ let xServer;
 if (process.env.NODE_ENV === 'production') {
   // Set up HTTPS options
   const options = {
-    key: fs.readFileSync('/opt/ssl/cert.key'),
-    cert: fs.readFileSync('/opt/ssl/cert.crt'),
-    // passphrase: `${process.env.SERVER_SSL_PASSPHRASE}`,
+    key: fs.readFileSync("/opt/ssl/privkey.pem"),
+    cert: fs.readFileSync("/opt/ssl/fullchain.pem"),
   };
 
   // Initialize HTTPS server

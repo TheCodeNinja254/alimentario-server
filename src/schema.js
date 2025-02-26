@@ -10,7 +10,9 @@ const typeDefs = gql`
       productCategory: Int!
       productFamily: String!
     ): DisplayProductsResponse
-    getCartItems: CartProductsResponse
+#      Added guestId here for future use
+    getCartItems(guestId: String): CartProductsResponse
+    getPOSCartItems(guestId: String): CartProductsResponse
     getCountries: CountriesResponse
     getCounties(countryId: Int!): CountiesResponse
     getLocales(countyId: Int!): LocalesResponse
@@ -34,7 +36,9 @@ const typeDefs = gql`
     ): UserLoginResponse!
     customerAccountCreation(input: CustomerAccountRequest): Result!
     addToCart(input: AddToCartRequest): Result!
+    addToPOSCart(input: AddToCartRequest): AddToPOSCartResponse!
     removeCartItem(id: Int!): Result!
+    removePOSCartItem(id: Int!): Result!
     signOut: Result!
     userSignOut: Result!
     addCountry(input: AddCountryInput): Result!
@@ -57,6 +61,16 @@ const typeDefs = gql`
   type Result {
     status: Boolean!
     message: String!
+  }
+  
+  type POSCartBody {
+      guestId: String
+  }
+  
+  type AddToPOSCartResponse {
+    status: Boolean!
+    message: String!
+    body: POSCartBody
   }
 
   type LipaNaMPesaOnlineResponse {
@@ -347,6 +361,7 @@ const typeDefs = gql`
     customerSpecification: String
     quantity: Int!
     orderType: String
+    guestId: String
   }
 
   input AddCountryInput {
